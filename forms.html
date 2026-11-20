@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>三貸同堂｜數位化客戶資料表與業績報件單系統</title>
+  <style>
+    :root {
+      --navy-dark: #0b132b;
+      --navy-mid: #1c2541;
+      --gold: #c5a059;
+      --gold-bright: #f59e0b;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --text-main: #0f172a;
+      --text-sub: #475569;
+      --success: #059669;
+      --danger: #dc2626;
+      --border: #cbd5e1;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0; padding: 0 0 88px 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      background: var(--bg); color: var(--text-main); line-height: 1.5;
+    }
+    .top-header {
+      background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-mid) 100%);
+      color: #fff; padding: 14px 16px 16px; border-bottom: 3px solid var(--gold);
+      position: sticky; top: 0; z-index: 40; box-shadow: 0 4px 12px rgba(11,19,43,0.22);
+    }
+    .hdr-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .hdr-title { font-size: 18px; font-weight: 800; color: #fbbf24; margin: 0; }
+    .hdr-sub { font-size: 12px; color: #cbd5e1; margin-top: 2px; }
+    .case-picker-bar {
+      margin-top: 10px; background: rgba(255,255,255,0.1); padding: 8px 10px;
+      border-radius: 10px; border: 1px solid rgba(197,160,89,0.45);
+    }
+    .case-picker-bar select {
+      width: 100%; padding: 9px 10px; font-size: 14.5px; border-radius: 8px;
+      border: 1px solid var(--gold); background: #fff; color: #0f172a; font-weight: 700;
+    }
+    .container { max-width: 780px; margin: 0 auto; padding: 14px; }
+    .tab-pane { display: none; animation: fadeIn 0.2s ease; }
+    .tab-pane.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .card {
+      background: var(--card); border-radius: 14px; padding: 16px; margin-bottom: 14px;
+      box-shadow: 0 2px 8px rgba(15,23,42,0.06); border: 1px solid #e2e8f0;
+    }
+    .section-title {
+      font-size: 16.5px; font-weight: 800; color: var(--navy-dark); margin: 0 0 12px;
+      padding-left: 10px; border-left: 4px solid var(--gold-bright);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .sub-block-title {
+      font-size: 14.5px; font-weight: 800; color: #1e3a8a; background: #eff6ff;
+      padding: 8px 12px; border-radius: 8px; margin: 14px 0 10px; border-left: 4px solid #1e3a8a;
+    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    @media (max-width: 480px) { .grid-3 { grid-template-columns: 1fr 1fr; } }
+    .form-group { margin-bottom: 11px; }
+    label { display: block; font-size: 13px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px; }
+    input[type="text"], input[type="tel"], input[type="number"], input[type="date"], input[type="month"], select, textarea {
+      width: 100%; padding: 11px 11px; font-size: 15.5px; border: 1.5px solid var(--border);
+      border-radius: 9px; background: #fff; color: var(--text-main); outline: none;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--gold-bright); }
+    input[readonly], select.locked-field { background: #ecfdf5 !important; border-color: #10b981 !important; color: #065f46; font-weight: 700; }
+    /* 動態明細卡列 */
+    .dyn-item {
+      background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px;
+      padding: 10px; margin-bottom: 10px;
+    }
+    .dyn-item-hdr { font-size: 12.5px; font-weight: 800; color: #475569; margin-bottom: 6px; }
+    /* 佣金計算與紅線警報箱 */
+    .comm-summary-box {
+      background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid));
+      color: #fff; border-radius: 12px; padding: 14px; border: 1.5px solid var(--gold); margin: 12px 0;
+    }
+    .comm-big { font-size: 28px; font-weight: 900; color: #fbbf24; }
+    .redline-alert {
+      background: #fef2f2; border: 2px solid #dc2626; color: #991b1b;
+      padding: 12px; border-radius: 10px; font-size: 13.5px; font-weight: 800; margin: 10px 0; display: none;
+    }
+    .split-preview-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; font-size: 12px;
+    }
+    .split-chip { background: rgba(255,255,255,0.1); padding: 6px 8px; border-radius: 7px; color: #e2e8f0; }
+    /* 存封拍照上傳預覽區 */
+    .upload-box {
+      border: 2px dashed var(--gold); border-radius: 12px; padding: 14px; text-align: center;
+      background: #fffdf7; margin-bottom: 12px;
+    }
+    .upload-preview { max-width: 100%; max-height: 220px; border-radius: 8px; margin-top: 10px; display: none; border: 1px solid #cbd5e1; }
+    /* 按鈕 */
+    .btn {
+      display: inline-flex; justify-content: center; align-items: center; gap: 6px;
+      width: 100%; padding: 14px 16px; border-radius: 11px; font-size: 16px; font-weight: 800;
+      border: none; cursor: pointer; text-decoration: none;
+    }
+    .btn-gold { background: linear-gradient(135deg, #d97706, #f59e0b); color: #fff; box-shadow: 0 4px 12px rgba(217,119,6,0.28); }
+    .btn-navy { background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid)); color: #fde68a; border: 1px solid var(--gold); }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-outline { background: #fff; color: var(--navy-dark); border: 1.5px solid #94a3b8; }
+    .btn-sm { padding: 8px 12px; font-size: 13px; width: auto; border-radius: 8px; }
+    .record-item {
+      border: 1px solid #cbd5e1; border-radius: 11px; padding: 12px; margin-bottom: 10px; background: #fff;
+    }
+    .badge { display: inline-block; padding: 3px 9px; border-radius: 99px; font-size: 11.5px; font-weight: 800; }
+    .badge-ok { background: #dcfce7; color: #166534; }
+    .badge-red { background: #fee2e2; color: #991b1b; }
+    .badge-blue { background: #dbeafe; color: #1e40af; }
+    /* 底部固定導覽 */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; background: var(--navy-dark);
+      border-top: 2px solid var(--gold); display: flex; z-index: 50; padding-bottom: env(safe-area-inset-bottom);
+    }
+    .nav-btn {
+      flex: 1; background: none; border: none; color: #94a3b8; padding: 10px 4px 12px;
+      font-size: 12px; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px;
+    }
+    .nav-btn .ico { font-size: 19px; }
+    .nav-btn.active { color: #fbbf24; background: rgba(197,160,89,0.12); }
+    .loading-mask {
+      position: fixed; inset: 0; background: rgba(11,19,43,0.78); z-index: 99;
+      display: none; flex-direction: column; align-items: center; justify-content: center; color: #fff;
+    }
+    .spinner {
+      width: 42px; height: 42px; border: 4px solid rgba(255,255,255,0.25);
+      border-top-color: #fbbf24; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 10px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .toast {
+      position: fixed; top: 76px; left: 50%; transform: translateX(-50%); z-index: 95;
+      background: #0f172a; color: #fde68a; padding: 12px 18px; border-radius: 10px;
+      font-size: 14px; font-weight: 700; border: 1px solid var(--gold); display: none; max-width: 92%; text-align: center;
+    }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <header class="top-header">
+    <div class="hdr-row">
+      <div>
+        <h1 class="hdr-title">📋 三貸同堂｜兩大核心數位表單系統</h1>
+        <div class="hdr-sub" id="hdrStaffTxt">請先驗證內部人員身分</div>
+      </div>
+      <button class="btn btn-outline btn-sm" style="background:rgba(255,255,255,0.12);color:#fde68a;border-color:#c5a059;" onclick="initWorkspace()">🔄 刷新</button>
+    </div>
+    <div id="casePickerWrap" class="case-picker-bar hidden">
+      <div style="font-size:11.5px;color:#fde68a;font-weight:700;margin-bottom:4px;">🔗 關聯水庫案件（選擇後自動帶入客戶資料、角色與鎖定引流人）：</div>
+      <select id="globalCaseSelect" onchange="onGlobalCaseChange()"></select>
+    </div>
+  </header>
+  <div id="toastBox" class="toast"></div>
+  <div id="loadingMask" class="loading-mask">
+    <div class="spinner"></div>
+    <div id="loadingText" style="font-weight:700;font-size:15px;">雲端加密處理中...</div>
+  </div>
+
+  <!-- 內部驗證牆 -->
+  <div id="loginWall" class="container hidden">
+    <div class="card">
+      <div class="section-title">🔐 數位表單系統・內部人員驗證</div>
+      <p style="font-size:13.5px;color:#475569;margin-top:0;">
+        輸入實名手機號碼完成驗證後，系統將與行動工作台共用本機登入狀態，下次秒開免重打：
+      </p>
+      <div class="form-group">
+        <label>實名手機號碼（10 碼）*</label>
+        <input type="tel" id="inpPhone" maxlength="10" placeholder="例如：0900000000">
+      </div>
+      <div class="form-group">
+        <label>員工代碼（選填，如 S000 / S005）</label>
+        <input type="text" id="inpCode" placeholder="S005">
+      </div>
+      <button class="btn btn-gold" onclick="doLogin()">🔓 驗證並進入數位表單系統</button>
+    </div>
+  </div>
+
+  <!-- 主系統區塊 -->
+  <main id="mainApp" class="container hidden">
+    <!-- ================================================================ -->
+    <!-- 分頁 1：《數位化客戶資料表》（初審收件與三大負債資產盤點）          -->
+    <!-- ================================================================ -->
+    <section id="tab-client" class="tab-pane active">
+      <div class="card">
+        <div class="section-title">
+          <span>📋 《數位化客戶資料表》初審收件</span>
+          <span id="cfNoBadge" class="badge badge-blue">新表單</span>
+        </div>
+        <input type="hidden" id="cfFormNo">
+        <div class="sub-block-title">一、基本與職收資料（18 項完整欄位）</div>
+        <div class="grid-3">
+          <div class="form-group"><label>填表日期</label><input type="date" id="cfDate"></div>
+          <div class="form-group"><label>開發銀行</label><input type="text" id="cfDevBank" placeholder="例：中信/玉山"></div>
+          <div class="form-group"><label>戶號</label><input type="text" id="cfAccountNo" placeholder="選填"></div>
+        </div>
+        <div class="grid-3">
+          <div class="form-group"><label>客戶姓名 *</label><input type="text" id="cfName" placeholder="真實姓名"></div>
+          <div class="form-group"><label>身分證 ID *</label><input type="text" id="cfIdCard" maxlength="10" placeholder="A123456789" style="text-transform:uppercase;"></div>
+          <div class="form-group"><label>聯絡手機 *</label><input type="tel" id="cfPhone" maxlength="10" placeholder="09xxxxxxxx"></div>
+        </div>
+        <div class="grid-3">
+          <div class="form-group"><label>出生年次</label><input type="text" id="cfBirthYear" placeholder="例：75年次"></div>
+          <div class="form-group"><label>性別</label>
+            <select id="cfGender"><option value="男">男</option><option value="女">女</option></select>
+          </div>
+          <div class="form-group"><label>學歷</label>
+            <select id="cfEdu"><option value="大學">大學</option><option value="專科">專科</option><option value="高中職">高中職</option><option value="碩博士">碩博士</option><option value="國中以下">國中以下</option></select>
+          </div>
+        </div>
+        <div class="grid-3">
+          <div class="form-group"><label>LINE ID</label><input type="text" id="cfLineId" placeholder="客戶LINE帳號"></div>
+          <div class="form-group"><label>婚姻狀況</label>
+            <select id="cfMarital"><option value="未婚">未婚</option><option value="已婚">已婚</option><option value="離婚">離婚</option><option value="喪偶">喪偶</option></select>
+          </div>
+          <div class="form-group"><label>子女數</label><input type="number" id="cfChildren" value="0" min="0"></div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group"><label>住家地址</label><input type="text" id="cfHomeAddr" placeholder="完整戶籍或現居地址"></div>
+          <div class="form-group"><label>住家電話</label><input type="tel" id="cfHomeTel" placeholder="市話或免填"></div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group"><label>任職公司名稱</label><input type="text" id="cfCompName" placeholder="公司行號全銜"></div>
+          <div class="form-group"><label>公司電話</label><input type="tel" id="cfCompTel" placeholder="公司市話與分機"></div>
+        </div>
+        <div class="form-group"><label>通訊或公司地址</label><input type="text" id="cfCompAddr" placeholder="公司或指定收件地址"></div>
+        <div class="grid-2">
+          <div class="form-group"><label>行業別與職稱</label><input type="text" id="cfJobTitle" placeholder="例：科技業／工程師"></div>
+          <div class="form-group"><label>現職年資</label><input type="text" id="cfTenure" placeholder="例：2年6個月"></div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group"><label>月收入－轉帳 (元)</label><input type="number" id="cfIncTransfer" placeholder="如 48000"></div>
+          <div class="form-group"><label>月收入－領現 (元)</label><input type="number" id="cfIncCash" placeholder="如 0"></div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group"><label>年扣繳憑單金額 (元)</label><input type="number" id="cfWithholding" placeholder="如 600000"></div>
+          <div class="form-group"><label>勞保有無</label>
+            <select id="cfLabor"><option value="有公司勞保">有公司勞保</option><option value="工會勞保">工會勞保</option><option value="無勞保">無勞保</option></select>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group"><label>申辦業務類別</label><select id="cfLoanType"></select></div>
+          <div class="form-group"><label>方便保密聯絡時間</label><input type="text" id="cfContactTime" placeholder="例：下午 2 點後"></div>
+        </div>
+        <!-- 動態表 1：信用卡明細 (4 筆) -->
+        <div class="sub-block-title">二、動態負債表 1：信用卡明細（4 筆銀行額度與月付金）</div>
+        <div class="grid-2">
+          <div class="form-group"><label>信用卡有無遲繳／循環</label>
+            <select id="ccLate"><option value="無遲繳">無遲繳（正常全額）</option><option value="有動用循環">正常繳款（有動用循環）</option><option value="近期有遲繳">近期有遲繳</option><option value="強停或呆帳">曾強停／呆帳</option><option value="無信用卡">無持有信用卡</option></select>
+          </div>
+          <div class="form-group"><label>最久持卡多久</label><input type="text" id="ccDuration" placeholder="例：3年5個月"></div>
+        </div>
+        <div id="ccRowsContainer"></div>
+        <!-- 動態表 2：車籍資料 (4 筆) -->
+        <div class="sub-block-title">三、動態資產表 2：汽機車車籍資料（4 筆明細）</div>
+        <div class="form-group"><label>有無駕照／行照證照</label>
+          <select id="vehHasLic"><option value="有行照與駕照">有行照與駕照</option><option value="僅有行照">僅有行照</option><option value="無車籍資產">無車籍資產</option></select>
+        </div>
+        <div id="vehRowsContainer"></div>
+        <!-- 動態表 3：房車與個人信貸明細 (7 筆) -->
+        <div class="sub-block-title">四、動態負債表 3：房貸、車貸與個人信貸明細（7 筆完整盤點）</div>
+        <div class="form-group"><label>現有貸款有無保人</label>
+          <select id="loanHasGuar"><option value="無保人">無保人</option><option value="有保人">有保人</option><option value="曾幫他人作保">曾幫他人作保</option></select>
+        </div>
+        <div id="loanRowsContainer"></div>
+        <!-- 評估與底部五欄人員綁定 -->
+        <div class="sub-block-title">五、初審建議評估與底部五欄人員綁定</div>
+        <div class="form-group">
+          <label>客戶建議狀況與初審評估意見</label>
+          <textarea id="cfAssessNote" rows="3" placeholder="紀錄客戶負債比、建議搭配送件銀行/融資窗口、補件注意事項..."></textarea>
+        </div>
+        <div class="grid-2">
+          <div class="form-group"><label>部門主管</label><select id="cfBindDeptMgr"></select></div>
+          <div class="form-group"><label>單位主管</label><select id="cfBindUnitMgr"></select></div>
+          <div class="form-group"><label>經辦人員</label><select id="cfBindHandler"></select></div>
+          <div class="form-group"><label>接流人員</label><select id="cfBindIntake"></select></div>
+        </div>
+        <div class="form-group">
+          <label>📣 引流人員（官方 LINE 分享引流人自動帶入鎖定）</label>
+          <select id="cfBindRef"></select>
+        </div>
+        <button class="btn btn-gold" onclick="submitClientForm()">💾 儲存《數位化客戶資料表》並同步主水庫</button>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <!-- 分頁 2：《數位化業績報件單》（核准、對保、紅線檢核與存封拍照）      -->
+    <!-- ================================================================ -->
+    <section id="tab-deal" class="tab-pane">
+      <div class="card">
+        <div class="section-title">
+          <span>💰 《數位化業績報件單》對保與核銷</span>
+          <span id="dfNoBadge" class="badge badge-blue">新報件</span>
+        </div>
+        <input type="hidden" id="dfDealNo">
+        <input type="hidden" id="dfExistingReceiptUrl">
+        <div class="sub-block-title">一、核准、對保與撥款資訊</div>
+        <div class="grid-3">
+          <div class="form-group"><label>所屬單位名稱</label><input type="text" id="dfUnitName" placeholder="業務一處"></div>
+          <div class="form-group"><label>報件週次</label><input type="text" id="dfWeek" placeholder="2026-W47"></div>
+          <div class="form-group"><label>核准額度 (萬) *</label><input type="number" id="dfApprovedWan" step="0.1" placeholder="如 80" oninput="recalcDealSummary()"></div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group"><label>客戶姓名 *</label><input type="text" id="dfClientName"></div>
+          <div class="form-group"><label>客戶手機 *</label><input type="tel" id="dfPhone" maxlength="10"></div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group"><label>產品專案名稱 *</label><input type="text" id="dfProduct" placeholder="例：上市融資原車增貸專案"></div>
+          <div class="form-group"><label>送件窗口</label><input type="text" id="dfWindow" placeholder="銀行/融資窗口名稱"></div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group"><label>送件日期</label><input type="date" id="dfSubmitDate"></div>
+          <div class="form-group"><label>🔔 再追蹤年月（到期自動喚醒二次開發）</label><input type="month" id="dfRetrackYm"></div>
+        </div>
+        <div class="grid-3">
+          <div class="form-group"><label>對保日期</label><input type="date" id="dfSignDate"></div>
+          <div class="form-group"><label>對保方式</label>
+            <select id="dfSignMethod"><option value="自對">自對</option><option value="委對">委對</option></select>
+          </div>
+          <div class="form-group"><label>收費方式</label>
+            <select id="dfFeeMethod"><option value="現收">現收</option><option value="後收">後收</option><option value="內代扣不匯出">內代扣不匯出</option></select>
+          </div>
+        </div>
+        <div class="grid-3">
+          <div class="form-group"><label>代墊加收款項 (元)</label><input type="number" id="dfExtraAdvance" value="0"></div>
+          <div class="form-group"><label>一撥日期</label><input type="date" id="dfDisb1"></div>
+          <div class="form-group"><label>二撥日期</label><input type="date" id="dfDisb2"></div>
+        </div>
+        <div class="sub-block-title">二、佣金收費、服務費率紅線檢核與財務核銷</div>
+        <div class="grid-3">
+          <div class="form-group"><label>前佣金額 (元)</label><input type="number" id="dfFrontComm" value="0" oninput="recalcDealSummary()"></div>
+          <div class="form-group"><label>後佣金額 (元)</label><input type="number" id="dfBackComm" value="0" oninput="recalcDealSummary()"></div>
+          <div class="form-group"><label>服務費率 (%) *</label><input type="number" id="dfServicePct" step="0.5" value="15" oninput="recalcDealSummary()"></div>
+        </div>
+        <div id="redlineAlertBox" class="redline-alert">
+          🚨 紅線警報：目前服務費率低於公司底線紅線 (<span id="lblRedlinePct">10</span>%)！送出後系統將自動鎖定分潤並即時 LINE 推播送交劉總特批放行。
+        </div>
+        <div class="grid-2">
+          <div class="form-group"><label>代收總額 (元)</label><input type="number" id="dfTotalCollected" value="0"></div>
+          <div class="form-group"><label>✅ 完款日期（填入後自動拋轉六節點算獎並結案）</label><input type="date" id="dfPaidOffDate"></div>
+        </div>
+        <div class="form-group"><label>匯入公司款項明細（帳號後五碼／匯款日期金額）</label><input type="text" id="dfRemitDetail" placeholder="例：11/19 匯入公司戶 $120,000（末五碼 88213）"></div>
+        <div class="sub-block-title">三、介紹人回佣細項與存封拍照上傳雲端</div>
+        <div class="grid-3">
+          <div class="form-group"><label>介紹人姓名</label><input type="text" id="dfIntroName" placeholder="無則留空"></div>
+          <div class="form-group"><label>介紹人銀行帳號</label><input type="text" id="dfIntroBank" placeholder="銀行代碼＋帳號"></div>
+          <div class="form-group"><label>介紹人回佣金額 (元)</label><input type="number" id="dfIntroFee" value="0" oninput="recalcDealSummary()"></div>
+        </div>
+        <div class="upload-box">
+          <div style="font-size:14px;font-weight:800;color:#0b132b;margin-bottom:6px;">📸 介紹人存封／匯款憑證手機拍照上傳</div>
+          <input type="file" id="dfReceiptFile" accept="image/*" capture="environment" onchange="handleReceiptPhotoSelect(this)">
+          <div id="receiptUploadStatus" style="font-size:12.5px;color:#475569;margin-top:6px;">支援直接開啟手機相機拍照，系統自動壓縮並存檔至劉總雲端硬碟</div>
+          <img id="receiptPreviewImg" class="upload-preview" alt="存封預覽圖">
+          <div id="existingReceiptLinkWrap" style="margin-top:8px;"></div>
+        </div>
+        <div class="sub-block-title">四、底部六欄角色綁定與六節點分潤即時預覽</div>
+        <div class="grid-2">
+          <div class="form-group"><label>部門主管</label><select id="dfBindDeptMgr" onchange="recalcDealSummary()"></select></div>
+          <div class="form-group"><label>單位主管（領取主管節點）</label><select id="dfBindUnitMgr" onchange="recalcDealSummary()"></select></div>
+          <div class="form-group"><label>專案人員（領取專案節點）</label><select id="dfBindProject" onchange="recalcDealSummary()"></select></div>
+          <div class="form-group"><label>經辦人員（領取經辦節點）</label><select id="dfBindHandler" onchange="recalcDealSummary()"></select></div>
+          <div class="form-group"><label>接流人員（領取接流節點）</label><select id="dfBindIntake" onchange="recalcDealSummary()"></select></div>
+          <div class="form-group"><label>📣 引流人員（官方LINE分享鎖定）</label><select id="dfBindRef" onchange="recalcDealSummary()"></select></div>
+        </div>
+        <div class="comm-summary-box">
+          <div style="font-size:13px;color:#cbd5e1;">實際總佣收母數（前佣＋後佣－介紹人回佣）</div>
+          <div class="comm-big" id="dfNetCommDisplay">NT$ 0</div>
+          <div id="dfSplitPreview" class="split-preview-grid"></div>
+        </div>
+        <button class="btn btn-gold" onclick="submitDealForm()">🚀 儲存《數位化業績報件單》並結算算獎</button>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <!-- 分頁 3：已建檔表單紀錄與劉總紅線特批區                              -->
+    <!-- ================================================================ -->
+    <section id="tab-list" class="tab-pane">
+      <div id="bossRedlineSection" class="card hidden" style="border:2px solid #dc2626;background:#fef2f2;">
+        <div class="section-title" style="border-left-color:#dc2626;color:#991b1b;">🚨 劉總專屬：低於紅線待特批報件單</div>
+        <div id="bossRedlineList"></div>
+      </div>
+      <div class="card">
+        <div class="section-title">💰 近期《數位化業績報件單》紀錄</div>
+        <div id="dealRecordsList"></div>
+      </div>
+      <div class="card">
+        <div class="section-title">📋 近期《數位化客戶資料表》紀錄</div>
+        <div id="clientRecordsList"></div>
+      </div>
+      <button class="btn btn-outline" style="color:#64748b;margin-top:4px;" onclick="logoutFormsSession()">🔄 切換登入帳號／清除本機記憶</button>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="nav-client" onclick="switchTab('client')"><span class="ico">📋</span><span>客戶資料表</span></button>
+    <button class="nav-btn" id="nav-deal" onclick="switchTab('deal')"><span class="ico">💰</span><span>業績報件單</span></button>
+    <button class="nav-btn" id="nav-list" onclick="switchTab('list')"><span class="ico">🗂️</span><span>歷史/特批</span></button>
+  </nav>
+
+  <script>
+    // ==================== V7.0 GitHub Pages ➔ GAS JSON API 橋接中樞 ====================
+    var GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzofnwdYqJprOQIu_4vXmtqoWT_uyfnxg27otb9u_CxHX8m_0D2qYTTX8NBqTMxlQNzZg/exec';
+    var STAFF_STORAGE_KEY = 'THREELOANS_STAFF_SESSION_V7';
+
+    function parseUrlParams() {
+      var obj = {};
+      try {
+        var sp = new URLSearchParams(window.location.search);
+        sp.forEach(function(v, k) { obj[k] = v; });
+      } catch (e) {}
+      return obj;
+    }
+
+    function callGasApi(apiAction, args, onSuccess, onFailure) {
+      fetch(GAS_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ apiAction: apiAction, args: args || [] }),
+        redirect: 'follow'
+      })
+      .then(function(res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.text();
+      })
+      .then(function(txt) {
+        var json;
+        try {
+          json = JSON.parse(txt);
+        } catch (parseErr) {
+          throw new Error('雲端 API 回應格式異常，請確認 GAS 部署權限為「所有人」');
+        }
+        if (json && json.ok === true) {
+          if (typeof onSuccess === 'function') onSuccess(json.result);
+        } else {
+          var errMsg = (json && (json.error || json.message)) || '雲端服務執行失敗';
+          if (typeof onFailure === 'function') onFailure(new Error(errMsg));
+        }
+      })
+      .catch(function(err) {
+        if (typeof onFailure === 'function') onFailure(err);
+      });
+    }
+
+    (function initGasBridge() {
+      if (window.google && window.google.script && window.google.script.run) return;
+      function createRunner(successCb, failureCb) {
+        return new Proxy({}, {
+          get: function(_target, prop) {
+            if (prop === 'withSuccessHandler') {
+              return function(fn) { return createRunner(fn, failureCb); };
+            }
+            if (prop === 'withFailureHandler') {
+              return function(fn) { return createRunner(successCb, fn); };
+            }
+            return function() {
+              var args = Array.prototype.slice.call(arguments);
+              callGasApi(String(prop), args, successCb, failureCb);
+            };
+          }
+        });
+      }
+      window.google = window.google || {};
+      window.google.script = window.google.script || {};
+      window.google.script.run = createRunner(null, null);
+    })();
+
+    // ==================== 身分自動解析與共用免重登記憶 ====================
+    var RAW_PARAMS = parseUrlParams();
+    var SAVED_SESSION = {};
+    try { SAVED_SESSION = JSON.parse(localStorage.getItem(STAFF_STORAGE_KEY) || '{}') || {}; } catch (e) {}
+
+    var STATE = {
+      lineUid: RAW_PARAMS.uid || SAVED_SESSION.lineUid || '',
+      staffCode: (RAW_PARAMS.ref || SAVED_SESSION.staffCode || '').toUpperCase(),
+      phone: RAW_PARAMS.uid ? '' : (SAVED_SESSION.phone || ''),
+      caseIdParam: RAW_PARAMS.caseId || '',
+      tabParam: String(RAW_PARAMS.tab || 'client').toLowerCase(),
+      data: null,
+      compressedReceiptBase64: ''
+    };
+
+    window.addEventListener('DOMContentLoaded', function() {
+      buildDynamicDebtTables();
+      if (STATE.tabParam === 'deal') switchTab('deal');
+      else if (STATE.tabParam === 'list') switchTab('list');
+      if (STATE.lineUid || STATE.phone) {
+        initWorkspace();
+      } else {
+        if (STATE.staffCode) document.getElementById('inpCode').value = STATE.staffCode;
+        document.getElementById('loginWall').classList.remove('hidden');
+      }
+    });
+
+    function saveFormsSession(staffObj) {
+      try {
+        localStorage.setItem(STAFF_STORAGE_KEY, JSON.stringify({
+          lineUid: STATE.lineUid || SAVED_SESSION.lineUid || '',
+          phone: (staffObj && staffObj.phone) || STATE.phone || '',
+          staffCode: (staffObj && staffObj.code) || STATE.staffCode || ''
+        }));
+      } catch (e) {}
+    }
+
+    function clearFormsSession() {
+      try { localStorage.removeItem(STAFF_STORAGE_KEY); } catch (e) {}
+    }
+
+    function logoutFormsSession() {
+      clearFormsSession();
+      STATE.lineUid = '';
+      STATE.phone = '';
+      STATE.staffCode = '';
+      STATE.data = null;
+      document.getElementById('mainApp').classList.add('hidden');
+      document.getElementById('casePickerWrap').classList.add('hidden');
+      document.getElementById('hdrStaffTxt').textContent = '請輸入實名資料重新驗證';
+      document.getElementById('inpPhone').value = '';
+      document.getElementById('inpCode').value = '';
+      document.getElementById('loginWall').classList.remove('hidden');
+      showToast('已清除本機登入記憶，請重新驗證');
+    }
+
+    function esc(s) {
+      return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+    function showToast(msg) {
+      var box = document.getElementById('toastBox');
+      box.textContent = msg;
+      box.style.display = 'block';
+      setTimeout(function() { box.style.display = 'none'; }, 4000);
+    }
+    function setLoading(show, txt) {
+      document.getElementById('loadingText').textContent = txt || '雲端加密處理中...';
+      document.getElementById('loadingMask').style.display = show ? 'flex' : 'none';
+    }
+    function switchTab(t) {
+      ['client', 'deal', 'list'].forEach(function(k) {
+        document.getElementById('tab-' + k).classList.toggle('active', k === t);
+        document.getElementById('nav-' + k).classList.toggle('active', k === t);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function buildDynamicDebtTables() {
+      var ccHtml = '';
+      for (var i = 1; i <= 4; i++) {
+        ccHtml += '<div class="dyn-item"><div class="dyn-item-hdr">💳 信用卡 #' + i + '</div>' +
+          '<div class="grid-3">' +
+          '<input type="text" id="cc_bank_' + i + '" placeholder="發卡銀行">' +
+          '<input type="number" id="cc_limit_' + i + '" placeholder="額度(萬)">' +
+          '<input type="number" id="cc_pay_' + i + '" placeholder="月付/消費(元)">' +
+          '</div></div>';
+      }
+      document.getElementById('ccRowsContainer').innerHTML = ccHtml;
+      var vehHtml = '';
+      for (var v = 1; v <= 4; v++) {
+        vehHtml += '<div class="dyn-item"><div class="dyn-item-hdr">🚗 車籍資料 #' + v + '</div>' +
+          '<div class="grid-2" style="margin-bottom:6px;">' +
+          '<input type="text" id="veh_brand_' + v + '" placeholder="廠牌 (例:Toyota)">' +
+          '<input type="text" id="veh_cc_' + v + '" placeholder="CC數 (例:1800cc)">' +
+          '</div><div class="grid-2">' +
+          '<input type="text" id="veh_model_' + v + '" placeholder="車型/年份">' +
+          '<input type="text" id="veh_plate_' + v + '" placeholder="車牌號碼">' +
+          '</div></div>';
+      }
+      document.getElementById('vehRowsContainer').innerHTML = vehHtml;
+      var loanHtml = '';
+      for (var l = 1; l <= 7; l++) {
+        loanHtml += '<div class="dyn-item"><div class="dyn-item-hdr">🏦 房／車／個人信貸 #' + l + '</div>' +
+          '<div class="grid-3" style="margin-bottom:6px;">' +
+          '<input type="text" id="ln_bank_' + l + '" placeholder="貸款銀行/機構">' +
+          '<input type="number" id="ln_amt_' + l + '" placeholder="貸款金額(萬)">' +
+          '<input type="text" id="ln_paid_' + l + '" placeholder="已繳期數">' +
+          '</div><div class="grid-3">' +
+          '<input type="text" id="ln_term_' + l + '" placeholder="年期/總期數">' +
+          '<input type="number" id="ln_mpay_' + l + '" placeholder="月付金(元)">' +
+          '<input type="text" id="ln_rate_bal_' + l + '" placeholder="利率% / 餘額(萬)">' +
+          '</div></div>';
+      }
+      document.getElementById('loanRowsContainer').innerHTML = loanHtml;
+    }
+
+    function doLogin() {
+      var ph = document.getElementById('inpPhone').value.trim();
+      var cd = document.getElementById('inpCode').value.trim().toUpperCase();
+      if (!ph) return showToast('請輸入實名手機號碼');
+      STATE.phone = ph;
+      STATE.staffCode = cd;
+      initWorkspace();
+    }
+
+    function initWorkspace() {
+      setLoading(true, '載入案件水庫與兩大數位表單系統...');
+      google.script.run
+        .withSuccessHandler(function(res) {
+          setLoading(false);
+          if (!res || !res.success) {
+            clearFormsSession();
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('loginWall').classList.remove('hidden');
+            if (res && res.message) showToast(res.message);
+            return;
+          }
+          STATE.data = res;
+          STATE.staffCode = res.staff.code;
+          STATE.phone = res.staff.phone;
+          saveFormsSession(res.staff);
+          document.getElementById('loginWall').classList.add('hidden');
+          document.getElementById('mainApp').classList.remove('hidden');
+          document.getElementById('casePickerWrap').classList.remove('hidden');
+          document.getElementById('hdrStaffTxt').textContent = res.staff.name + ' (' + res.staff.code + '｜' + res.staff.role + ')｜服務費紅線：' + res.config.redlinePct + '%';
+          populateDropdowns(res);
+          renderRecordsTab(res);
+          if (STATE.caseIdParam) {
+            document.getElementById('globalCaseSelect').value = STATE.caseIdParam;
+            onGlobalCaseChange();
+          } else {
+            setDefaultNewFormValues(res);
+          }
+        })
+        .withFailureHandler(function(err) {
+          setLoading(false);
+          document.getElementById('loginWall').classList.remove('hidden');
+          showToast('連線異常：' + err.message);
+        })
+        .Dept05_apiInitFormsWorkspace({
+          lineUid: STATE.lineUid,
+          phone: STATE.phone,
+          staffCode: STATE.staffCode,
+          caseId: STATE.caseIdParam
+        });
+    }
+
+    function populateDropdowns(res) {
+      var cSel = document.getElementById('globalCaseSelect');
+      cSel.innerHTML = '<option value="">＋ 不關聯舊案（填表時自動新建水庫案件）</option>';
+      (res.accessibleCases || []).forEach(function(c) {
+        var opt = document.createElement('option');
+        opt.value = c.caseId;
+        opt.textContent = c.clientName + ' (' + (c.phone || '無電話') + ')｜' + c.currentNode + '｜' + c.caseId;
+        cSel.appendChild(opt);
+      });
+      var ltSel = document.getElementById('cfLoanType');
+      ltSel.innerHTML = '';
+      (res.config.loanCategories || []).forEach(function(cat) {
+        var opt = document.createElement('option');
+        opt.value = cat; opt.textContent = cat;
+        ltSel.appendChild(opt);
+      });
+      var staffDropdownIds = [
+        'cfBindDeptMgr', 'cfBindUnitMgr', 'cfBindHandler', 'cfBindIntake', 'cfBindRef',
+        'dfBindDeptMgr', 'dfBindUnitMgr', 'dfBindProject', 'dfBindHandler', 'dfBindIntake', 'dfBindRef'
+      ];
+      staffDropdownIds.forEach(function(id) {
+        var el = document.getElementById(id);
+        el.innerHTML = '<option value="">-- 無／未指派 --</option>';
+        (res.staffList || []).forEach(function(st) {
+          var opt = document.createElement('option');
+          opt.value = st.code;
+          opt.textContent = st.name + ' (' + st.code + '｜' + st.role + ')';
+          el.appendChild(opt);
+        });
+      });
+      document.getElementById('lblRedlinePct').textContent = res.config.redlinePct;
+    }
+
+    function setDefaultNewFormValues(res) {
+      document.getElementById('cfDate').value = res.config.todayStr;
+      document.getElementById('dfUnitName').value = res.staff.unitName || '';
+      document.getElementById('dfWeek').value = res.config.defaultWeek || '';
+      document.getElementById('dfSubmitDate').value = res.config.todayStr;
+      document.getElementById('cfBindDeptMgr').value = res.staff.deptMgrCode || '';
+      document.getElementById('cfBindUnitMgr').value = res.staff.unitMgrCode || '';
+      document.getElementById('cfBindHandler').value = res.staff.code || '';
+      document.getElementById('cfBindIntake').value = res.staff.code || '';
+      document.getElementById('dfBindDeptMgr').value = res.staff.deptMgrCode || '';
+      document.getElementById('dfBindUnitMgr').value = res.staff.unitMgrCode || '';
+      document.getElementById('dfBindHandler').value = res.staff.code || '';
+      document.getElementById('dfBindIntake').value = res.staff.code || '';
+      recalcDealSummary();
+    }
+
+    function onGlobalCaseChange() {
+      var caseId = document.getElementById('globalCaseSelect').value;
+      STATE.caseIdParam = caseId;
+      var cfRefSel = document.getElementById('cfBindRef');
+      var dfRefSel = document.getElementById('dfBindRef');
+      cfRefSel.disabled = false; cfRefSel.classList.remove('locked-field');
+      dfRefSel.disabled = false; dfRefSel.classList.remove('locked-field');
+      if (!caseId) {
+        document.getElementById('cfFormNo').value = '';
+        document.getElementById('cfNoBadge').textContent = '新表單';
+        document.getElementById('dfDealNo').value = '';
+        document.getElementById('dfNoBadge').textContent = '新報件';
+        setDefaultNewFormValues(STATE.data);
+        return;
+      }
+      var c = (STATE.data.accessibleCases || []).find(function(x) { return x.caseId === caseId; });
+      if (c) {
+        document.getElementById('cfName').value = c.clientName;
+        document.getElementById('cfPhone').value = c.phone;
+        document.getElementById('cfIdCard').value = c.idCard || '';
+        document.getElementById('cfContactTime').value = c.contactTime || '';
+        document.getElementById('cfBindDeptMgr').value = c.deptMgrCode || STATE.data.staff.deptMgrCode;
+        document.getElementById('cfBindUnitMgr').value = c.unitMgrCode || STATE.data.staff.unitMgrCode;
+        document.getElementById('cfBindHandler').value = c.handlerCode || STATE.data.staff.code;
+        document.getElementById('cfBindIntake').value = c.intakeCode || c.handlerCode || STATE.data.staff.code;
+        cfRefSel.value = c.referralCode || '';
+        document.getElementById('dfClientName').value = c.clientName;
+        document.getElementById('dfPhone').value = c.phone;
+        document.getElementById('dfProduct').value = c.loanType || '';
+        document.getElementById('dfApprovedWan').value = c.amountWan || '';
+        document.getElementById('dfRetrackYm').value = c.retrackYm || '';
+        document.getElementById('dfBindDeptMgr').value = c.deptMgrCode || STATE.data.staff.deptMgrCode;
+        document.getElementById('dfBindUnitMgr').value = c.unitMgrCode || STATE.data.staff.unitMgrCode;
+        document.getElementById('dfBindProject').value = c.projectCode || '';
+        document.getElementById('dfBindHandler').value = c.handlerCode || STATE.data.staff.code;
+        document.getElementById('dfBindIntake').value = c.intakeCode || c.handlerCode || STATE.data.staff.code;
+        dfRefSel.value = c.referralCode || '';
+        if (c.referralCode && !STATE.data.staff.isBoss) {
+          cfRefSel.disabled = true; cfRefSel.classList.add('locked-field');
+          dfRefSel.disabled = true; dfRefSel.classList.add('locked-field');
+        }
+      }
+      setLoading(true, '載入此案件既有數位表單資料...');
+      google.script.run
+        .withSuccessHandler(function(res) {
+          setLoading(false);
+          if (res && res.success) {
+            fillExistingClientForm(res.clientForm);
+            fillExistingDealForm(res.dealForm);
+          }
+          recalcDealSummary();
+        })
+        .withFailureHandler(function(err) {
+          setLoading(false);
+          showToast('載入案件表單異常：' + err.message);
+        })
+        .Dept05_apiLoadFormsByCase(caseId);
+    }
+
+    function fillExistingClientForm(f) {
+      if (!f) {
+        document.getElementById('cfFormNo').value = '';
+        document.getElementById('cfNoBadge').textContent = '尚未建立';
+        return;
+      }
+      document.getElementById('cfFormNo').value = f['客戶資料表單號'] || '';
+      document.getElementById('cfNoBadge').textContent = f['客戶資料表單號'];
+      document.getElementById('cfDate').value = String(f['填表日期'] || '').substring(0, 10);
+      document.getElementById('cfDevBank').value = f['開發銀行'] || '';
+      document.getElementById('cfAccountNo').value = f['戶號'] || '';
+      document.getElementById('cfEdu').value = f['學歷'] || '大學';
+      document.getElementById('cfName').value = f['客戶姓名'] || '';
+      document.getElementById('cfIdCard').value = f['身分證ID'] || '';
+      document.getElementById('cfBirthYear').value = f['出生年次'] || '';
+      document.getElementById('cfGender').value = f['性別'] || '男';
+      document.getElementById('cfPhone').value = f['手機號碼'] || '';
+      document.getElementById('cfLineId').value = f['LINE_ID'] || '';
+      document.getElementById('cfMarital').value = f['婚姻狀況'] || '未婚';
+      document.getElementById('cfChildren').value = f['子女數'] || 0;
+      document.getElementById('cfHomeAddr').value = f['住家地址'] || '';
+      document.getElementById('cfHomeTel').value = f['住家電話'] || '';
+      document.getElementById('cfCompAddr').value = f['通訊或公司地址'] || '';
+      document.getElementById('cfCompName').value = f['公司名稱'] || '';
+      document.getElementById('cfCompTel').value = f['公司電話'] || '';
+      document.getElementById('cfJobTitle').value = f['行業別與職稱'] || '';
+      document.getElementById('cfTenure').value = f['工作年資'] || '';
+      document.getElementById('cfIncCash').value = f['月收入_現金'] || '';
+      document.getElementById('cfIncTransfer').value = f['月收入_轉帳'] || '';
+      document.getElementById('cfWithholding').value = f['扣繳憑單金額'] || '';
+      document.getElementById('cfLabor').value = f['勞保有無'] || '有公司勞保';
+      document.getElementById('cfContactTime').value = f['方便聯絡時間'] || '';
+      document.getElementById('cfAssessNote').value = f['客戶建議狀況與初審評估'] || '';
+      try {
+        var cc = JSON.parse(f['信用卡明細_JSON'] || '{}');
+        if (cc.lateStatus) document.getElementById('ccLate').value = cc.lateStatus;
+        if (cc.duration) document.getElementById('ccDuration').value = cc.duration;
+        (cc.items || []).forEach(function(it, idx) {
+          var n = idx + 1;
+          if (document.getElementById('cc_bank_' + n)) {
+            document.getElementById('cc_bank_' + n).value = it.bank || '';
+            document.getElementById('cc_limit_' + n).value = it.limit || '';
+            document.getElementById('cc_pay_' + n).value = it.monthlyPay || '';
+          }
+        });
+      } catch (e) {}
+      try {
+        var veh = JSON.parse(f['車籍資料明細_JSON'] || '{}');
+        if (veh.hasLicense) document.getElementById('vehHasLic').value = veh.hasLicense;
+        (veh.items || []).forEach(function(it, idx) {
+          var n = idx + 1;
+          if (document.getElementById('veh_brand_' + n)) {
+            document.getElementById('veh_brand_' + n).value = it.brand || '';
+            document.getElementById('veh_cc_' + n).value = it.cc || '';
+            document.getElementById('veh_model_' + n).value = it.model || '';
+            document.getElementById('veh_plate_' + n).value = it.plate || '';
+          }
+        });
+      } catch (e) {}
+      try {
+        var ln = JSON.parse(f['房車信貸明細_JSON'] || '{}');
+        if (ln.hasGuarantor) document.getElementById('loanHasGuar').value = ln.hasGuarantor;
+        (ln.items || []).forEach(function(it, idx) {
+          var n = idx + 1;
+          if (document.getElementById('ln_bank_' + n)) {
+            document.getElementById('ln_bank_' + n).value = it.bank || '';
+            document.getElementById('ln_amt_' + n).value = it.amount || '';
+            document.getElementById('ln_paid_' + n).value = it.paidTerms || '';
+            document.getElementById('ln_term_' + n).value = it.totalTerm || '';
+            document.getElementById('ln_mpay_' + n).value = it.monthlyPay || '';
+            document.getElementById('ln_rate_bal_' + n).value = it.rateAndBalance || '';
+          }
+        });
+      } catch (e) {}
+    }
+
+    function fillExistingDealForm(d) {
+      STATE.compressedReceiptBase64 = '';
+      document.getElementById('receiptPreviewImg').style.display = 'none';
+      document.getElementById('existingReceiptLinkWrap').innerHTML = '';
+      if (!d) {
+        document.getElementById('dfDealNo').value = '';
+        document.getElementById('dfNoBadge').textContent = '新報件';
+        return;
+      }
+      document.getElementById('dfDealNo').value = d['報件單號'] || '';
+      document.getElementById('dfNoBadge').textContent = d['報件單號'];
+      document.getElementById('dfUnitName').value = d['單位名稱'] || '';
+      document.getElementById('dfWeek').value = d['報件週次'] || '';
+      document.getElementById('dfClientName').value = d['客戶姓名'] || '';
+      document.getElementById('dfPhone').value = d['手機號碼'] || '';
+      document.getElementById('dfProduct').value = d['產品專案名稱'] || '';
+      document.getElementById('dfWindow').value = d['送件窗口'] || '';
+      document.getElementById('dfSubmitDate').value = String(d['送件日期'] || '').substring(0, 10);
+      document.getElementById('dfApprovedWan').value = d['核准額度萬'] || '';
+      document.getElementById('dfRetrackYm').value = d['再追蹤年月'] || '';
+      document.getElementById('dfSignDate').value = String(d['對保日期'] || '').substring(0, 10);
+      document.getElementById('dfSignMethod').value = d['對保方式'] || '自對';
+      document.getElementById('dfFeeMethod').value = d['收費方式'] || '現收';
+      document.getElementById('dfExtraAdvance').value = d['代墊加收款項'] || 0;
+      document.getElementById('dfDisb1').value = String(d['一撥日期'] || '').substring(0, 10);
+      document.getElementById('dfDisb2').value = String(d['二撥日期'] || '').substring(0, 10);
+      document.getElementById('dfFrontComm').value = d['前佣金額'] || 0;
+      document.getElementById('dfBackComm').value = d['後佣金額'] || 0;
+      document.getElementById('dfServicePct').value = d['服務費率百分比'] || 15;
+      document.getElementById('dfTotalCollected').value = d['代收總額'] || 0;
+      document.getElementById('dfRemitDetail').value = d['匯入公司款項明細'] || '';
+      document.getElementById('dfPaidOffDate').value = String(d['完款日期'] || '').substring(0, 10);
+      document.getElementById('dfIntroName').value = d['介紹人姓名'] || '';
+      document.getElementById('dfIntroBank').value = d['介紹人銀行帳號'] || '';
+      document.getElementById('dfIntroFee').value = d['介紹人回佣金額'] || 0;
+      document.getElementById('dfExistingReceiptUrl').value = d['存封拍照雲端連結'] || '';
+      if (d['存封拍照雲端連結']) {
+        document.getElementById('existingReceiptLinkWrap').innerHTML =
+          '<a class="btn btn-success btn-sm" href="' + esc(d['存封拍照雲端連結']) + '" target="_blank" rel="noopener">📎 檢視已上傳存封照片</a>';
+      }
+      recalcDealSummary();
+    }
+
+    function handleReceiptPhotoSelect(input) {
+      if (!input.files || !input.files[0]) return;
+      var file = input.files[0];
+      var reader = new FileReader();
+      document.getElementById('receiptUploadStatus').textContent = '⏳ 正在壓縮存封照片以利高速上傳雲端...';
+      reader.onload = function(e) {
+        var img = new Image();
+        img.onload = function() {
+          var maxW = 1280;
+          var scale = (img.width > maxW) ? (maxW / img.width) : 1;
+          var canvas = document.createElement('canvas');
+          canvas.width = Math.round(img.width * scale);
+          canvas.height = Math.round(img.height * scale);
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          var dataUrl = canvas.toDataURL('image/jpeg', 0.78);
+          STATE.compressedReceiptBase64 = dataUrl;
+          var prev = document.getElementById('receiptPreviewImg');
+          prev.src = dataUrl;
+          prev.style.display = 'inline-block';
+          document.getElementById('receiptUploadStatus').textContent = '✅ 存封照片壓縮完成，按下儲存報件單將自動上傳劉總雲端硬碟！';
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function recalcDealSummary() {
+      if (!STATE.data) return;
+      var front = Number(document.getElementById('dfFrontComm').value || 0);
+      var back = Number(document.getElementById('dfBackComm').value || 0);
+      var intro = Number(document.getElementById('dfIntroFee').value || 0);
+      var pct = Number(document.getElementById('dfServicePct').value || 0);
+      var redline = Number(STATE.data.config.redlinePct || 10);
+      var net = Math.max(0, Math.round(front + back - intro));
+      document.getElementById('dfNetCommDisplay').textContent = 'NT$ ' + net.toLocaleString();
+      var alertBox = document.getElementById('redlineAlertBox');
+      alertBox.style.display = (pct > 0 && pct < redline) ? 'block' : 'none';
+      var rates = STATE.data.config.splitRates || { referral: 5, intake: 5, handler: 5, project: 5, manager: 5, boss: 5 };
+      var nodes = [
+        { label: '📣 引流', code: document.getElementById('dfBindRef').value, r: rates.referral },
+        { label: '📞 接流', code: document.getElementById('dfBindIntake').value, r: rates.intake },
+        { label: '💼 經辦', code: document.getElementById('dfBindHandler').value, r: rates.handler },
+        { label: '🔍 專案', code: document.getElementById('dfBindProject').value, r: rates.project },
+        { label: '🎖️ 主管', code: document.getElementById('dfBindUnitMgr').value || document.getElementById('dfBindDeptMgr').value, r: rates.manager },
+        { label: '👑 劉總', code: 'S001', r: rates.boss }
+      ];
+      document.getElementById('dfSplitPreview').innerHTML = nodes.map(function(n) {
+        var amt = n.code ? Math.round(net * (Number(n.r || 0) / 100)) : 0;
+        return '<div class="split-chip">' + n.label + ' (' + n.r + '%)：<b>$' + amt.toLocaleString() + '</b></div>';
+      }).join('');
+    }
+
+    function submitClientForm() {
+      var name = document.getElementById('cfName').value.trim();
+      var ph = document.getElementById('cfPhone').value.replace(/\D/g, '');
+      if (!name || !/^09\d{8}$/.test(ph)) return showToast('請填寫正確的客戶姓名與 10 碼手機號碼');
+      var ccItems = [];
+      for (var i = 1; i <= 4; i++) {
+        var b = document.getElementById('cc_bank_' + i).value.trim();
+        var lm = document.getElementById('cc_limit_' + i).value.trim();
+        var mp = document.getElementById('cc_pay_' + i).value.trim();
+        if (b || lm || mp) ccItems.push({ bank: b, limit: lm, monthlyPay: mp });
+      }
+      var vehItems = [];
+      for (var v = 1; v <= 4; v++) {
+        var br = document.getElementById('veh_brand_' + v).value.trim();
+        var cc = document.getElementById('veh_cc_' + v).value.trim();
+        var md = document.getElementById('veh_model_' + v).value.trim();
+        var pl = document.getElementById('veh_plate_' + v).value.trim();
+        if (br || cc || md || pl) vehItems.push({ brand: br, cc: cc, model: md, plate: pl });
+      }
+      var loanItems = [];
+      for (var l = 1; l <= 7; l++) {
+        var lb = document.getElementById('ln_bank_' + l).value.trim();
+        var la = document.getElementById('ln_amt_' + l).value.trim();
+        var lp = document.getElementById('ln_paid_' + l).value.trim();
+        var lt = document.getElementById('ln_term_' + l).value.trim();
+        var lmp = document.getElementById('ln_mpay_' + l).value.trim();
+        var lrb = document.getElementById('ln_rate_bal_' + l).value.trim();
+        if (lb || la || lmp) loanItems.push({ bank: lb, amount: la, paidTerms: lp, totalTerm: lt, monthlyPay: lmp, rateAndBalance: lrb });
+      }
+      setLoading(true, '儲存客戶資料表、封存舊軌跡並通知主管...');
+      google.script.run
+        .withSuccessHandler(function(res) {
+          setLoading(false);
+          if (!res || !res.success) return showToast(res ? res.message : '儲存失敗');
+          STATE.caseIdParam = res.caseId;
+          showToast(res.historyAlerts && res.historyAlerts.length > 0 ? ('⚠️ 舊客歷史識破！' + res.message) : res.message);
+          initWorkspace();
+        })
+        .withFailureHandler(function(err) { setLoading(false); showToast('傳輸錯誤：' + err.message); })
+        .Dept05_apiSaveClientDataForm({
+          operatorCode: STATE.staffCode,
+          caseId: document.getElementById('globalCaseSelect').value,
+          formNo: document.getElementById('cfFormNo').value,
+          formDate: document.getElementById('cfDate').value,
+          devBank: document.getElementById('cfDevBank').value,
+          accountNo: document.getElementById('cfAccountNo').value,
+          education: document.getElementById('cfEdu').value,
+          clientName: name,
+          idCard: document.getElementById('cfIdCard').value,
+          birthYear: document.getElementById('cfBirthYear').value,
+          gender: document.getElementById('cfGender').value,
+          phone: ph,
+          lineIdText: document.getElementById('cfLineId').value,
+          maritalStatus: document.getElementById('cfMarital').value,
+          childrenCount: document.getElementById('cfChildren').value,
+          homeAddress: document.getElementById('cfHomeAddr').value,
+          homePhone: document.getElementById('cfHomeTel').value,
+          companyAddress: document.getElementById('cfCompAddr').value,
+          companyName: document.getElementById('cfCompName').value,
+          companyPhone: document.getElementById('cfCompTel').value,
+          jobTitle: document.getElementById('cfJobTitle').value,
+          tenure: document.getElementById('cfTenure').value,
+          incomeCash: document.getElementById('cfIncCash').value,
+          incomeTransfer: document.getElementById('cfIncTransfer').value,
+          withholdingTax: document.getElementById('cfWithholding').value,
+          hasLaborIns: document.getElementById('cfLabor').value,
+          loanType: document.getElementById('cfLoanType').value,
+          contactTime: document.getElementById('cfContactTime').value,
+          creditCards: { lateStatus: document.getElementById('ccLate').value, duration: document.getElementById('ccDuration').value, items: ccItems },
+          vehicles: { hasLicense: document.getElementById('vehHasLic').value, items: vehItems },
+          loans: { hasGuarantor: document.getElementById('loanHasGuar').value, items: loanItems },
+          assessmentNote: document.getElementById('cfAssessNote').value,
+          bindDeptMgr: document.getElementById('cfBindDeptMgr').value,
+          bindUnitMgr: document.getElementById('cfBindUnitMgr').value,
+          bindHandler: document.getElementById('cfBindHandler').value,
+          bindIntake: document.getElementById('cfBindIntake').value,
+          bindReferral: document.getElementById('cfBindRef').value
+        });
+    }
+
+    function submitDealForm() {
+      var name = document.getElementById('dfClientName').value.trim();
+      var prod = document.getElementById('dfProduct').value.trim();
+      if (!name || !prod) return showToast('請填寫客戶姓名與產品專案名稱');
+      setLoading(true, '正在上傳存封憑證、檢核紅線與結算六節點分潤...');
+      google.script.run
+        .withSuccessHandler(function(res) {
+          setLoading(false);
+          if (!res || !res.success) return showToast(res ? res.message : '報件失敗');
+          showToast(res.message);
+          initWorkspace();
+        })
+        .withFailureHandler(function(err) { setLoading(false); showToast('傳輸錯誤：' + err.message); })
+        .Dept05_apiSaveDealReportForm({
+          operatorCode: STATE.staffCode,
+          caseId: document.getElementById('globalCaseSelect').value,
+          dealNo: document.getElementById('dfDealNo').value,
+          unitName: document.getElementById('dfUnitName').value,
+          reportWeek: document.getElementById('dfWeek').value,
+          clientName: name,
+          phone: document.getElementById('dfPhone').value,
+          productName: prod,
+          submitWindow: document.getElementById('dfWindow').value,
+          submitDate: document.getElementById('dfSubmitDate').value,
+          approvedWan: document.getElementById('dfApprovedWan').value,
+          retrackYm: document.getElementById('dfRetrackYm').value,
+          signDate: document.getElementById('dfSignDate').value,
+          signMethod: document.getElementById('dfSignMethod').value,
+          feeMethod: document.getElementById('dfFeeMethod').value,
+          extraAdvance: document.getElementById('dfExtraAdvance').value,
+          disburse1Date: document.getElementById('dfDisb1').value,
+          disburse2Date: document.getElementById('dfDisb2').value,
+          frontComm: document.getElementById('dfFrontComm').value,
+          backComm: document.getElementById('dfBackComm').value,
+          serviceFeePct: document.getElementById('dfServicePct').value,
+          totalCollected: document.getElementById('dfTotalCollected').value,
+          remittanceDetail: document.getElementById('dfRemitDetail').value,
+          paidOffDate: document.getElementById('dfPaidOffDate').value,
+          introducerName: document.getElementById('dfIntroName').value,
+          introducerBank: document.getElementById('dfIntroBank').value,
+          introducerFee: document.getElementById('dfIntroFee').value,
+          existingReceiptUrl: document.getElementById('dfExistingReceiptUrl').value,
+          receiptImageBase64: STATE.compressedReceiptBase64,
+          bindDeptMgr: document.getElementById('dfBindDeptMgr').value,
+          bindUnitMgr: document.getElementById('dfBindUnitMgr').value,
+          bindProject: document.getElementById('dfBindProject').value,
+          bindHandler: document.getElementById('dfBindHandler').value,
+          bindIntake: document.getElementById('dfBindIntake').value,
+          bindReferral: document.getElementById('dfBindRef').value
+        });
+    }
+
+    function renderRecordsTab(res) {
+      var redSec = document.getElementById('bossRedlineSection');
+      var pending = res.pendingRedlineDeals || [];
+      if (res.staff.isBoss && pending.length > 0) {
+        redSec.classList.remove('hidden');
+        document.getElementById('bossRedlineList').innerHTML = pending.map(function(d) {
+          return '<div class="record-item" style="border-color:#dc2626;">' +
+            '<b>' + esc(d['客戶姓名']) + '</b>（' + esc(d['產品專案名稱']) + '）<br>' +
+            '<span style="font-size:12.5px;color:#991b1b;">費率：<b>' + esc(d['服務費率百分比']) + '%</b>｜實收佣金：$' + Number(d['實際總佣收母數'] || 0).toLocaleString() + '｜報件號：' + esc(d['報件單號']) + '</span>' +
+            '<div class="grid-2" style="margin-top:8px;">' +
+            '<button class="btn btn-success btn-sm" style="width:100%;" onclick="bossApproveRedline(\'' + esc(d['報件單號']) + '\',\'APPROVE\')">✅ 劉總特批放行</button>' +
+            '<button class="btn btn-danger btn-sm" style="width:100%;" onclick="bossApproveRedline(\'' + esc(d['報件單號']) + '\',\'REJECT\')">❌ 駁回調整</button>' +
+            '</div></div>';
+        }).join('');
+      } else {
+        redSec.classList.add('hidden');
+      }
+      var deals = res.dealForms || [];
+      document.getElementById('dealRecordsList').innerHTML = deals.length === 0
+        ? '<div style="color:#64748b;font-size:13px;text-align:center;">尚無業績報件紀錄</div>'
+        : deals.map(function(d) {
+            var isRed = String(d['紅線特批狀態']) === '待劉總特批';
+            return '<div class="record-item">' +
+              '<div style="display:flex;justify-content:space-between;"><b>' + esc(d['客戶姓名']) + '｜' + esc(d['產品專案名稱']) + '</b><span class="badge ' + (isRed ? 'badge-red' : 'badge-ok') + '">' + esc(d['紅線特批狀態']) + '</span></div>' +
+              '<div style="font-size:12.5px;color:#475569;margin-top:4px;">核准 ' + esc(d['核准額度萬'] || '-') + ' 萬｜費率 ' + esc(d['服務費率百分比']) + '%｜實收佣金 <b>$' + Number(d['實際總佣收母數'] || 0).toLocaleString() + '</b><br>' +
+              '算獎狀態：' + esc(d['算獎拋轉狀態']) + (d['存封拍照雲端連結'] ? ('｜<a href="' + esc(d['存封拍照雲端連結']) + '" target="_blank" rel="noopener">📸 存封</a>') : '') + '</div>' +
+              (d['案件編號'] ? '<button class="btn btn-outline btn-sm" style="margin-top:8px;" onclick="loadCaseToTab(\'' + esc(d['案件編號']) + '\',\'deal\')">✏️ 載入編輯</button>' : '') +
+            '</div>';
+          }).join('');
+      var cfs = res.clientForms || [];
+      document.getElementById('clientRecordsList').innerHTML = cfs.length === 0
+        ? '<div style="color:#64748b;font-size:13px;text-align:center;">尚無客戶資料表紀錄</div>'
+        : cfs.map(function(f) {
+            return '<div class="record-item">' +
+              '<div style="display:flex;justify-content:space-between;"><b>' + esc(f['客戶姓名']) + ' (' + esc(f['手機號碼']) + ')</b><span class="badge badge-blue">' + esc(f['客戶資料表單號']) + '</span></div>' +
+              '<div style="font-size:12.5px;color:#475569;margin-top:4px;">類別：' + esc(f['申辦業務類別']) + '｜經辦：' + esc(f['綁定_經辦人員'] || '-') + '｜引流：' + esc(f['綁定_引流人員'] || '-') + '</div>' +
+              (f['案件編號'] ? '<button class="btn btn-outline btn-sm" style="margin-top:8px;" onclick="loadCaseToTab(\'' + esc(f['案件編號']) + '\',\'client\')">✏️ 載入編輯</button>' : '') +
+            '</div>';
+          }).join('');
+    }
+
+    function loadCaseToTab(caseId, tabName) {
+      document.getElementById('globalCaseSelect').value = caseId;
+      onGlobalCaseChange();
+      switchTab(tabName);
+    }
+
+    function bossApproveRedline(dealNo, decision) {
+      setLoading(true, '執行劉總紅線特批處理中...');
+      google.script.run
+        .withSuccessHandler(function(res) {
+          setLoading(false);
+          showToast(res ? res.message : '完成');
+          if (res && res.success) initWorkspace();
+        })
+        .withFailureHandler(function(err) {
+          setLoading(false);
+          showToast('紅線特批異常：' + err.message);
+        })
+        .Dept05_apiBossApproveRedline({ bossCode: STATE.staffCode, dealNo: dealNo, decision: decision });
+    }
+  </script>
+</body>
+</html>
