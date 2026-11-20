@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>三貸同堂｜內部行動工作台與 30 員水位系統</title>
+  <style>
+    :root {
+      --navy-dark: #0b132b;
+      --navy-mid: #1c2541;
+      --gold: #c5a059;
+      --gold-bright: #f59e0b;
+      --line-green: #06c755;
+      --line-green-dark: #05a847;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --text-main: #0f172a;
+      --text-sub: #475569;
+      --success: #059669;
+      --danger: #dc2626;
+      --warn: #d97706;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0; padding: 0 0 88px 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      background: var(--bg); color: var(--text-main); line-height: 1.55;
+    }
+    .top-header {
+      background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-mid) 100%);
+      color: #fff; padding: 14px 16px 16px; border-bottom: 3px solid var(--gold);
+      position: sticky; top: 0; z-index: 40; box-shadow: 0 4px 12px rgba(11,19,43,0.22);
+    }
+    .hdr-flex { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .hdr-title { font-size: 18px; font-weight: 800; color: #fbbf24; margin: 0; }
+    .hdr-sub { font-size: 12.5px; color: #cbd5e1; margin-top: 2px; }
+    .hdr-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .role-pill {
+      background: rgba(197,160,89,0.22); border: 1px solid var(--gold); color: #fde68a;
+      padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: 800; white-space: nowrap;
+    }
+    .hdr-share-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--line-green); color: #fff; text-decoration: none;
+      padding: 5px 10px; border-radius: 99px; font-size: 12px; font-weight: 800;
+      border: 1px solid #34d399; white-space: nowrap; box-shadow: 0 2px 6px rgba(6,199,85,0.35);
+    }
+    /* 水位視覺進度條 */
+    .water-bar-box {
+      margin-top: 10px; background: rgba(255,255,255,0.08); border-radius: 10px; padding: 9px 12px;
+      border: 1px solid rgba(197,160,89,0.35);
+    }
+    .water-bar-top { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+    .bar-track { width: 100%; height: 9px; background: rgba(255,255,255,0.18); border-radius: 99px; overflow: hidden; }
+    .bar-fill { height: 100%; background: #10b981; border-radius: 99px; transition: width 0.35s ease; }
+    .bar-fill.warn { background: #f59e0b; }
+    .bar-fill.full { background: #ef4444; }
+    .container { max-width: 720px; margin: 0 auto; padding: 14px; }
+    .tab-pane { display: none; animation: fadeIn 0.2s ease; }
+    .tab-pane.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .card {
+      background: var(--card); border-radius: 14px; padding: 16px; margin-bottom: 14px;
+      box-shadow: 0 2px 10px rgba(15,23,42,0.06); border: 1px solid var(--border);
+    }
+    .card-navy { background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid)); color: #fff; border: 1px solid var(--gold); }
+    .section-title {
+      font-size: 17px; font-weight: 800; color: var(--navy-dark); margin: 0 0 12px;
+      padding-left: 10px; border-left: 4px solid var(--gold-bright);
+      display: flex; justify-content: space-between; align-items: center; gap: 8px;
+    }
+    .card-navy .section-title { color: #fbbf24; }
+    .form-group { margin-bottom: 12px; }
+    label { display: block; font-size: 14px; font-weight: 700; color: var(--navy-mid); margin-bottom: 5px; }
+    input, select, textarea {
+      width: 100%; padding: 12px 13px; font-size: 16px; border: 1.5px solid #cbd5e1;
+      border-radius: 10px; background: #fff; color: var(--text-main); outline: none;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--gold-bright); }
+    .btn {
+      display: inline-flex; justify-content: center; align-items: center; gap: 6px;
+      width: 100%; padding: 13px 16px; border-radius: 11px; font-size: 15px; font-weight: 800;
+      border: none; cursor: pointer; text-decoration: none; transition: 0.16s; text-align: center;
+    }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn-gold { background: linear-gradient(135deg, #d97706, #f59e0b); color: #fff; }
+    .btn-line { background: linear-gradient(135deg, var(--line-green), var(--line-green-dark)); color: #fff; box-shadow: 0 4px 12px rgba(6,199,85,0.28); }
+    .btn-navy { background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid)); color: #fde68a; border: 1px solid var(--gold); }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-outline { background: #fff; color: var(--navy-dark); border: 1.5px solid #94a3b8; }
+    .btn-sm { padding: 8px 12px; font-size: 13px; width: auto; border-radius: 9px; }
+    /* 快速一鍵分享橫幅 */
+    .quick-share-strip {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+      border: 1.5px solid #34d399; border-radius: 13px; padding: 12px 14px; margin-bottom: 14px; color: #fff;
+    }
+    .quick-share-strip .qs-txt { font-size: 12.5px; line-height: 1.45; }
+    .quick-share-strip .qs-txt b { color: #fde68a; font-size: 14px; display: block; }
+    /* 案件卡片 */
+    .case-card {
+      background: #fff; border: 1.5px solid var(--border); border-radius: 13px; padding: 14px;
+      margin-bottom: 12px; box-shadow: 0 2px 6px rgba(15,23,42,0.04);
+    }
+    .case-card.masked { background: #fef2f2; border-color: #fca5a5; }
+    .case-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
+    .case-name { font-size: 17px; font-weight: 800; color: var(--navy-dark); }
+    .badge { display: inline-block; padding: 3px 9px; border-radius: 99px; font-size: 12px; font-weight: 800; white-space: nowrap; }
+    .badge-node { background: #dbeafe; color: #1e40af; }
+    .badge-warn { background: #fef3c7; color: #92400e; }
+    .badge-done { background: #dcfce7; color: #166534; }
+    .badge-mask { background: #fee2e2; color: #991b1b; }
+    .badge-gold { background: #fef3c7; color: #b45309; border: 1px solid #fcd34d; }
+    .case-meta { font-size: 13.5px; color: var(--text-sub); line-height: 1.75; }
+    .case-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .phone-link {
+      display: inline-flex; align-items: center; gap: 4px; background: #ecfdf5; color: #047857;
+      padding: 2px 10px; border-radius: 8px; font-weight: 800; text-decoration: none; border: 1px solid #6ee7b7;
+    }
+    .phone-masked {
+      display: inline-flex; align-items: center; gap: 4px; background: #fee2e2; color: #b91c1c;
+      padding: 2px 10px; border-radius: 8px; font-weight: 800; border: 1px solid #fca5a5;
+    }
+    /* 分享引流預覽框與成績單 */
+    .share-preview {
+      background: #0f172a; color: #e2e8f0; border-radius: 10px; padding: 12px;
+      font-size: 13px; white-space: pre-wrap; word-break: break-all; border: 1px solid var(--gold); margin-bottom: 12px;
+    }
+    .qr-box { text-align: center; background: #fff; padding: 14px; border-radius: 12px; border: 1.5px solid var(--gold); margin: 12px 0; }
+    .qr-box img { width: 210px; height: 210px; border-radius: 8px; }
+    .perf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 10px; }
+    .perf-box {
+      background: #f8fafc; border: 1.5px solid var(--border); border-radius: 12px; padding: 11px 12px;
+    }
+    .perf-box.highlight { background: #fffbeb; border-color: #fcd34d; }
+    .perf-box.green { background: #ecfdf5; border-color: #6ee7b7; }
+    .perf-lbl { font-size: 12px; color: var(--text-sub); font-weight: 700; }
+    .perf-val { font-size: 20px; font-weight: 900; color: var(--navy-dark); margin-top: 2px; }
+    .perf-sub { font-size: 11.5px; color: #64748b; margin-top: 2px; }
+    .dual-strip {
+      background: #f8fafc; border: 1px dashed #94a3b8; border-radius: 10px;
+      padding: 10px 12px; font-size: 12.5px; color: #334155; line-height: 1.7;
+    }
+    /* 統計方塊 */
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+    .stat-tile { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 10px 8px; text-align: center; }
+    .stat-num { font-size: 22px; font-weight: 900; color: var(--navy-dark); }
+    .stat-lbl { font-size: 11.5px; color: var(--text-sub); font-weight: 700; }
+    /* 團隊水位列 */
+    .team-row {
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; padding: 11px 0;
+      border-bottom: 1px solid var(--border); font-size: 13.5px;
+    }
+    .team-row:last-child { border-bottom: none; }
+    /* 彈窗 Modal */
+    .modal-bg {
+      position: fixed; inset: 0; background: rgba(11,19,43,0.72); z-index: 80;
+      display: none; align-items: flex-end; justify-content: center;
+    }
+    .modal-bg.open { display: flex; }
+    .modal-sheet {
+      background: #fff; width: 100%; max-width: 680px; border-radius: 18px 18px 0 0;
+      padding: 20px 16px 26px; max-height: 90vh; overflow-y: auto; border-top: 4px solid var(--gold);
+    }
+    .boss-tip-box {
+      background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af;
+      border-radius: 9px; padding: 8px 10px; font-size: 12px; margin-bottom: 12px; line-height: 1.5;
+    }
+    /* 底部固定導覽列 */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; background: var(--navy-dark);
+      border-top: 2px solid var(--gold); display: flex; z-index: 50; padding-bottom: env(safe-area-inset-bottom);
+    }
+    .nav-btn {
+      flex: 1; background: none; border: none; color: #94a3b8; padding: 10px 4px 12px;
+      font-size: 12px; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px;
+    }
+    .nav-btn .ico { font-size: 19px; }
+    .nav-btn.active { color: #fbbf24; background: rgba(197,160,89,0.12); }
+    .loading-mask {
+      position: fixed; inset: 0; background: rgba(11,19,43,0.78); z-index: 99;
+      display: none; flex-direction: column; align-items: center; justify-content: center; color: #fff;
+    }
+    .spinner {
+      width: 42px; height: 42px; border: 4px solid rgba(255,255,255,0.25);
+      border-top-color: #fbbf24; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 10px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .toast {
+      position: fixed; top: 76px; left: 50%; transform: translateX(-50%); z-index: 95;
+      background: #0f172a; color: #fde68a; padding: 12px 18px; border-radius: 10px;
+      font-size: 14px; font-weight: 700; border: 1px solid var(--gold); display: none; max-width: 92%; text-align: center;
+    }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <header class="top-header">
+    <div class="hdr-flex">
+      <div>
+        <h1 class="hdr-title">💼 三貸同堂｜內部行動工作台</h1>
+        <div class="hdr-sub" id="hdrStaffInfo">請先驗證內部人員身分</div>
+      </div>
+      <div class="hdr-right">
+        <a id="hdrLineShareBtn" class="hdr-share-btn hidden" href="#" target="_blank" rel="noopener">📤 分享管家</a>
+        <span class="role-pill" id="hdrRoleBadge">未驗證</span>
+      </div>
+    </div>
+    <div id="waterBarBox" class="water-bar-box hidden">
+      <div class="water-bar-top">
+        <span id="waterBarLabel">🌊 個人名單水位：0 / 30 員</span>
+        <span id="waterBarStatus" style="color:#34d399;">正常可接單</span>
+      </div>
+      <div class="bar-track"><div id="waterBarFill" class="bar-fill" style="width:0%"></div></div>
+    </div>
+  </header>
+  <div id="toastBox" class="toast"></div>
+  <div id="loadingMask" class="loading-mask">
+    <div class="spinner"></div>
+    <div id="loadingText" style="font-weight:700;font-size:15px;">雲端水位同步中...</div>
+  </div>
+
+  <!-- 內部權限實名驗證牆（未綁定者強制攔截） -->
+  <div id="loginWall" class="container hidden">
+    <div class="card">
+      <div class="section-title">🔐 內部人員實名驗證登入</div>
+      <p style="font-size:13.5px;color:#475569;margin-top:0;">
+        本工作台為三貸同堂內部唯一作業入口，外部人員無法存取。請輸入登錄於組織表的實名手機號碼與員工代碼完成授權（登入成功後本機將自動記憶，下次秒開免重打）：
+      </p>
+      <div class="form-group">
+        <label>實名手機號碼（10 碼）*</label>
+        <input type="tel" id="inpStaffPhone" maxlength="10" placeholder="例如：0900000000">
+      </div>
+      <div class="form-group">
+        <label>員工代碼（選填，例如 S000 / S001 / S005）</label>
+        <input type="text" id="inpStaffCode" placeholder="S005">
+      </div>
+      <button class="btn btn-gold" onclick="doStaffLogin()">🔓 驗證職級並進入行動工作台</button>
+    </div>
+  </div>
+
+  <!-- 主工作台容器 -->
+  <main id="mainApp" class="container hidden">
+    <!-- ==================== 分頁 1：我的水位與防弊遮罩 ==================== -->
+    <section id="tab-my" class="tab-pane active">
+      <div class="stat-grid">
+        <div class="stat-tile"><div class="stat-num" id="stActive">0</div><div class="stat-lbl">目前水位活躍</div></div>
+        <div class="stat-tile" style="cursor:pointer;" onclick="switchTab('share')">
+          <div class="stat-num" style="color:#0284c7;" id="stRef">0</div>
+          <div class="stat-lbl">分享引流歸戶 ▸</div>
+        </div>
+        <div class="stat-tile"><div class="stat-num" style="color:#059669;" id="stClosed">0</div><div class="stat-lbl">累積結案總數</div></div>
+      </div>
+      <!-- 一鍵分享管家捷徑列 -->
+      <div class="quick-share-strip">
+        <div class="qs-txt">
+          <b>📤 分享三貸同堂管家，成交自動算您的業績！</b>
+          <span id="qsSummaryTxt">客戶點擊您的專屬連結進來，系統永久鎖定引流歸屬並自動算獎。</span>
+        </div>
+        <a id="qsLineShareBtn" class="btn btn-line btn-sm" style="white-space:nowrap;flex-shrink:0;" href="#" target="_blank" rel="noopener">LINE 分享</a>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <input type="text" id="searchMyInput" placeholder="🔍 搜尋姓名、案號或節點..." oninput="renderMyActiveCases()">
+        <button class="btn btn-navy btn-sm" style="white-space:nowrap;" onclick="openOfflineLeadModal()">＋ 新增客戶</button>
+      </div>
+      <div class="section-title">
+        <span>🌊 我的活躍水位名單</span>
+        <button class="btn btn-outline btn-sm" onclick="reloadDashboard()">🔄 刷新</button>
+      </div>
+      <div id="myActiveList"></div>
+      <div class="section-title" style="margin-top:20px;border-left-color:#dc2626;">
+        <span>🛡️ 已撤銷／改派防飛單遮罩紀錄</span>
+      </div>
+      <div id="myMaskedList"></div>
+    </section>
+
+    <!-- ==================== 分頁 2：總水庫公海派單與主管審批 ==================== -->
+    <section id="tab-pool" class="tab-pane">
+      <div id="managerApprovalSection" class="hidden">
+        <div class="section-title" style="border-left-color:#dc2626;">
+          <span>🚨 主管待審批：撤銷／轉派申請 (<span id="pendingCnt">0</span>)</span>
+        </div>
+        <div id="pendingApprovalList"></div>
+      </div>
+      <div class="section-title">
+        <span>📥 總水庫公海待派名單 (<span id="publicCnt">0</span>)</span>
+        <button class="btn btn-gold btn-sm" onclick="openOfflineLeadModal()">＋ 手動建檔</button>
+      </div>
+      <div id="publicPoolList"></div>
+    </section>
+
+    <!-- ==================== 分頁 3：一鍵分享管家＆我的引流成績單 ==================== -->
+    <section id="tab-share" class="tab-pane">
+      <div class="card">
+        <div class="section-title">
+          <span>🏆 我的分享引流成績單</span>
+          <span class="badge badge-gold" id="refSplitRateBadge">引流分潤 5%</span>
+        </div>
+        <div class="perf-grid">
+          <div class="perf-box">
+            <div class="perf-lbl">📣 分享引流歸戶</div>
+            <div class="perf-val" style="color:#0284c7;" id="pfRefTotal">0 人</div>
+            <div class="perf-sub" id="pfRefConv">引流成交 0 件｜轉換率 0%</div>
+          </div>
+          <div class="perf-box highlight">
+            <div class="perf-lbl">💰 引流貢獻總佣金</div>
+            <div class="perf-val" style="color:#b45309;" id="pfRefComm">$0</div>
+            <div class="perf-sub" id="pfRefWan">核准放款額度 0 萬</div>
+          </div>
+          <div class="perf-box green">
+            <div class="perf-lbl">🎁 引流節點獎金</div>
+            <div class="perf-val" style="color:#047857;" id="pfRefBonus">$0</div>
+            <div class="perf-sub">即便改派他人辦照樣領引流</div>
+          </div>
+          <div class="perf-box">
+            <div class="perf-lbl">🏅 個人實領＋待發總分潤</div>
+            <div class="perf-val" id="pfTotalBonus">$0</div>
+            <div class="perf-sub" id="pfPaidSub">已核發 $0｜待發 $0</div>
+          </div>
+        </div>
+        <div class="dual-strip" id="pfDualStrip">
+          📌 <b>雙軌業績透明統計：</b>您自己經辦完款 <b>0 件</b>（經辦佣收 <b>$0</b>）；靠分享管家引流完款 <b>0 件</b>（引流貢獻佣收 <b>$0</b>）。若同一案由您自己分享＋自己接流＋自己經辦，系統將自動疊加多節點分潤！
+        </div>
+      </div>
+
+      <div class="card card-navy">
+        <div class="section-title">📣 一鍵分享三貸同堂智能管家</div>
+        <p style="font-size:13.5px;color:#e2e8f0;margin-top:0;">
+          免做表單！直接點擊下方綠色按鈕透過 LINE 傳給好友或群組，客戶點進 <b id="shareLineId" style="color:#fbbf24;">@660rbtey</b> 按「傳送」或點試算連結留單，系統 100% 自動鎖定您為引流人並計入您的業績（客戶轉傳給親友照樣算您的）！
+        </p>
+        <a id="btnLineShareMain" class="btn btn-line" style="margin-bottom:10px;font-size:16px;" href="#" target="_blank" rel="noopener">
+          📤 一鍵透過 LINE 分享給好友／群組
+        </a>
+        <div id="shareMsgPreview" class="share-preview"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+          <button class="btn btn-gold" onclick="copyTextValue('shareMsgPreview', '✅ 已複製完整分享文案！直接貼上 LINE / FB / Threads 即可引流')">📋 複製分享文案</button>
+          <button class="btn btn-outline" onclick="shareNativeOrCopy()">📱 其他平台分享</button>
+        </div>
+        <button class="btn btn-outline btn-sm" style="width:100%;background:rgba(255,255,255,0.1);color:#fde68a;border-color:rgba(197,160,89,0.5);" onclick="copyDirectUrl('calc')">
+          🔗 單獨複製「60 秒試算表單」專屬引流連結
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="section-title">📲 我的專屬官方 LINE 引流 QR Code</div>
+        <div class="qr-box">
+          <img id="shareQrImg" src="" alt="專屬引流 QR Code">
+          <div style="font-weight:800;font-size:15px;margin-top:8px;" id="shareOwnerTag">推薦代碼：-</div>
+          <div style="font-size:12.5px;color:#64748b;">現場見客戶直接請對方掃碼，加入按傳送立即歸戶計入您的業績！</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">🏅 我已成功引流的客戶與成交追蹤 (<span id="myRefListCnt">0</span>)</div>
+        <div id="myReferredList"></div>
+      </div>
+    </section>
+
+    <!-- ==================== 分頁 4：團隊水位與跨部門快捷入口 ==================== -->
+    <section id="tab-team" class="tab-pane">
+      <div class="card card-navy">
+        <div class="section-title">🚀 跨部門快捷工作入口（無橫幅秒切頁）</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <a id="lnkFormsClient" class="btn btn-gold" href="#" target="_blank" rel="noopener">📋 數位客戶資料表</a>
+          <a id="lnkFormsDeal" class="btn btn-success" href="#" target="_blank" rel="noopener">💰 數位業績報件單</a>
+          <a id="lnkBossRoom" class="btn btn-navy hidden" style="grid-column:1 / span 2;" href="#" target="_blank" rel="noopener">👑 進入劉總決策戰情室與 8 大參數控制台</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">👥 全公司即時名單水位與引流實績</div>
+        <div id="teamWaterList"></div>
+      </div>
+      <button class="btn btn-outline" style="color:#64748b;margin-top:4px;" onclick="logoutStaffSession()">🔄 切換登入帳號／清除本機記憶</button>
+    </section>
+  </main>
+
+  <!-- ==================== 彈窗 1：7 大節點 × 4 大狀態即時回報 ==================== -->
+  <div id="modalReport" class="modal-bg">
+    <div class="modal-sheet">
+      <div class="section-title">📊 案件節點回報（自動推播主管）</div>
+      <div id="repCaseBanner" style="background:#f8fafc;padding:10px;border-radius:8px;font-size:13.5px;margin-bottom:10px;"></div>
+      <div id="repBossNotifyHint" class="boss-tip-box"></div>
+      <input type="hidden" id="repCaseId">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="form-group">
+          <label>作業節點（7 節點）*</label>
+          <select id="repNode"></select>
+        </div>
+        <div class="form-group">
+          <label>目前狀態（4 狀態）*</label>
+          <select id="repStatus"></select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="form-group">
+          <label>客戶來源確認</label>
+          <select id="repSource"></select>
+        </div>
+        <div class="form-group">
+          <label>再追蹤年月（選填，如 2027-05）</label>
+          <input type="text" id="repRetrackYm" placeholder="YYYY-MM">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>本次進度／照會／補件摘要 *</label>
+        <textarea id="repNote" rows="3" placeholder="請填寫具體聯繫狀況、補件項目或核價條件..."></textarea>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <button class="btn btn-outline" onclick="closeModal('modalReport')">取消</button>
+        <button class="btn btn-gold" onclick="submitNodeReport()">🚀 送出回報並推播主管</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 彈窗 2：申請撤銷／轉派 ==================== -->
+  <div id="modalCancel" class="modal-bg">
+    <div class="modal-sheet">
+      <div class="section-title" style="border-left-color:#dc2626;">⚠️ 申請案件撤銷或轉派（釋出水位）</div>
+      <div id="canCaseBanner" style="background:#fef2f2;padding:10px;border-radius:8px;font-size:13px;color:#991b1b;margin-bottom:12px;"></div>
+      <input type="hidden" id="canCaseId">
+      <div class="form-group">
+        <label>申請類型 *</label>
+        <select id="canType" onchange="toggleSuggestStaff()">
+          <option value="CANCEL">申請撤銷結案（核准後自動遮罩客戶電話 09XX-***-XXX）</option>
+          <option value="TRANSFER">申請改派他人（核准後移交並對原業務遮罩電話）</option>
+        </select>
+      </div>
+      <div class="form-group hidden" id="canSuggestWrap">
+        <label>建議接手同仁（選填）</label>
+        <select id="canSuggestStaff"></select>
+      </div>
+      <div class="form-group">
+        <label>撤銷或轉派具體原因 *</label>
+        <textarea id="canReason" rows="3" placeholder="例如：客戶無意願、條件不符婉拒、或改由房貸專員接手..."></textarea>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <button class="btn btn-outline" onclick="closeModal('modalCancel')">取消</button>
+        <button class="btn btn-danger" onclick="submitCancelRequest()">送交主管審批</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 彈窗 3：主管派單／審批轉派 ==================== -->
+  <div id="modalDispatch" class="modal-bg">
+    <div class="modal-sheet">
+      <div class="section-title" id="dispModalTitle">📥 主管派單指派</div>
+      <div id="dispCaseBanner" style="background:#f8fafc;padding:10px;border-radius:8px;font-size:13.5px;margin-bottom:12px;"></div>
+      <input type="hidden" id="dispCaseId">
+      <input type="hidden" id="dispMode">
+      <div class="form-group" id="dispRoleWrap">
+        <label>指派角色欄位</label>
+        <select id="dispRoleField">
+          <option value="經辦人員代碼">指派為【經辦人員】（計入 30 員水位）</option>
+          <option value="接流人員代碼">指派為【接流人員】（計入 30 員水位）</option>
+          <option value="專案人員代碼">指派為【專案核價人員】</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>選擇負責同仁（系統即時顯示各同仁剩餘水位）*</label>
+        <select id="dispTargetStaff"></select>
+      </div>
+      <div class="form-group hidden" id="dispNoteWrap">
+        <label>主管批示備註（選填）</label>
+        <input type="text" id="dispManagerNote" placeholder="輸入給接手業務的提醒...">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <button class="btn btn-outline" onclick="closeModal('modalDispatch')">取消</button>
+        <button class="btn btn-gold" onclick="submitDispatchOrApproveTransfer()">確認派發並推播通知</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 彈窗 4：業務手動新增線下客戶 ==================== -->
+  <div id="modalOfflineLead" class="modal-bg">
+    <div class="modal-sheet">
+      <div class="section-title">➕ 手動登錄新客戶（線下／陌生／親友）</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="form-group"><label>客戶姓名 *</label><input type="text" id="newName" placeholder="真實姓名"></div>
+        <div class="form-group"><label>聯絡手機 *</label><input type="tel" id="newPhone" maxlength="10" placeholder="09xxxxxxxx"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="form-group"><label>客戶來源（必填）*</label><select id="newSource"></select></div>
+        <div class="form-group"><label>需求金額 (萬)</label><input type="number" id="newAmt" placeholder="如 50"></div>
+      </div>
+      <div class="form-group">
+        <label>申辦業務類別</label>
+        <select id="newLoanType">
+          <option value="信用貸款與工作收入增貸">信用貸款與工作收入增貸</option>
+          <option value="房屋貸款與二胎活化轉增貸">房屋貸款與二胎活化轉增貸</option>
+          <option value="汽機車原車融資與降息增貸">汽機車原車融資與降息增貸</option>
+          <option value="高額負債整合與代償高利帳單">高額負債整合與代償高利帳單</option>
+          <option value="信用瑕疵、法扣、協商與急件破局">信用瑕疵、法扣、協商與急件破局</option>
+        </select>
+      </div>
+      <div class="form-group"><label>備註說明</label><textarea id="newNote" rows="2" placeholder="簡述客戶工作或負債條件..."></textarea></div>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13.5px;margin-bottom:14px;">
+        <input type="checkbox" id="newAssignSelf" checked style="width:20px;height:20px;">
+        <span>建檔後立即歸入我的 30 員個人水位直接跟進</span>
+      </label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <button class="btn btn-outline" onclick="closeModal('modalOfflineLead')">取消</button>
+        <button class="btn btn-gold" onclick="submitOfflineLead()">💾 確認建檔並檢核舊客</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部固定四分頁導覽 -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="nav-my" onclick="switchTab('my')"><span class="ico">🌊</span><span>我的水位</span></button>
+    <button class="nav-btn" id="nav-pool" onclick="switchTab('pool')"><span class="ico">📥</span><span>公海派單</span></button>
+    <button class="nav-btn" id="nav-share" onclick="switchTab('share')"><span class="ico">📣</span><span>分享引流</span></button>
+    <button class="nav-btn" id="nav-team" onclick="switchTab('team')"><span class="ico">👥</span><span>團隊/報表</span></button>
+  </nav>
+
+  <script>
+    // ==================== V7.0 GitHub Pages ➔ GAS JSON API 橋接中樞 ====================
+    var GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzofnwdYqJprOQIu_4vXmtqoWT_uyfnxg27otb9u_CxHX8m_0D2qYTTX8NBqTMxlQNzZg/exec';
+    var STAFF_STORAGE_KEY = 'THREELOANS_STAFF_SESSION_V7';
+
+    function parseUrlParams() {
+      var obj = {};
+      try {
+        var sp = new URLSearchParams(window.location.search);
+        sp.forEach(function(v, k) { obj[k] = v; });
+      } catch (e) {}
+      return obj;
+    }
+
+    function callGasApi(apiAction, args, onSuccess, onFailure) {
+      fetch(GAS_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ apiAction: apiAction, args: args || [] }),
+        redirect: 'follow'
+      })
+      .then(function(res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.text();
+      })
+      .then(function(txt) {
+        var json;
+        try {
+          json = JSON.parse(txt);
+        } catch (parseErr) {
+          throw new Error('雲端 API 回應格式異常，請確認 GAS 部署權限為「所有人」');
+        }
+        if (json && json.ok === true) {
+          if (typeof onSuccess === 'function') onSuccess(json.result);
+        } else {
+          var errMsg = (json && (json.error || json.message)) || '雲端服務執行失敗';
+          if (typeof onFailure === 'function') onFailure(new Error(errMsg));
+        }
+      })
+      .catch(function(err) {
+        if (typeof onFailure === 'function') onFailure(err);
+      });
+    }
+
+    (function initGasBridge() {
+      if (window.google && window.google.script && window.google.script.run) return;
+      function createRunner(successCb, failureCb) {
+        return new Proxy({}, {
+          get: function(_target, prop) {
+            if (prop === 'withSuccessHandler') {
+              return function(fn) { return createRunner(fn, failureCb); };
+            }
+            if (prop === 'withFailureHandler') {
+              return function(fn) { return createRunner(successCb, fn); };
+            }
+            return function() {
+              var args = Array.prototype.slice.call(arguments);
+              callGasApi(String(prop), args, successCb, failureCb);
+            };
+          }
+        });
+      }
+      window.google = window.google || {};
+      window.google.script = window.google.script || {};
+      window.google.script.run = createRunner(null, null);
+    })();
+
+    function isStandaloneHost() {
+      var h = String(window.location.hostname || '').toLowerCase();
+      return h !== '' && h.indexOf('script.google') === -1 && h.indexOf('googleusercontent.com') === -1;
+    }
+
+    function buildDeptUrl(dept, extraParams) {
+      var st = (APP.data && APP.data.staff) ? APP.data.staff : {};
+      var uid = st.lineUid || APP.lineUid || '';
+      var ref = st.staffCode || APP.staffCode || '';
+      var qs = [];
+      if (extraParams) {
+        Object.keys(extraParams).forEach(function(k) {
+          if (extraParams[k] !== undefined && extraParams[k] !== null && String(extraParams[k]) !== '') {
+            qs.push(encodeURIComponent(k) + '=' + encodeURIComponent(String(extraParams[k])));
+          }
+        });
+      }
+      if (uid) qs.push('uid=' + encodeURIComponent(uid));
+      if (ref) qs.push('ref=' + encodeURIComponent(ref));
+
+      if (isStandaloneHost()) {
+        var fileMap = { client: './index.html', staff: './staff.html', forms: './forms.html', boss: './boss.html' };
+        var targetFile = fileMap[dept] || './index.html';
+        return targetFile + (qs.length ? ('?' + qs.join('&')) : '');
+      }
+      var baseUrl = (APP.data && APP.data.runtime && APP.data.runtime.webAppUrl) ? APP.data.runtime.webAppUrl : GAS_API_URL;
+      qs.unshift('dept=' + encodeURIComponent(dept));
+      qs.push('openExternalBrowser=1');
+      return baseUrl + '?' + qs.join('&');
+    }
+
+    // ==================== 身分自動解析與免重登記憶 ====================
+    var RAW_PARAMS = parseUrlParams();
+    var SAVED_SESSION = {};
+    try { SAVED_SESSION = JSON.parse(localStorage.getItem(STAFF_STORAGE_KEY) || '{}') || {}; } catch (e) {}
+
+    var APP = {
+      lineUid: RAW_PARAMS.uid || SAVED_SESSION.lineUid || '',
+      staffCode: (RAW_PARAMS.ref || SAVED_SESSION.staffCode || '').toUpperCase(),
+      phone: RAW_PARAMS.uid ? '' : (SAVED_SESSION.phone || ''),
+      data: null
+    };
+
+    window.addEventListener('DOMContentLoaded', function() {
+      var initTab = String(RAW_PARAMS.tab || '').toLowerCase();
+      if (['my', 'pool', 'share', 'team'].indexOf(initTab) !== -1) {
+        switchTab(initTab);
+      }
+      if (APP.lineUid || APP.phone) {
+        reloadDashboard();
+      } else {
+        if (APP.staffCode) document.getElementById('inpStaffCode').value = APP.staffCode;
+        document.getElementById('loginWall').classList.remove('hidden');
+      }
+    });
+
+    function saveStaffSession(staffObj) {
+      try {
+        localStorage.setItem(STAFF_STORAGE_KEY, JSON.stringify({
+          lineUid: staffObj.lineUid || APP.lineUid || '',
+          phone: staffObj.phone || APP.phone || '',
+          staffCode: staffObj.staffCode || APP.staffCode || ''
+        }));
+      } catch (e) {}
+    }
+
+    function clearStaffSession() {
+      try { localStorage.removeItem(STAFF_STORAGE_KEY); } catch (e) {}
+    }
+
+    function logoutStaffSession() {
+      clearStaffSession();
+      APP.lineUid = '';
+      APP.phone = '';
+      APP.staffCode = '';
+      APP.data = null;
+      document.getElementById('mainApp').classList.add('hidden');
+      document.getElementById('waterBarBox').classList.add('hidden');
+      document.getElementById('hdrLineShareBtn').classList.add('hidden');
+      document.getElementById('hdrStaffInfo').textContent = '請輸入實名資料重新驗證';
+      document.getElementById('hdrRoleBadge').textContent = '未驗證';
+      document.getElementById('inpStaffPhone').value = '';
+      document.getElementById('inpStaffCode').value = '';
+      document.getElementById('loginWall').classList.remove('hidden');
+      showToast('已清除本機登入記憶，請重新驗證');
+    }
+
+    function escHtml(str) {
+      return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+    function fmtMoney(num) {
+      var n = Math.round(Number(num || 0));
+      return '$' + n.toLocaleString('zh-TW');
+    }
+    function showToast(msg) {
+      var box = document.getElementById('toastBox');
+      box.textContent = msg;
+      box.style.display = 'block';
+      setTimeout(function() { box.style.display = 'none'; }, 3800);
+    }
+    function setLoading(show, text) {
+      document.getElementById('loadingText').textContent = text || '雲端資料同步中...';
+      document.getElementById('loadingMask').style.display = show ? 'flex' : 'none';
+    }
+    function switchTab(name) {
+      ['my', 'pool', 'share', 'team'].forEach(function(t) {
+        document.getElementById('tab-' + t).classList.toggle('active', t === name);
+        document.getElementById('nav-' + t).classList.toggle('active', t === name);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    function doStaffLogin() {
+      var ph = document.getElementById('inpStaffPhone').value.trim();
+      var cd = document.getElementById('inpStaffCode').value.trim().toUpperCase();
+      if (!ph) return showToast('請輸入實名手機號碼');
+      APP.phone = ph;
+      APP.staffCode = cd;
+      reloadDashboard();
+    }
+
+    function reloadDashboard() {
+      setLoading(true, '正在檢核五層職級權限、30 員水位與引流業績...');
+      google.script.run
+        .withSuccessHandler(function(res) {
+          setLoading(false);
+          if (!res || !res.success) {
+            clearStaffSession();
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('loginWall').classList.remove('hidden');
+            if (res && res.message) showToast(res.message);
+            return;
+          }
+          APP.data = res;
+          APP.staffCode = res.staff.staffCode;
+          APP.phone = res.staff.phone;
+          APP.lineUid = res.staff.lineUid || APP.lineUid;
+          saveStaffSession(res.staff);
+          document.getElementById('loginWall').classList.add('hidden');
+          document.getElementById('mainApp').classList.remove('hidden');
+          renderAllSections();
+        })
+        .withFailureHandler(function(err) {
+          setLoading(false);
+          document.getElementById('loginWall').classList.remove('hidden');
+          showToast('連線異常：' + err.message);
+        })
+        .Dept04_apiStaffLoginAndLoad({
+          lineUid: APP.lineUid,
+          phone: APP.phone,
+          staffCode: APP.staffCode
+        });
+    }
+
+    function renderAllSections() {
+      var d = APP.data;
+      var st = d.staff;
+      var pkg = d.refPackage || {};
+      var perf = d.myReferralStats || {};
+      // 1. 頂部個人資訊、一鍵分享鈕與水位視覺進度條
+      document.getElementById('hdrStaffInfo').textContent = st.staffName + ' (' + st.staffCode + ')｜' + st.unitName;
+      document.getElementById('hdrRoleBadge').textContent = st.role + '・' + st.rank;
+      var shareUrl = pkg.lineShareUrl || ('https://line.me/R/share?text=' + encodeURIComponent(pkg.fullShareMessage || ''));
+      var hdrShare = document.getElementById('hdrLineShareBtn');
+      hdrShare.href = shareUrl;
+      hdrShare.classList.remove('hidden');
+      document.getElementById('qsLineShareBtn').href = shareUrl;
+      document.getElementById('qsSummaryTxt').textContent =
+        '已引流 ' + (perf.referredTotalCount || st.referralCount || 0) + ' 人｜引流成交 ' + (perf.referredClosedCount || 0) +
+        ' 件｜引流貢獻佣金 ' + fmtMoney(perf.referredCommissionTotal || 0);
+      document.getElementById('waterBarBox').classList.remove('hidden');
+      var limitTxt = st.isBoss ? '無限總水庫' : (st.waterLimit + ' 員');
+      document.getElementById('waterBarLabel').textContent = '🌊 個人名單水位：' + st.activeCount + ' / ' + limitTxt;
+      var pct = st.isBoss ? 15 : Math.min(100, Math.round((st.activeCount / Math.max(1, st.waterLimit)) * 100));
+      var fill = document.getElementById('waterBarFill');
+      fill.style.width = pct + '%';
+      fill.className = 'bar-fill' + (st.isFull ? ' full' : (pct >= 75 ? ' warn' : ''));
+      var wStatus = document.getElementById('waterBarStatus');
+      wStatus.textContent = st.isFull ? '🚫 水位已滿（暫停派單）' : (st.isBoss ? '👑 總水庫最高權限' : ('剩餘 ' + Math.max(0, st.waterLimit - st.activeCount) + ' 個空位'));
+      wStatus.style.color = st.isFull ? '#fca5a5' : '#34d399';
+      document.getElementById('stActive').textContent = st.activeCount;
+      document.getElementById('stRef').textContent = perf.referredTotalCount || st.referralCount || 0;
+      document.getElementById('stClosed').textContent = st.closedCount;
+      // 2. 下拉選單選項填充
+      fillSelect('repNode', d.metaOptions.nodes);
+      fillSelect('repStatus', d.metaOptions.statuses);
+      fillSelect('repSource', d.metaOptions.sources);
+      fillSelect('newSource', d.metaOptions.sources);
+      fillStaffSelect('dispTargetStaff', d.teamList);
+      fillStaffSelect('canSuggestStaff', d.teamList, true);
+      // 3. 跨部門快捷連結（獨立前端環境自動導向 ./forms.html 與 ./boss.html 無橫幅免重登）
+      document.getElementById('lnkFormsClient').href = buildDeptUrl('forms', { tab: 'client' });
+      document.getElementById('lnkFormsDeal').href = buildDeptUrl('forms', { tab: 'deal' });
+      var bossBtn = document.getElementById('lnkBossRoom');
+      if (st.isBoss || st.role === '部門主管') {
+        bossBtn.classList.remove('hidden');
+        bossBtn.href = buildDeptUrl('boss', {});
+      } else {
+        bossBtn.classList.add('hidden');
+      }
+      // 4. 渲染各頁籤列表
+      renderMyActiveCases();
+      renderMaskedCases();
+      renderPendingApprovals();
+      renderPublicPool();
+      renderShareCenter();
+      renderTeamWaterList();
+    }
+
+    function fillSelect(id, arr) {
+      var el = document.getElementById(id);
+      el.innerHTML = '';
+      (arr || []).forEach(function(item) {
+        var opt = document.createElement('option');
+        opt.value = item; opt.textContent = item;
+        el.appendChild(opt);
+      });
+    }
+
+    function fillStaffSelect(id, teamList, allowEmpty) {
+      var el = document.getElementById(id);
+      el.innerHTML = allowEmpty ? '<option value="">-- 由主管決定接手人 --</option>' : '';
+      (teamList || []).forEach(function(t) {
+        var opt = document.createElement('option');
+        opt.value = t.staffCode;
+        var cap = t.role === '劉總' ? '無限' : (t.activeCount + '/' + t.waterLimit + '員' + (t.isFull ? ' 🚫滿載' : ''));
+        opt.textContent = t.staffName + ' (' + t.staffCode + '｜' + t.role + '｜' + cap + ')';
+        el.appendChild(opt);
+      });
+    }
+
+    function renderMyActiveCases() {
+      var q = (document.getElementById('searchMyInput').value || '').trim().toLowerCase();
+      var list = (APP.data.myActiveCases || []).filter(function(c) {
+        if (!q) return true;
+        return (c.clientName + c.caseId + c.currentNode + c.loanType + c.phone).toLowerCase().indexOf(q) !== -1;
+      });
+      var box = document.getElementById('myActiveList');
+      if (list.length === 0) {
+        box.innerHTML = '<div class="card" style="text-align:center;color:#64748b;">目前水位內尚無符合條件之活躍案件，可前往「公海派單」領單或點擊「＋ 新增客戶」。</div>';
+        return;
+      }
+      box.innerHTML = list.map(function(c) {
+        var statusCls = c.status === '結案' ? 'badge-done' : (c.status === '補件' ? 'badge-warn' : 'badge-node');
+        var phoneHtml = c.isMasked
+          ? '<span class="phone-masked">🔒 ' + escHtml(c.phone) + '</span>'
+          : '<a class="phone-link" href="tel:' + escHtml(c.phone) + '">📞 ' + escHtml(c.phone) + '</a>';
+        var formClientHref = buildDeptUrl('forms', { tab: 'client', caseId: c.caseId });
+        var formDealHref = buildDeptUrl('forms', { tab: 'deal', caseId: c.caseId });
+        return '<div class="case-card">' +
+          '<div class="case-top">' +
+            '<div><div class="case-name">' + escHtml(c.clientName) + ' ' + phoneHtml + '</div>' +
+            '<div style="font-size:12px;color:#64748b;margin-top:2px;">' + escHtml(c.caseId) + '｜來源：' + escHtml(c.source) + '</div></div>' +
+            '<span class="badge ' + statusCls + '">' + escHtml(c.currentNode) + '・' + escHtml(c.status) + '</span>' +
+          '</div>' +
+          '<div class="case-meta">' +
+            '💼 類別：<b>' + escHtml(c.loanType) + '</b>' + (c.amountWan ? ('（需求 ' + escHtml(c.amountWan) + ' 萬）') : '') + '<br>' +
+            '📣 引流：' + escHtml(c.referralName) + '｜經辦：<b>' + escHtml(c.handlerLabel) + '</b><br>' +
+            '📝 摘要：' + escHtml(c.lastSummary || c.note || '等待聯繫') + '<br>' +
+            '<span style="font-size:11.5px;color:#94a3b8;">更新：' + escHtml(c.lastUpdate) + (c.esignNo ? ('｜✅已簽單:' + escHtml(c.esignNo)) : '') + '</span>' +
+          '</div>' +
+          '<div class="case-actions">' +
+            '<button class="btn btn-gold btn-sm" style="width:100%;" onclick="openReportModal(\'' + escHtml(c.caseId) + '\')">📊 節點回報</button>' +
+            '<a class="btn btn-navy btn-sm" style="width:100%;" href="' + escHtml(formClientHref) + '" target="_blank" rel="noopener">📋 客戶資料表</a>' +
+            '<a class="btn btn-success btn-sm" style="width:100%;" href="' + escHtml(formDealHref) + '" target="_blank" rel="noopener">💰 業績報件單</a>' +
+            '<button class="btn btn-outline btn-sm" style="width:100%;color:#b91c1c;border-color:#fca5a5;" onclick="openCancelModal(\'' + escHtml(c.caseId) + '\')">⚠️ 撤銷/轉派</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function renderMaskedCases() {
+      var list = APP.data.myMaskedCases || [];
+      var box = document.getElementById('myMaskedList');
+      if (list.length === 0) {
+        box.innerHTML = '<div class="card" style="text-align:center;color:#64748b;font-size:13px;">尚無已撤銷或轉派之遮罩紀錄。</div>';
+        return;
+      }
+      box.innerHTML = list.map(function(c) {
+        return '<div class="case-card masked">' +
+          '<div class="case-top">' +
+            '<div><div class="case-name">' + escHtml(c.clientName) + ' <span class="phone-masked">🔒 ' + escHtml(c.phone) + '</span></div>' +
+            '<div style="font-size:12px;color:#991b1b;margin-top:2px;">' + escHtml(c.maskReason || '個資防飛單保護') + '</div></div>' +
+            '<span class="badge badge-mask">' + escHtml(c.status) + '</span>' +
+          '</div>' +
+          '<div class="case-meta" style="color:#7f1d1d;">📋 案號：' + escHtml(c.caseId) + '｜最新負責：' + escHtml(c.handlerLabel) + '<br>' + escHtml(c.note) + '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function renderPendingApprovals() {
+      var sec = document.getElementById('managerApprovalSection');
+      var list = APP.data.pendingApprovals || [];
+      if (!APP.data.staff.isManager || list.length === 0) {
+        sec.classList.add('hidden');
+        return;
+      }
+      sec.classList.remove('hidden');
+      document.getElementById('pendingCnt').textContent = list.length;
+      document.getElementById('pendingApprovalList').innerHTML = list.map(function(c) {
+        return '<div class="case-card" style="border-color:#f59e0b;background:#fffbeb;">' +
+          '<div class="case-top"><div class="case-name">' + escHtml(c.clientName) + ' (' + escHtml(c.phone) + ')</div><span class="badge badge-warn">待主管審批</span></div>' +
+          '<div class="case-meta">📋 ' + escHtml(c.caseId) + '｜原經辦：' + escHtml(c.handlerLabel) + '<br><b>申請詳情：</b>' + escHtml(c.lastSummary) + '</div>' +
+          '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px;">' +
+            '<button class="btn btn-danger btn-sm" style="width:100%;" onclick="quickApproveCancel(\'' + escHtml(c.caseId) + '\')">核准撤銷遮罩</button>' +
+            '<button class="btn btn-navy btn-sm" style="width:100%;" onclick="openDispatchModal(\'' + escHtml(c.caseId) + '\', \'TRANSFER\')">核准改派他人</button>' +
+            '<button class="btn btn-outline btn-sm" style="width:100%;" onclick="quickRejectReq(\'' + escHtml(c.caseId) + '\')">駁回申請</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function renderPublicPool() {
+      var list = APP.data.publicPoolCases || [];
+      document.getElementById('publicCnt').textContent = list.length;
+      var box = document.getElementById('publicPoolList');
+      if (list.length === 0) {
+        box.innerHTML = '<div class="card" style="text-align:center;color:#64748b;">🎉 目前總水庫公海無積壓未派案件！</div>';
+        return;
+      }
+      var isMgr = APP.data.staff.isManager;
+      var isFull = APP.data.staff.isFull;
+      box.innerHTML = list.map(function(c) {
+        var btnHtml = isMgr
+          ? '<button class="btn btn-gold btn-sm" style="width:100%;" onclick="openDispatchModal(\'' + escHtml(c.caseId) + '\', \'DISPATCH\')">🎯 主管指定派單</button>'
+          : '<button class="btn btn-gold btn-sm" style="width:100%;" ' + (isFull ? 'disabled' : '') + ' onclick="claimCaseToSelf(\'' + escHtml(c.caseId) + '\')">' + (isFull ? '🚫 水位已滿無法領單' : '⚡ 領單納入我的水位') + '</button>';
+        return '<div class="case-card">' +
+          '<div class="case-top"><div class="case-name">' + escHtml(c.clientName) + ' <span style="font-size:13px;color:#475569;">' + escHtml(c.phone) + '</span></div><span class="badge badge-warn">待派新單</span></div>' +
+          '<div class="case-meta">💼 ' + escHtml(c.loanType) + (c.amountWan ? ('（' + escHtml(c.amountWan) + '萬）') : '') + '<br>' +
+          '📣 引流歸屬：<b>' + escHtml(c.referralName) + '</b>｜來源：' + escHtml(c.source) + '<br>' +
+          '🕒 進件時間：' + escHtml(c.createdAt) + '</div>' +
+          '<div style="margin-top:10px;">' + btnHtml + '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function renderShareCenter() {
+      var pkg = APP.data.refPackage || {};
+      var perf = APP.data.myReferralStats || {};
+      var shareUrl = pkg.lineShareUrl || ('https://line.me/R/share?text=' + encodeURIComponent(pkg.fullShareMessage || ''));
+      document.getElementById('refSplitRateBadge').textContent = '引流分潤 ' + (perf.referralSplitPct || 5) + '%';
+      document.getElementById('pfRefTotal').textContent = (perf.referredTotalCount || 0) + ' 人';
+      document.getElementById('pfRefConv').textContent = '引流成交 ' + (perf.referredClosedCount || 0) + ' 件｜轉換率 ' + (perf.referredConversionRate || 0) + '%';
+      document.getElementById('pfRefComm').textContent = fmtMoney(perf.referredCommissionTotal || 0);
+      document.getElementById('pfRefWan').textContent = '核准放款額度 ' + (perf.referredApprovedWanTotal || 0) + ' 萬';
+      document.getElementById('pfRefBonus').textContent = fmtMoney(perf.referredBonusAmount || 0);
+      document.getElementById('pfTotalBonus').textContent = fmtMoney(perf.totalEarnedBonus || 0);
+      document.getElementById('pfPaidSub').textContent = '已核發 ' + fmtMoney(perf.paidBonus || 0) + '｜待核發 ' + fmtMoney(perf.pendingBonus || 0);
+      document.getElementById('pfDualStrip').innerHTML =
+        '📌 <b>雙軌業績透明統計：</b>您自己經辦完款 <b>' + (perf.handledClosedCount || 0) + ' 件</b>（經辦佣收 <b>' + fmtMoney(perf.handledCommissionTotal || 0) +
+        '</b>）；靠分享管家引流完款 <b>' + (perf.referredClosedCount || 0) + ' 件</b>（引流貢獻佣收 <b>' + fmtMoney(perf.referredCommissionTotal || 0) +
+        '</b>）。若同一案由您自己分享＋接流＋經辦，系統自動疊加多節點分潤！';
+      document.getElementById('btnLineShareMain').href = shareUrl;
+      document.getElementById('shareLineId').textContent = pkg.lineBasicId || '@660rbtey';
+      document.getElementById('shareMsgPreview').textContent = pkg.fullShareMessage || '';
+      document.getElementById('shareQrImg').src = pkg.qrCodeImageUrl || '';
+      document.getElementById('shareOwnerTag').textContent = '專屬推薦顧問：' + (pkg.staffName || '') + '（代碼：' + (pkg.staffCode || '') + '）';
+      var refs = APP.data.myReferredCases || [];
+      document.getElementById('myRefListCnt').textContent = refs.length;
+      var box = document.getElementById('myReferredList');
+      if (refs.length === 0) {
+        box.innerHTML = '<div style="text-align:center;color:#64748b;font-size:13.5px;padding:12px;">尚無引流進件客戶，立即點擊上方綠色「一鍵透過 LINE 分享」傳給好友吧！</div>';
+        return;
+      }
+      box.innerHTML = refs.map(function(c) {
+        var dealHtml = c.isDealClosed
+          ? ('<div style="font-size:12px;color:#047857;font-weight:800;margin-top:3px;">✅ 已成交貢獻業績：佣收 ' + fmtMoney(c.dealCommission) +
+             (c.estimatedReferralBonus > 0 ? ('｜引流分潤約 ' + fmtMoney(c.estimatedReferralBonus)) : '') +
+             (c.dealCompletedDate ? ('（' + escHtml(c.dealCompletedDate) + '）') : '') + '</div>')
+          : '';
+        var badgeCls = c.isDealClosed ? 'badge-done' : (c.status === '撤銷' ? 'badge-mask' : 'badge-node');
+        return '<div class="team-row">' +
+          '<div style="flex:1;"><b>' + escHtml(c.clientName) + '</b> <span style="font-size:12px;color:#64748b;">(' + escHtml(c.phone) + ')</span><br>' +
+          '<span style="font-size:12px;color:#475569;">經辦：' + escHtml(c.handlerLabel) + '｜' + escHtml(c.loanType) + '</span>' +
+          dealHtml + '</div>' +
+          '<span class="badge ' + badgeCls + '">' + escHtml(c.currentNode) + '・' + escHtml(c.status) + '</span>' +
+        '</div>';
+      }).join('');
+    }
+
+    function renderTeamWaterList() {
+      var team = APP.data.teamList || [];
+      document.getElementById('teamWaterList').innerHTML = team.map(function(t) {
+        var limitStr = t.role === '劉總' ? '無限' : (t.activeCount + ' / ' + t.waterLimit + ' 員');
+        var badgeCls = t.isFull ? 'badge-mask' : 'badge-done';
+        return '<div class="team-row">' +
+          '<div style="flex:1;"><b>' + escHtml(t.staffName) + '</b> <span style="font-size:12px;color:#64748b;">(' + escHtml(t.staffCode) + '｜' + escHtml(t.role) + '・' + escHtml(t.rank) + ')</span><br>' +
+          '<span style="font-size:12px;color:#0369a1;">📣 分享引流：' + (t.referralCount || 0) + ' 人（成交 ' + (t.referredClosedCount || 0) + ' 件｜' + fmtMoney(t.referredCommissionTotal || 0) + '）</span><br>' +
+          '<span style="font-size:12px;color:#475569;">💼 經辦實績：結案 ' + (t.handledClosedCount || t.closedCount || 0) + ' 件｜佣收 ' + fmtMoney(t.handledCommissionTotal || 0) + '</span></div>' +
+          '<span class="badge ' + badgeCls + '">' + limitStr + (t.isFull ? ' 滿載' : '') + '</span>' +
+        '</div>';
+      }).join('');
+    }
+
+    // ==================== 互動操作函式 ====================
+    function shareNativeOrCopy() {
+      var pkg = APP.data.refPackage || {};
+      var text = pkg.fullShareMessage || '';
+      if (navigator.share) {
+        navigator.share({
+          title: pkg.shortIntroText || '三貸同堂・免費額度初評智能管家',
+          text: text
+        }).catch(function() {});
+      } else {
+        copyRaw(text, '✅ 您的瀏覽器不支援原生分享，已自動為您複製完整引流文案！');
+      }
+    }
+    function copyTextValue(elId, okMsg) {
+      var txt = document.getElementById(elId).textContent;
+      copyRaw(txt, okMsg);
+    }
+    function copyDirectUrl(type) {
+      var pkg = APP.data.refPackage || {};
+      copyRaw(type === 'calc' ? pkg.webCalcUrl : pkg.oaMessageUrl, '✅ 已複製專屬引流連結！');
+    }
+    function copyRaw(text, okMsg) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function() { showToast(okMsg); }).catch(function() {
+          fallbackCopy(text, okMsg);
+        });
+      } else {
+        fallbackCopy(text, okMsg);
+      }
+    }
+    function fallbackCopy(text, okMsg) {
+      var ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      showToast(okMsg);
+    }
+
+    function findCaseInApp(caseId) {
+      var all = [].concat(APP.data.myActiveCases || [], APP.data.publicPoolCases || [], APP.data.pendingApprovals || []);
+      for (var i = 0; i < all.length; i++) { if (all[i].caseId === caseId) return all[i]; }
+      return null;
+    }
+
+    function openReportModal(caseId) {
+      var c = findCaseInApp(caseId);
+      if (!c) return;
+      document.getElementById('repCaseId').value = c.caseId;
+      document.getElementById('repCaseBanner').innerHTML = '<b>' + escHtml(c.clientName) + '</b> (' + escHtml(c.phone) + ')｜' + escHtml(c.loanType);
+      document.getElementById('repNode').value = c.currentNode;
+      document.getElementById('repStatus').value = c.status;
+      document.getElementById('repSource').value = c.source;
+      document.getElementById('repRetrackYm').value = c.retrackYm || '';
+      document.getElementById('repNote').value = '';
+      var cfg = (APP.data && APP.data.bossNotifyConfig) || {};
+      var hintEl = document.getElementById('repBossNotifyHint');
+      if (cfg.enabled) {
+        var bossRule = cfg.notifyAllNodes
+          ? '所有節點均同步即時通報劉總'
+          : ('關鍵節點【' + ((cfg.nodes || []).join('、') || '無') + '】或狀態【' + ((cfg.statuses || []).join('、') || '無') + '】將同步即時通報劉總');
+        hintEl.innerHTML = '🔔 <b>分層通報機制：</b>回報後立即推播所屬單位／部門主管；' + escHtml(bossRule) + '。';
+      } else {
+        hintEl.innerHTML = '🔔 <b>分層通報機制：</b>回報後將即時推播通知所屬單位主管與部門主管。';
+      }
+      openModal('modalReport');
+    }
+
+    function submitNodeReport() {
+      var note = document.getElementById('repNote').value.trim();
+      if (!note) return showToast('請填寫本次進度回報摘要');
+      setLoading(true, '正在回報節點並推播通知主管...');
+      google.script.run
+        .withSuccessHandler(function(res) {
+          setLoading(false);
+          closeModal('modalReport');
+          showToast(res ? res.message : '回報完成');
+          if (res && res.success) reloadDashboard();
+        })
+        .withFailureHandler(function(err) {
+          setLoading(false);
+          showToast('回報失敗：' + err.message);
+        })
+        .Dept04_apiUpdateCaseNode({
+          staffCode: APP.staffCode,
+          caseId: document.getElementById('repCaseId').value,
+          node: document.getElementById('repNode').value,
+          status: document.getElementById('repStatus').value,
+          source: document.getElementById('repSource').value,
+          retrackYm: document.getElementById('repRetrackYm').value.trim(),
+          reportNote: note
+        });
+    }
+
+    function openCancelModal(caseId) {
+      var c = findCaseInApp(caseId);
+      if (!c) return;
+      document.getElementById('canCaseId').value = c.caseId;
+      document.getElementById('canCaseBanner').innerHTML = '⚠️ 申請案件：<b>' + escHtml(c.clientName) + '</b> (' + escHtml(c.caseId) + ')<br>主管核准後將自動遮罩客戶電話為 09XX-***-XXX 並釋出水位空位。';
+      document.getElementById('canReason').value = '';
+      toggleSuggestStaff();
+      openModal('modalCancel');
+    }
+
+    function toggleSuggestStaff() {
+      var isTr = document.getElementById('canType').value === 'TRANSFER';
+      document.getElementById('canSuggestWrap').classList.toggle('hidden', !isTr);
+    }
+
+    function submitCancelRequest() {
+      var reason = document.getElementById('canReason').value.trim();
+      if (!reason) return showToast('請填寫具體撤銷或轉派原因');
+      setLoading(true, '正在送交主管審批並發送推播...');
+      google.script.run
+        .withSuccessHandler(function(res) {
+          setLoading(false);
+          closeModal('modalCancel');
+          showToast(res ? res.message : '已送出申請');
+          if (res && res.success) reloadDashboard();
+        })
+        .withFailureHandler(function(err) {
+          setLoading(false);
+          showToast('送出申請失敗：' + err.message);
+        })
+        .Dept04_apiRequestCancelOrTransfer({
+          staffCode: APP.staffCode,
+          caseId: document.getElementById('canCaseId').value,
+          requestType: document.getElementById('canType').value,
+          suggestedStaffCode: document.getElementById('canSuggestStaff').value,
+          reason: reason
+        });
+    }
+
+    function claimCaseToSelf(caseId) {
+      setLoading(true, '正在檢核 30 員水位並鎖定領單...');
+      google.script.run
+        .withSuccessHandler(function(res) {
+          setLoading(false);
+          showToast(res ? res.message : '處理完成');
+          if (res && res.success) reloadDashboard();
+        })
+        .withFailureHandler(function(err) {
+          setLoading(false);
+          showToast('領單失敗：' + err.message);
+        })
+        .Dept04_apiDispatchOrClaimCase({
+          operatorCode: APP.staffCode,
+          caseId: caseId,
+          targetStaffCode: APP.staffCode,
+          assignRoleField: '經辦人員代碼'
+        });
+    }
+
+    function openDispatchModal(caseId, mode) {
+      var c = findCaseInApp(caseId);
+      if (!c) return;
+      document.getElementById('dispCaseId').value = c.caseId;
+      document.getElementById('dispMode').value = mode;
+      document.getElementById('dispModalTitle').textContent = mode === 'TRANSFER' ? '🔄 主管核准轉派移交' : '🎯 主管公海指定派單';
+      document.getElementById('dispCaseBanner').innerHTML = '<b>' + escHtml(c.clientName) + '</b>｜' + escHtml(c.loanType) + '<br>目前案號：' + escHtml(c.caseId);
+      document.getElementById('dispRoleWrap').classList.toggle('hidden', mode === 'TRANSFER');
+      document.getElementById('dispNoteWrap').classList.toggle('hidden', mode !== 'TRANSFER');
+      openModal('modalDispatch');
+    }
+
+    function submitDispatchOrApproveTransfer() {
+      var mode = document.getElementById('dispMode').value;
+      var caseId = document.getElementById('dispCaseId').value;
+      var targetCode = document.getElementById('dispTargetStaff').value;
+      setLoading(true, '正在檢核水位並執行派發...');
+      if (mode === 'TRANSFER') {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            setLoading(false); closeModal('modalDispatch');
+            showToast(res ? res.message : '轉派完成');
+            if (res && res.success) reloadDashboard();
+          })
+          .withFailureHandler(function(err) {
+            setLoading(false); showToast('轉派失敗：' + err.message);
+          })
+          .Dept04_apiApproveCancelOrTransfer({
+            managerCode: APP.staffCode,
+            caseId: caseId,
+            decision: 'APPROVE_TRANSFER',
+            newOwnerCode: targetCode,
+            managerNote: document.getElementById('dispManagerNote').value.trim()
+          });
+      } else {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            setLoading(false); closeModal('modalDispatch');
+            showToast(res ? res.message : '派單完成');
+            if (res && res.success) reloadDashboard();
+          })
+          .withFailureHandler(function(err) {
+            setLoading(false); showToast('派單失敗：' + err.message);
+          })
+          .Dept04_apiDispatchOrClaimCase({
+            operatorCode: APP.staffCode,
+            caseId: caseId,
+            targetStaffCode: targetCode,
+            assignRoleField: document.getElementById('dispRoleField').value
+          });
+      }
+    }
+
+    function quickApproveCancel(caseId) {
+      if (!confirm('確定核准撤銷此案件？核准後原業務將立即遮罩電話為 09XX-***-XXX 並釋出水位空位。')) return;
+      setLoading(true, '執行撤銷遮罩與釋放水位中...');
+      google.script.run
+        .withSuccessHandler(function(res) {
+          setLoading(false); showToast(res ? res.message : '完成');
+          if (res && res.success) reloadDashboard();
+        })
+        .withFailureHandler(function(err) {
+          setLoading(false); showToast('操作失敗：' + err.message);
+        })
+        .Dept04_apiApproveCancelOrTransfer({ managerCode: APP.staffCode, caseId: caseId, decision: 'APPROVE_CANCEL' });
+    }
+
+    function quickRejectReq(caseId) {
+      setLoading(true, '處理駁回指令中...');
+      google.script.run
+        .withSuccessHandler(function(res) {
+          setLoading(false); showToast(res ? res.message : '已駁回');
+          if (res && res.success) reloadDashboard();
+        })
+        .withFailureHandler(function(err) {
+          setLoading(false); showToast('操作失敗：' + err.message);
+        })
+        .Dept04_apiApproveCancelOrTransfer({ managerCode: APP.staffCode, caseId: caseId, decision: 'REJECT' });
+    }
+
+    function openOfflineLeadModal() {
+      document.getElementById('newName').value = '';
+      document.getElementById('newPhone').value = '';
+      document.getElementById('newAmt').value = '';
+      document.getElementById('newNote').value = '';
+      openModal('modalOfflineLead');
+    }
+
+    function submitOfflineLead() {
+      var name = document.getElementById('newName').value.trim();
+      var ph = document.getElementById('newPhone').value.trim();
+      if (!name || !/^09\d{8}$/.test(ph.replace(/\D/g, ''))) return showToast('請填寫正確的客戶姓名與 10 碼手機');
+      setLoading(true, '正在穿透歷史封存庫識破舊客並寫入水庫...');
+      google.script.run
+        .withSuccessHandler(function(res) {
+          setLoading(false);
+          if (!res || !res.success) return showToast(res ? res.message : '建檔失敗');
+          closeModal('modalOfflineLead');
+          showToast(res.alertMessage ? (res.message + ' ' + res.alertMessage) : res.message);
+          reloadDashboard();
+        })
+        .withFailureHandler(function(err) {
+          setLoading(false);
+          showToast('建檔失敗：' + err.message);
+        })
+        .Dept04_apiCreateOfflineLead({
+          staffCode: APP.staffCode,
+          clientName: name,
+          phone: ph,
+          source: document.getElementById('newSource').value,
+          loanType: document.getElementById('newLoanType').value,
+          amountWan: document.getElementById('newAmt').value.trim(),
+          note: document.getElementById('newNote').value.trim(),
+          assignToSelf: document.getElementById('newAssignSelf').checked
+        });
+    }
+  </script>
+</body>
+</html>
