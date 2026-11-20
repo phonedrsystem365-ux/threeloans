@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>三貸同堂｜客戶服務、雲端官網與五重防偽簽單中心</title>
+  <style>
+    :root {
+      --navy-dark: #0b132b;
+      --navy-mid: #1c2541;
+      --gold: #c5a059;
+      --gold-bright: #f59e0b;
+      --gold-light: #fef3c7;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --text-main: #0f172a;
+      --text-sub: #475569;
+      --success: #059669;
+      --danger: #dc2626;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0; padding: 0 0 84px 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      background: var(--bg); color: var(--text-main); line-height: 1.6;
+    }
+    /* 頂部黑金商務導覽列 */
+    .top-header {
+      background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-mid) 100%);
+      color: #fff; padding: 18px 16px 20px; border-bottom: 3px solid var(--gold);
+      position: sticky; top: 0; z-index: 40; box-shadow: 0 4px 12px rgba(11,19,43,0.22);
+    }
+    .brand-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .brand-title { font-size: 20px; font-weight: 800; color: #fbbf24; letter-spacing: 1px; margin: 0; }
+    .brand-sub { font-size: 12px; color: #cbd5e1; margin-top: 2px; }
+    .phone-chip {
+      background: rgba(197,160,89,0.2); border: 1px solid var(--gold); color: #fde68a;
+      padding: 5px 10px; border-radius: 99px; font-size: 12px; font-weight: 700; text-decoration: none; white-space: nowrap;
+    }
+    .ref-banner {
+      margin-top: 10px; background: rgba(16,185,129,0.18); border: 1px solid #34d399;
+      color: #a7f3d0; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; display: none;
+    }
+    /* 主內容區 */
+    .container { max-width: 680px; margin: 0 auto; padding: 14px; }
+    .tab-pane { display: none; animation: fadeIn 0.25s ease; }
+    .tab-pane.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .card {
+      background: var(--card); border-radius: 14px; padding: 18px; margin-bottom: 14px;
+      box-shadow: 0 2px 10px rgba(15,23,42,0.06); border: 1px solid var(--border);
+    }
+    .card-navy {
+      background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid));
+      color: #fff; border: 1px solid var(--gold);
+    }
+    .section-title {
+      font-size: 18px; font-weight: 800; color: var(--navy-dark); margin: 0 0 12px 0;
+      padding-left: 10px; border-left: 4px solid var(--gold-bright);
+    }
+    .card-navy .section-title { color: #fbbf24; border-left-color: #fbbf24; }
+    /* 表單元素 (大字體防 iOS 縮放) */
+    .form-group { margin-bottom: 14px; }
+    label { display: block; font-size: 14px; font-weight: 700; color: var(--navy-mid); margin-bottom: 6px; }
+    input[type="text"], input[type="tel"], input[type="number"], select, textarea {
+      width: 100%; padding: 13px 14px; font-size: 16px; border: 1.5px solid #cbd5e1;
+      border-radius: 10px; background: #fff; color: var(--text-main); outline: none; transition: 0.2s;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--gold-bright); box-shadow: 0 0 0 3px rgba(245,158,11,0.18); }
+    /* 按鈕樣式 */
+    .btn {
+      display: inline-flex; justify-content: center; align-items: center; gap: 6px;
+      width: 100%; padding: 14px 18px; border-radius: 12px; font-size: 16px; font-weight: 800;
+      border: none; cursor: pointer; transition: 0.18s; text-decoration: none;
+    }
+    .btn-gold { background: linear-gradient(135deg, #d97706, #f59e0b); color: #fff; box-shadow: 0 4px 12px rgba(217,119,6,0.3); }
+    .btn-navy { background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid)); color: #fde68a; border: 1px solid var(--gold); }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-outline { background: #fff; color: var(--navy-dark); border: 1.5px solid var(--navy-mid); }
+    .btn-sm { padding: 9px 14px; font-size: 14px; width: auto; }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    /* 官網產品分類藥丸切換 */
+    .pill-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 12px; }
+    .pill-btn {
+      flex: 0 0 auto; padding: 8px 14px; border-radius: 99px; font-size: 14px; font-weight: 700;
+      border: 1.5px solid var(--navy-mid); background: #fff; color: var(--navy-mid); cursor: pointer;
+    }
+    .pill-btn.active { background: var(--navy-dark); color: #fde047; border-color: var(--gold); }
+    .promise-box {
+      background: #fffbeb; border: 1.5px solid #f59e0b; border-radius: 10px; padding: 12px;
+      color: #92400e; font-size: 13.5px; font-weight: 700; margin: 12px 0;
+    }
+    .antifraud-box {
+      background: #fef2f2; border: 1.5px solid #ef4444; border-radius: 10px; padding: 12px;
+      color: #991b1b; font-size: 13px; margin-top: 10px;
+    }
+    /* 試算器大數字顯示面板 */
+    .calc-result-box {
+      background: linear-gradient(135deg, var(--navy-dark), #1e3a8a); color: #fff;
+      border-radius: 14px; padding: 18px; text-align: center; margin: 14px 0; border: 1.5px solid var(--gold);
+    }
+    .calc-monthly { font-size: 34px; font-weight: 900; color: #fbbf24; margin: 4px 0; }
+    .calc-meta { display: flex; justify-content: space-around; margin-top: 10px; font-size: 13px; color: #cbd5e1; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 10px; }
+    input[type="range"] { width: 100%; accent-color: #d97706; height: 8px; margin-top: 6px; }
+    .range-header { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; }
+    .range-val { color: #b45309; font-size: 16px; }
+    /* 服務履歷 7 節點視覺進度條 */
+    .stepper { display: flex; justify-content: space-between; position: relative; margin: 18px 0 12px; padding: 0 2px; }
+    .stepper::before {
+      content: ''; position: absolute; top: 13px; left: 10px; right: 10px; height: 4px;
+      background: #e2e8f0; z-index: 1; border-radius: 2px;
+    }
+    .stepper-fill {
+      position: absolute; top: 13px; left: 10px; height: 4px; background: var(--success);
+      z-index: 2; border-radius: 2px; transition: width 0.4s ease;
+    }
+    .step-item { position: relative; z-index: 3; text-align: center; flex: 1; }
+    .step-dot {
+      width: 28px; height: 28px; border-radius: 50%; background: #e2e8f0; color: #64748b;
+      display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800;
+      border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .step-item.done .step-dot { background: var(--success); color: #fff; }
+    .step-item.current .step-dot { background: var(--gold-bright); color: #fff; transform: scale(1.15); }
+    .step-label { font-size: 11px; margin-top: 4px; color: #64748b; font-weight: 700; line-height: 1.2; }
+    .step-item.current .step-label { color: #b45309; }
+    .status-badge {
+      display: inline-block; padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: 800;
+      background: #dbeafe; color: #1e40af;
+    }
+    /* 五重防偽電子簽名畫布 */
+    .contract-scroll {
+      max-height: 210px; overflow-y: auto; background: #f8fafc; border: 1.5px solid #cbd5e1;
+      border-radius: 10px; padding: 14px; font-size: 13.5px; white-space: pre-wrap; color: #1e293b;
+      margin-bottom: 12px;
+    }
+    .canvas-wrap {
+      border: 2px dashed var(--gold); border-radius: 12px; background: #fffdf7;
+      position: relative; overflow: hidden; touch-action: none;
+    }
+    #sigCanvas { width: 100%; height: 210px; display: block; touch-action: none; cursor: crosshair; }
+    .canvas-placeholder {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      color: #cbd5e1; font-size: 18px; font-weight: 800; pointer-events: none; text-align: center;
+    }
+    .gps-box {
+      background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 10px; padding: 12px;
+      margin: 12px 0; font-size: 13.5px; color: #166534;
+    }
+    .gps-box.pending { background: #fff7ed; border-color: #fdba74; color: #9a3412; }
+    .five-checks {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 10px 0 14px; font-size: 12.5px;
+    }
+    .check-pill { background: #f1f5f9; padding: 6px 8px; border-radius: 8px; color: #475569; font-weight: 700; }
+    .check-pill.ok { background: #dcfce7; color: #166534; }
+    /* 底部固定四分頁導覽列 */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; background: var(--navy-dark);
+      border-top: 2px solid var(--gold); display: flex; z-index: 50;
+      box-shadow: 0 -4px 14px rgba(0,0,0,0.2); padding-bottom: env(safe-area-inset-bottom);
+    }
+    .nav-btn {
+      flex: 1; background: none; border: none; color: #94a3b8; padding: 10px 4px 12px;
+      font-size: 12px; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px;
+    }
+    .nav-btn .ico { font-size: 20px; }
+    .nav-btn.active { color: #fbbf24; background: rgba(197,160,89,0.12); }
+    /* 全螢幕 Loading 遮罩與彈窗提示 */
+    .loading-mask {
+      position: fixed; inset: 0; background: rgba(11,19,43,0.75); z-index: 99;
+      display: none; flex-direction: column; align-items: center; justify-content: center; color: #fff;
+    }
+    .spinner {
+      width: 44px; height: 44px; border: 4px solid rgba(255,255,255,0.25);
+      border-top-color: #fbbf24; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .toast {
+      position: fixed; top: 82px; left: 50%; transform: translateX(-50%); z-index: 90;
+      background: #0f172a; color: #fde68a; padding: 12px 20px; border-radius: 10px;
+      font-size: 14px; font-weight: 700; box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      border: 1px solid var(--gold); display: none; max-width: 90%; text-align: center;
+    }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <!-- 頂部品牌列 -->
+  <header class="top-header">
+    <div class="brand-row">
+      <div>
+        <h1 class="brand-title" id="hdrBrandTitle">三貸同堂財務顧問</h1>
+        <div class="brand-sub">專業有價・信任無價｜25年貸款規劃實務經驗</div>
+      </div>
+      <a class="phone-chip" href="tel:0800222969">📞 0800-222-969</a>
+    </div>
+    <div id="refBanner" class="ref-banner"></div>
+  </header>
+  <div id="toastBox" class="toast"></div>
+  <div id="loadingMask" class="loading-mask">
+    <div class="spinner"></div>
+    <div id="loadingText" style="font-weight:700;font-size:15px;">雲端安全處理中，請稍候...</div>
+  </div>
+  <main class="container">
+    <!-- ================================================================ -->
+    <!-- 分頁 1：雲端復刻官網 (整合 threeloans.com.tw 全站核心架構)         -->
+    <!-- ================================================================ -->
+    <section id="tab-home" class="tab-pane active">
+      <div class="card card-navy">
+        <div class="section-title">🏛️ 關於三貸同堂｜創辦人麥克哥 25 年實務經驗</div>
+        <p style="font-size:14.5px;color:#e2e8f0;margin:0 0 12px;">
+          三貸同堂財務顧問有限公司由創辦人「麥克哥」領軍，深耕銀行徵審、代書不動產與多元融資管道超過 25 年。我們堅持先全面盤點客戶的收入、信用、負債結構與資金用途，量身打造最安全、低壓力的還款規劃。
+        </p>
+        <div style="font-size:13px;color:#fde68a;line-height:1.8;">
+          📍 高雄市苓雅區光華一路206號18樓之8<br>
+          📞 免付費專線：0800-222-969
+        </div>
+        <button class="btn btn-gold" style="margin-top:14px;" onclick="switchTab('calc')">🧮 立即免費試算額度與 60 秒初評</button>
+      </div>
+      <div class="card">
+        <div class="section-title">💼 核心貸款專案與常見問題</div>
+        <div class="pill-row">
+          <button class="pill-btn active" onclick="showProductInfo('credit', this)">💳 個人信貸</button>
+          <button class="pill-btn" onclick="showProductInfo('house', this)">🏠 房屋一二胎</button>
+          <button class="pill-btn" onclick="showProductInfo('car', this)">🚗 汽機車融資</button>
+          <button class="pill-btn" onclick="showProductInfo('debt', this)">📉 負債整合/急件</button>
+        </div>
+        <div id="productDetailBox" style="font-size:14px;color:#334155;"></div>
+      </div>
+      <div class="card">
+        <div class="section-title">🛡️ 公開收費標準與防詐騙四不嚴正聲明</div>
+        <div class="promise-box">
+          ✅ 初步評估絕不拉取銀行聯徵紀錄<br>
+          ✅ 核准對保前 0 元收費，未過件或不滿意絕不收費<br>
+          ✅ 公開透明服務費率（依核准額度採 10%~30% 透明級距，額度越高適用費率越低）
+        </div>
+        <div class="antifraud-box">
+          <b>⚠️ 三貸同堂防詐騙「四不」嚴正聲明：</b><br>
+          1. 絕不要求寄送身分證件、存摺、提款卡或印章正本。<br>
+          2. 絕不索取網路銀行帳號、密碼或任何簡訊驗證碼。<br>
+          3. 絕不要求代辦或開設虛擬貨幣帳戶、第三方人頭帳戶。<br>
+          4. 所有正式委託均簽署具 GPS 與時間存證之電子契約保障權益。
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <!-- 分頁 2：互動式額度與月付金試算器 ＋ 60 秒免費初評收單表            -->
+    <!-- ================================================================ -->
+    <section id="tab-calc" class="tab-pane">
+      <div class="card">
+        <div class="section-title">🧮 互動式額度與月付金試算器</div>
+        <div class="form-group">
+          <label>選擇試算貸款類別</label>
+          <select id="calcType" onchange="onCalcPresetChange()">
+            <option value="信用貸款與工作收入增貸" data-rate="4.5" data-term="60">💳 信用貸款與工作收入增貸（前3期最低2%起）</option>
+            <option value="房屋貸款與二胎活化轉增貸" data-rate="2.4" data-term="240">🏠 房屋貸款與二胎活化轉增貸（長天期低月付）</option>
+            <option value="汽機車原車融資與降息增貸" data-rate="6.5" data-term="60">🚗 汽機車原車融資與增貸（原車可用免留車）</option>
+            <option value="高額負債整合與代償高利帳單" data-rate="5.2" data-term="84">📉 高額負債整合代償（大幅降低每月月付金）</option>
+            <option value="信用瑕疵、法扣、協商與急件破局" data-rate="8.0" data-term="48">⚡ 瑕疵／法扣／協商／當日急件專案</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <div class="range-header"><span>預計資金需求額度</span><span class="range-val" id="lblAmt">50 萬元</span></div>
+          <input type="range" id="rngAmt" min="10" max="500" step="5" value="50" oninput="recalcLoan()">
+        </div>
+        <div class="form-group">
+          <div class="range-header"><span>還款期數（月）</span><span class="range-val" id="lblTerm">60 期 (5 年)</span></div>
+          <input type="range" id="rngTerm" min="12" max="240" step="12" value="60" oninput="recalcLoan()">
+        </div>
+        <div class="form-group">
+          <div class="range-header"><span>預估年利率 (%)</span><span class="range-val" id="lblRate">4.5 %</span></div>
+          <input type="range" id="rngRate" min="2.0" max="16.0" step="0.1" value="4.5" oninput="recalcLoan()">
+        </div>
+        <div class="calc-result-box">
+          <div style="font-size:13px;color:#cbd5e1;">預估每月應繳月付金（本息平均攤還）</div>
+          <div class="calc-monthly" id="resMonthly">NT$ 9,322</div>
+          <div class="calc-meta">
+            <div>申辦額度：<b id="resTotalLoan">50 萬元</b></div>
+            <div>預估總利息：<b id="resTotalInt">59,320 元</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">⚡ 60 秒免費額度初評表（不拉聯徵）</div>
+        <div class="promise-box">🛡️ 填寫後將自動排入優先水庫，核准對保前 0 元收費、照會全程保密！</div>
+        <div class="form-group">
+          <label>您的真實姓名 *</label>
+          <input type="text" id="leadName" placeholder="請輸入姓名（例如：王小明）">
+        </div>
+        <div class="form-group">
+          <label>實名聯絡手機（10 碼）*</label>
+          <input type="tel" id="leadPhone" maxlength="10" placeholder="09xxxxxxxx">
+        </div>
+        <div class="form-group">
+          <label>申辦主題與需求類別</label>
+          <input type="text" id="leadTopic" value="信用貸款與工作收入增貸">
+        </div>
+        <div class="form-group">
+          <label>方便保密接聽時段</label>
+          <select id="leadTime">
+            <option value="隨時皆可保密聯繫">隨時皆可保密聯繫</option>
+            <option value="上午 09:00 - 12:00">上午 09:00 - 12:00</option>
+            <option value="午休 12:00 - 14:00（避開公司）">午休 12:00 - 14:00（避開公司）</option>
+            <option value="下午 14:00 - 18:00">下午 14:00 - 18:00</option>
+            <option value="晚間 18:00 - 21:00（下班後）">晚間 18:00 - 21:00（下班後）</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>推薦專員代碼（透過業務分享連結進入將自動鎖定）</label>
+          <input type="text" id="leadRefCode" placeholder="若無可留空（例：S005）">
+        </div>
+        <div class="form-group">
+          <label>補充說明（選填：如領現金、有房屋/汽機車、卡債整合等）</label>
+          <textarea id="leadNote" rows="2" placeholder="簡述您的工作或資金需求，專員將提前為您配對最佳管道..."></textarea>
+        </div>
+        <button class="btn btn-gold" id="btnSubmitLead" onclick="submitLeadForm()">🚀 送出免費初評（不拉聯徵）</button>
+        <div id="leadSuccessBox" class="card hidden" style="margin-top:14px;background:#ecfdf5;border-color:#10b981;"></div>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <!-- 分頁 3：服務履歷中心（實名登入、7 節點進度條、自主更新資料）        -->
+    <!-- ================================================================ -->
+    <section id="tab-resume" class="tab-pane">
+      <div id="resumeLoginCard" class="card">
+        <div class="section-title">🔐 客戶服務履歷・實名驗證登入</div>
+        <p style="font-size:13.5px;color:#475569;margin-top:0;">
+          本系統採「手機號碼 ＋ LINE 專屬 UID」雙重實名驗證保護個資。登入後可查詢即時申辦進度條、下載電子合約 PDF 及自主更新個人資料。
+        </p>
+        <div class="form-group">
+          <label>實名手機號碼（10 碼）*</label>
+          <input type="tel" id="loginPhone" maxlength="10" placeholder="請輸入留單時填寫的 09xxxxxxxx">
+        </div>
+        <button class="btn btn-navy" onclick="doClientLogin(false)">🔓 實名驗證並查詢我的服務履歷</button>
+      </div>
+      <div id="resumeDashboard" class="hidden">
+        <div class="card card-navy" style="padding:14px 18px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <div style="font-size:13px;color:#cbd5e1;">實名驗證通過</div>
+              <div style="font-size:19px;font-weight:800;color:#fbbf24;" id="resClientName">-</div>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="logoutResume()">切換門號</button>
+          </div>
+        </div>
+        <div id="casesListContainer"></div>
+        <div class="card">
+          <div class="section-title">✏️ 自主更新聯絡電話與職收資料</div>
+          <p style="font-size:12.5px;color:#b45309;background:#fffbeb;padding:8px 10px;border-radius:8px;margin-top:0;">
+            🔒 為確保申辦安全與法規遵循，更新時系統將自動將您修改前之舊資料連同時間永久封存於歷史軌跡庫（只增不改）。
+          </p>
+          <div class="form-group">
+            <label>更新聯絡手機號碼</label>
+            <input type="tel" id="updPhone" maxlength="10">
+          </div>
+          <div class="form-group">
+            <label>最新住家／通訊地址</label>
+            <input type="text" id="updAddress" placeholder="縣市、鄉鎮市區、路街門牌">
+          </div>
+          <div class="form-group">
+            <label>目前任職公司名稱</label>
+            <input type="text" id="updCompany" placeholder="公司行號或自營名稱">
+          </div>
+          <div class="form-group">
+            <label>行業別與職稱</label>
+            <input type="text" id="updJob" placeholder="例如：製造業／工程師">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div class="form-group">
+              <label>月收入－薪轉 (元)</label>
+              <input type="number" id="updIncTransfer" placeholder="如 45000">
+            </div>
+            <div class="form-group">
+              <label>月收入－領現 (元)</label>
+              <input type="number" id="updIncCash" placeholder="如 0">
+            </div>
+          </div>
+          <button class="btn btn-navy" onclick="submitProfileUpdate()">💾 確認更新並封存變更軌跡</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <!-- 分頁 4：五重防偽手機觸控電子簽單中心（含 GPS 定位＋PDF 憑據合成）   -->
+    <!-- ================================================================ -->
+    <section id="tab-esign" class="tab-pane">
+      <div class="card">
+        <div class="section-title">✍️ 手機觸控電子簽名（五重防偽存證）</div>
+        <div class="form-group">
+          <label>選擇欲簽署之正式電子合約（即時同步劉總後台範本）</label>
+          <select id="esignContractSelect" onchange="onContractSelectChange()"></select>
+        </div>
+        <div id="esignContractText" class="contract-scroll">正在載入正式契約條款...</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div class="form-group">
+            <label>立約客戶姓名 *</label>
+            <input type="text" id="esignName" placeholder="真實姓名">
+          </div>
+          <div class="form-group">
+            <label>實名驗證手機 *</label>
+            <input type="tel" id="esignPhone" maxlength="10" placeholder="09xxxxxxxx">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>核准額度／服務費確認摘要（委託契約可維持預設）</label>
+          <input type="text" id="esignAmountSummary" value="初步評估不拉聯徵，核准對保前 0 元收費">
+        </div>
+        <!-- GPS 定位抓取區塊 -->
+        <div id="gpsStatusBox" class="gps-box pending">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+            <div>
+              <b>📍 步驟 1：手機 GPS 防偽經緯度定位</b>
+              <div id="gpsCoordText" style="font-size:12.5px;margin-top:2px;">尚未取得定位，請點擊右側按鈕授權定位</div>
+            </div>
+            <button type="button" class="btn btn-success btn-sm" onclick="acquireGPSLocation(false)">取得定位</button>
+          </div>
+        </div>
+        <!-- 手寫簽名板 -->
+        <div class="form-group">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <label style="margin:0;">✍️ 步驟 2：請於下方框內以手指親筆簽名 *</label>
+            <button type="button" class="btn btn-outline btn-sm" style="padding:4px 10px;font-size:12px;" onclick="clearSignatureCanvas()">清除重簽</button>
+          </div>
+          <div class="canvas-wrap">
+            <canvas id="sigCanvas"></canvas>
+            <div id="canvasHint" class="canvas-placeholder">請在此處親筆簽名<br><span style="font-size:12px;">(支援手機觸控筆跡)</span></div>
+          </div>
+        </div>
+        <!-- 五重防偽即時狀態燈 -->
+        <div class="five-checks">
+          <div class="check-pill" id="chkSig">⬜ ① 手寫筆跡未簽</div>
+          <div class="check-pill" id="chkPhone">⬜ ② 實名手機待填</div>
+          <div class="check-pill ok" id="chkUid">✅ ③ LINE UID 綁定</div>
+          <div class="check-pill ok">✅ ④ 伺服器標準時間</div>
+          <div class="check-pill" id="chkGps" style="grid-column:1 / span 2;">⬜ ⑤ 手機 GPS 經緯度尚未定位</div>
+        </div>
+        <label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;font-weight:600;margin-bottom:14px;cursor:pointer;">
+          <input type="checkbox" id="chkAgreeTerms" style="width:20px;height:20px;margin-top:2px;">
+          <span>本人已詳閱上方契約條款，同意依中華民國《電子簽章法》以手機觸控簽名、實名手機、標準時間與 GPS 座標完成具法律效力之數位存證。</span>
+        </label>
+        <button class="btn btn-gold" id="btnSubmitSign" onclick="submitESignature()">🛡️ 確認簽署並立即產出防偽 PDF 憑據</button>
+        <div id="esignSuccessCard" class="card hidden" style="margin-top:14px;background:#ecfdf5;border:2px solid #059669;"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 底部固定四分頁導覽列 -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="nav-home" onclick="switchTab('home')"><span class="ico">🏛️</span><span>品牌官網</span></button>
+    <button class="nav-btn" id="nav-calc" onclick="switchTab('calc')"><span class="ico">🧮</span><span>額度試算</span></button>
+    <button class="nav-btn" id="nav-resume" onclick="switchTab('resume')"><span class="ico">📊</span><span>服務履歷</span></button>
+    <button class="nav-btn" id="nav-esign" onclick="switchTab('esign')"><span class="ico">✍️</span><span>電子簽單</span></button>
+  </nav>
+
+  <script>
+    // ==================== V7.0 GitHub Pages ➔ GAS JSON API 橋接中樞 ====================
+    var GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzofnwdYqJprOQIu_4vXmtqoWT_uyfnxg27otb9u_CxHX8m_0D2qYTTX8NBqTMxlQNzZg/exec';
+
+    function parseUrlParams() {
+      var obj = {};
+      try {
+        var sp = new URLSearchParams(window.location.search);
+        sp.forEach(function(v, k) { obj[k] = v; });
+      } catch (e) {}
+      return obj;
+    }
+
+    function callGasApi(apiAction, args, onSuccess, onFailure) {
+      fetch(GAS_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ apiAction: apiAction, args: args || [] }),
+        redirect: 'follow'
+      })
+      .then(function(res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.text();
+      })
+      .then(function(txt) {
+        var json;
+        try {
+          json = JSON.parse(txt);
+        } catch (parseErr) {
+          throw new Error('雲端 API 回應格式異常，請確認 GAS 部署權限為「所有人」');
+        }
+        if (json && json.ok === true) {
+          if (typeof onSuccess === 'function') onSuccess(json.result);
+        } else {
+          var errMsg = (json && (json.error || json.message)) || '雲端服務執行失敗';
+          if (typeof onFailure === 'function') onFailure(new Error(errMsg));
+        }
+      })
+      .catch(function(err) {
+        if (typeof onFailure === 'function') onFailure(err);
+      });
+    }
+
+    (function initGasBridge() {
+      if (window.google && window.google.script && window.google.script.run) return;
+      function createRunner(successCb, failureCb) {
+        return new Proxy({}, {
+          get: function(_target, prop) {
+            if (prop === 'withSuccessHandler') {
+              return function(fn) { return createRunner(fn, failureCb); };
+            }
+            if (prop === 'withFailureHandler') {
+              return function(fn) { return createRunner(successCb, fn); };
+            }
+            return function() {
+              var args = Array.prototype.slice.call(arguments);
+              callGasApi(String(prop), args, successCb, failureCb);
+            };
+          }
+        });
+      }
+      window.google = window.google || {};
+      window.google.script = window.google.script || {};
+      window.google.script.run = createRunner(null, null);
+    })();
+
+    // ==================== 頁面參數解析與全域狀態 ====================
+    var RAW_PARAMS = parseUrlParams();
+    if (RAW_PARAMS.uid) {
+      try { sessionStorage.setItem('TL_CLIENT_UID', RAW_PARAMS.uid); } catch (e) {}
+    } else {
+      try {
+        var savedUid = sessionStorage.getItem('TL_CLIENT_UID');
+        if (savedUid) RAW_PARAMS.uid = savedUid;
+      } catch (e) {}
+    }
+
+    var STATE = {
+      lineUid: RAW_PARAMS.uid || '',
+      refCode: (RAW_PARAMS.ref || '').toUpperCase(),
+      contracts: [],
+      activeCaseId: '',
+      activeClientId: '',
+      loggedInCases: [],
+      gps: { lat: '', lng: '', accuracy: '' },
+      hasSigned: false
+    };
+
+    var PRODUCTS_HTML = {
+      credit: '<b>💳 個人信用貸款與職收增貸</b><br>• 額度最高 10～500 萬，前 3 期最低 2% 起。<br>• 涵蓋一般上班族、領現金無扣憑、攤販自營商、年資未滿半年或近期銀行聯徵多查。<br>• <b>常見問答：</b>聯徵多查怎麼辦？我們可協助媒合免拉銀行聯徵之上市融資專案先行週轉，待 3 個月後再轉低利銀行。',
+      house: '<b>🏠 房屋一二胎活化轉增貸</b><br>• <b>屋齡、坪數皆不限制</b>，土地、個人持分房屋或未保存登記建物皆可免費估價。<br>• 支援銀行二胎已滿再增貸，以及「代墊塗銷民間高利私設轉回低利銀行」救援方案。<br>• <b>常見問答：</b>個人持分需要通知親屬嗎？專案保密承作，無須驚動其他持分親人。',
+      car: '<b>🚗 汽機車原車融資與降息增貸</b><br>• 重機、一般機車、自小客、貨車、公司車、計程車與高齡老車皆可申辦。<br>• <b>原車可用、完全免留車、初評免附行照</b>，最高可貸當月權威殘值 130%～220%。<br>• <b>常見問答：</b>車貸還在繳能增貸嗎？只要正常繳滿 6～12 期即可代償前貸並多拿現金。',
+      debt: '<b>📉 負債整合、法扣解套與當日急件</b><br>• 針對多張信用卡循環、多筆信貸月付過高、民間高利私設，整合為單一低月付長天期方案（月付最高降 60%）。<br>• 薪水遭法院強制扣薪（法扣 1/3）、前置協商或更生履約中，皆備有專屬解套與週轉綠色通道。'
+    };
+
+    window.addEventListener('DOMContentLoaded', function() {
+      showProductInfo('credit');
+      recalcLoan();
+      updateCheckPills();
+      // 依據網址 ?tab= 或 ?dept= 自動切換分頁（0.3 秒無延遲即時切換）
+      var initialTab = String(RAW_PARAMS.tab || RAW_PARAMS.dept || RAW_PARAMS.page || 'home').toLowerCase();
+      if (initialTab === 'calc') switchTab('calc');
+      else if (initialTab === 'resume') switchTab('resume');
+      else if (initialTab === 'esign') switchTab('esign');
+      else switchTab('home');
+      // 背景同步雲端合約範本、引流顧問與自動帶入資訊
+      loadInitData();
+    });
+
+    function escHtml(str) {
+      return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function switchTab(tabName) {
+      ['home', 'calc', 'resume', 'esign'].forEach(function(t) {
+        document.getElementById('tab-' + t).classList.toggle('active', t === tabName);
+        document.getElementById('nav-' + t).classList.toggle('active', t === tabName);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (tabName === 'esign') {
+        setTimeout(initSignatureCanvas, 80);
+        if (!STATE.gps.lat) acquireGPSLocation(true);
+      }
+    }
+
+    function showToast(msg) {
+      var box = document.getElementById('toastBox');
+      box.textContent = msg;
+      box.style.display = 'block';
+      setTimeout(function() { box.style.display = 'none'; }, 3500);
+    }
+
+    function setLoading(show, text) {
+      document.getElementById('loadingText').textContent = text || '雲端安全處理中，請稍候...';
+      document.getElementById('loadingMask').style.display = show ? 'flex' : 'none';
+    }
+
+    function showProductInfo(key, btnEl) {
+      document.getElementById('productDetailBox').innerHTML = PRODUCTS_HTML[key] || PRODUCTS_HTML.credit;
+      if (btnEl) {
+        document.querySelectorAll('.pill-btn').forEach(function(b) { b.classList.remove('active'); });
+        btnEl.classList.add('active');
+      }
+    }
+
+    // 載入後端初始資料（合約範本、引流推薦人、重複用戶自動帶入）
+    function loadInitData() {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          if (!res || !res.success) {
+            renderContractDropdown();
+            return;
+          }
+          if (res.runtime && res.runtime.brandTitle) {
+            document.getElementById('hdrBrandTitle').textContent = res.runtime.brandTitle;
+          }
+          if (res.referrer && res.referrer.code) {
+            STATE.refCode = res.referrer.code;
+            var banner = document.getElementById('refBanner');
+            banner.textContent = '🏅 專屬推薦顧問已鎖定：' + (res.referrer.name || res.referrer.code) + ' (' + res.referrer.code + ')';
+            banner.style.display = 'block';
+            var refInput = document.getElementById('leadRefCode');
+            refInput.value = res.referrer.code;
+            refInput.readOnly = true;
+            refInput.style.background = '#ecfdf5';
+          }
+          if (res.topicParam) {
+            document.getElementById('leadTopic').value = res.topicParam;
+          }
+          if (res.autoFill) {
+            var af = res.autoFill;
+            STATE.activeCaseId = af.caseId || '';
+            STATE.activeClientId = af.clientId || '';
+            if (af.clientName) {
+              document.getElementById('leadName').value = af.clientName;
+              document.getElementById('esignName').value = af.clientName;
+            }
+            if (af.phone) {
+              document.getElementById('leadPhone').value = af.phone;
+              document.getElementById('loginPhone').value = af.phone;
+              document.getElementById('esignPhone').value = af.phone;
+              updateCheckPills();
+            }
+          }
+          if (document.getElementById('tab-resume').classList.contains('active') &&
+              (STATE.lineUid || document.getElementById('loginPhone').value.trim())) {
+            doClientLogin(true);
+          }
+          STATE.contracts = res.contracts || [];
+          renderContractDropdown();
+        })
+        .withFailureHandler(function() {
+          renderContractDropdown();
+        })
+        .Dept03_apiGetInitData(RAW_PARAMS);
+    }
+
+    // ==================== 互動式月付金試算器 ====================
+    function onCalcPresetChange() {
+      var sel = document.getElementById('calcType');
+      var opt = sel.options[sel.selectedIndex];
+      document.getElementById('rngRate').value = opt.getAttribute('data-rate') || '4.5';
+      document.getElementById('rngTerm').value = opt.getAttribute('data-term') || '60';
+      document.getElementById('leadTopic').value = sel.value;
+      recalcLoan();
+    }
+
+    function recalcLoan() {
+      var amtWan = Number(document.getElementById('rngAmt').value);
+      var term = Number(document.getElementById('rngTerm').value);
+      var annualRate = Number(document.getElementById('rngRate').value);
+      document.getElementById('lblAmt').textContent = amtWan + ' 萬元';
+      document.getElementById('lblTerm').textContent = term + ' 期 (' + (term / 12).toFixed(1).replace('.0', '') + ' 年)';
+      document.getElementById('lblRate').textContent = annualRate.toFixed(1) + ' %';
+      var principal = amtWan * 10000;
+      var monthlyRate = (annualRate / 100) / 12;
+      var monthlyPay = 0;
+      if (monthlyRate === 0) {
+        monthlyPay = principal / term;
+      } else {
+        var factor = Math.pow(1 + monthlyRate, term);
+        monthlyPay = principal * (monthlyRate * factor) / (factor - 1);
+      }
+      var totalInt = Math.max(0, Math.round(monthlyPay * term - principal));
+      document.getElementById('resMonthly').textContent = 'NT$ ' + Math.round(monthlyPay).toLocaleString();
+      document.getElementById('resTotalLoan').textContent = amtWan + ' 萬元';
+      document.getElementById('resTotalInt').textContent = totalInt.toLocaleString() + ' 元';
+    }
+
+    // ==================== 60 秒免費額度初評送出 ====================
+    function submitLeadForm() {
+      var name = document.getElementById('leadName').value.trim();
+      var phone = document.getElementById('leadPhone').value.trim();
+      if (!name) return showToast('請輸入您的真實姓名或稱呼');
+      if (!/^09\d{8}$/.test(phone.replace(/\D/g, ''))) return showToast('請輸入正確的 10 碼手機門號 (09開頭)');
+      setLoading(true, '正在加密建檔並派入專屬水庫...');
+      google.script.run
+        .withSuccessHandler(function(res) {
+          setLoading(false);
+          if (!res || !res.success) {
+            showToast(res ? res.message : '送出失敗，請重試');
+            return;
+          }
+          STATE.activeCaseId = res.caseId;
+          STATE.activeClientId = res.clientId;
+          document.getElementById('loginPhone').value = res.phone;
+          document.getElementById('esignName').value = res.clientName;
+          document.getElementById('esignPhone').value = res.phone;
+          updateCheckPills();
+          var box = document.getElementById('leadSuccessBox');
+          box.classList.remove('hidden');
+          box.innerHTML = '<b style="color:#047857;font-size:16px;">🎉 免費額度初評留單成功！</b><br>' +
+            '<div style="font-size:13.5px;margin-top:6px;line-height:1.8;">' +
+            '📋 案件編號：<b>' + escHtml(res.caseId) + '</b><br>' +
+            '🏅 歸屬顧問：<b>' + escHtml(res.refName) + '</b><br>' +
+            '🛡️ 我們已安排資深專員依您指定的時段保密通話！</div>' +
+            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;">' +
+            '<button class="btn btn-navy btn-sm" style="width:100%;" onclick="switchTab(\'resume\');doClientLogin(true);">📊 查看服務履歷</button>' +
+            '<button class="btn btn-gold btn-sm" style="width:100%;" onclick="switchTab(\'esign\');">✍️ 線上簽委託書</button></div>';
+          showToast('✅ 初評表已送出！');
+        })
+        .withFailureHandler(function(err) {
+          setLoading(false);
+          showToast('連線錯誤：' + err.message);
+        })
+        .Dept03_apiSubmitLeadForm({
+          clientName: name,
+          phone: phone,
+          lineUid: STATE.lineUid,
+          loanType: document.getElementById('leadTopic').value.trim(),
+          amountWan: document.getElementById('rngAmt').value,
+          contactTime: document.getElementById('leadTime').value,
+          refCode: document.getElementById('leadRefCode').value.trim(),
+          note: document.getElementById('leadNote').value.trim()
+        });
+    }
+
+    // ==================== 服務履歷登入與進度渲染 ====================
+    function doClientLogin(silent) {
+      var phone = document.getElementById('loginPhone').value.trim();
+      if (!phone && !STATE.lineUid) {
+        if (!silent) showToast('請輸入 10 碼手機號碼進行實名驗證');
+        return;
+      }
+      setLoading(true, '實名驗證與讀取雲端服務履歷中...');
+      google.script.run
+        .withSuccessHandler(function(res) {
+          setLoading(false);
+          if (!res || !res.success) {
+            if (!silent) showToast(res ? res.message : '查無申辦紀錄');
+            return;
+          }
+          STATE.loggedInCases = res.cases || [];
+          if (STATE.loggedInCases.length > 0) {
+            var first = STATE.loggedInCases[0];
+            STATE.activeCaseId = first.caseId;
+            STATE.activeClientId = first.clientId;
+            document.getElementById('resClientName').textContent = first.clientName + '（' + first.phone + '）';
+            document.getElementById('esignName').value = first.clientName;
+            document.getElementById('esignPhone').value = first.phone;
+            document.getElementById('updPhone').value = first.phone;
+            document.getElementById('updAddress').value = first.profileDetail.homeAddress || '';
+            document.getElementById('updCompany').value = first.profileDetail.companyName || '';
+            document.getElementById('updJob').value = first.profileDetail.jobTitle || '';
+            document.getElementById('updIncTransfer').value = first.profileDetail.monthlyIncomeTransfer || '';
+            document.getElementById('updIncCash').value = first.profileDetail.monthlyIncomeCash || '';
+            updateCheckPills();
+          }
+          renderCasesList(STATE.loggedInCases);
+          document.getElementById('resumeLoginCard').classList.add('hidden');
+          document.getElementById('resumeDashboard').classList.remove('hidden');
+        })
+        .withFailureHandler(function(err) {
+          setLoading(false);
+          if (!silent) showToast('登入異常：' + err.message);
+        })
+        .Dept03_apiClientLogin({ phone: phone, lineUid: STATE.lineUid });
+    }
+
+    function logoutResume() {
+      document.getElementById('resumeDashboard').classList.add('hidden');
+      document.getElementById('resumeLoginCard').classList.remove('hidden');
+    }
+
+    function renderCasesList(cases) {
+      var steps = ['洽談', '委託', '收件', '討論', '照會', '核價', '對保'];
+      var html = '';
+      cases.forEach(function(c, cIdx) {
+        var fillPct = Math.round((c.nodeIndex / (steps.length - 1)) * 92);
+        var stepperHtml = '<div class="stepper"><div class="stepper-fill" style="width:' + fillPct + '%"></div>';
+        steps.forEach(function(st, idx) {
+          var cls = idx < c.nodeIndex ? 'done' : (idx === c.nodeIndex ? 'current' : '');
+          stepperHtml += '<div class="step-item ' + cls + '"><div class="step-dot">' + (idx < c.nodeIndex ? '✓' : (idx + 1)) + '</div><div class="step-label">' + st + '</div></div>';
+        });
+        stepperHtml += '</div>';
+        var docsHtml = '';
+        if (c.signedDocs && c.signedDocs.length > 0) {
+          docsHtml = '<div style="margin-top:12px;border-top:1px solid #e2e8f0;padding-top:10px;"><b style="font-size:13.5px;color:#0f766e;">📄 已封存防偽電子憑據（點擊下載 PDF）：</b>';
+          c.signedDocs.forEach(function(doc) {
+            docsHtml += '<div style="margin-top:6px;background:#f0fdf4;padding:8px 10px;border-radius:8px;font-size:12.5px;display:flex;justify-content:space-between;align-items:center;">' +
+              '<div><b>' + escHtml(doc.contractTitle) + '</b><br><span style="color:#64748b;">' + escHtml(doc.signedTime) + '</span></div>' +
+              '<a class="btn btn-success btn-sm" style="padding:6px 10px;font-size:12px;" href="' + escHtml(doc.pdfUrl) + '" target="_blank" rel="noopener">下載PDF</a></div>';
+          });
+          docsHtml += '</div>';
+        }
+        html += '<div class="card">' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
+            '<b style="font-size:15px;color:#0b132b;">📋 ' + escHtml(c.loanType) + '</b>' +
+            '<span class="status-badge">' + escHtml(c.currentNode) + '｜' + escHtml(c.status) + '</span>' +
+          '</div>' +
+          '<div style="font-size:12.5px;color:#64748b;">案件編號：' + escHtml(c.caseId) + '｜負責專員：<b>' + escHtml(c.handlerName) + '</b></div>' +
+          stepperHtml +
+          '<div style="background:#f8fafc;padding:10px;border-radius:8px;font-size:13px;color:#334155;">' +
+            '<b>最新進度摘要：</b>' + escHtml(c.lastSummary) + '<br><span style="font-size:11.5px;color:#64748b;">更新時間：' + escHtml(c.lastUpdate) + '</span>' +
+          '</div>' +
+          docsHtml +
+          '<div style="margin-top:12px;">' +
+            '<button class="btn btn-gold btn-sm" style="width:100%;" onclick="openSignByIndex(' + cIdx + ')">✍️ 前往此案件線上電子簽署</button>' +
+          '</div></div>';
+      });
+      document.getElementById('casesListContainer').innerHTML = html;
+    }
+
+    function openSignByIndex(idx) {
+      var c = STATE.loggedInCases[idx];
+      if (!c) return;
+      STATE.activeCaseId = c.caseId;
+      STATE.activeClientId = c.clientId;
+      document.getElementById('esignName').value = c.clientName;
+      document.getElementById('esignPhone').value = c.phone;
+      updateCheckPills();
+      switchTab('esign');
+    }
+
+    function submitProfileUpdate() {
+      if (!STATE.activeCaseId) return showToast('請先完成服務履歷登入');
+      setLoading(true, '更新個資並將舊紀錄永久封存中...');
+      google.script.run
+        .withSuccessHandler(function(res) {
+          setLoading(false);
+          showToast(res && res.success ? res.message : (res ? res.message : '更新失敗'));
+          if (res && res.success) doClientLogin(true);
+        })
+        .withFailureHandler(function(err) {
+          setLoading(false);
+          showToast('更新異常：' + err.message);
+        })
+        .Dept03_apiUpdateClientProfile({
+          caseId: STATE.activeCaseId,
+          clientId: STATE.activeClientId,
+          lineUid: STATE.lineUid,
+          newPhone: document.getElementById('updPhone').value.trim(),
+          homeAddress: document.getElementById('updAddress').value.trim(),
+          companyName: document.getElementById('updCompany').value.trim(),
+          jobTitle: document.getElementById('updJob').value.trim(),
+          monthlyIncomeTransfer: document.getElementById('updIncTransfer').value.trim(),
+          monthlyIncomeCash: document.getElementById('updIncCash').value.trim()
+        });
+    }
+
+    // ==================== 五重防偽電子簽名板與 GPS 定位 ====================
+    function renderContractDropdown() {
+      var sel = document.getElementById('esignContractSelect');
+      sel.innerHTML = '';
+      if (STATE.contracts.length === 0) {
+        STATE.contracts = [{
+          key: 'CONTRACT_TPL_01',
+          title: '標準合約一：貸款代辦委託契約書',
+          content: '【三貸同堂・貸款代辦委託契約書】\n一、初步評估不拉銀行聯徵，核准對保前 0 元收費。\n二、本契約依中華民國《電子簽章法》採手機觸控親筆簽名並同步烙印實名手機、標準時間與 GPS 定位存證。'
+        }];
+      }
+      STATE.contracts.forEach(function(c, idx) {
+        var opt = document.createElement('option');
+        opt.value = idx;
+        opt.textContent = c.title;
+        sel.appendChild(opt);
+      });
+      onContractSelectChange();
+    }
+
+    function onContractSelectChange() {
+      var idx = Number(document.getElementById('esignContractSelect').value || 0);
+      var c = STATE.contracts[idx];
+      if (c) document.getElementById('esignContractText').textContent = c.content;
+    }
+
+    var sigCtx = null, isDrawing = false, canvasInitialized = false;
+    function initSignatureCanvas() {
+      var canvas = document.getElementById('sigCanvas');
+      var rect = canvas.getBoundingClientRect();
+      if (rect.width === 0) return;
+      var ratio = Math.max(window.devicePixelRatio || 1, 1);
+      if (!canvasInitialized || canvas.width !== Math.round(rect.width * ratio)) {
+        canvas.width = Math.round(rect.width * ratio);
+        canvas.height = Math.round(210 * ratio);
+        sigCtx = canvas.getContext('2d');
+        sigCtx.scale(ratio, ratio);
+        sigCtx.lineCap = 'round';
+        sigCtx.lineJoin = 'round';
+        sigCtx.lineWidth = 3.2;
+        sigCtx.strokeStyle = '#0b132b';
+      }
+      if (canvasInitialized) return;
+      canvasInitialized = true;
+      function getPos(e) {
+        var r = canvas.getBoundingClientRect();
+        var pt = (e.touches && e.touches.length > 0) ? e.touches[0] : e;
+        return { x: pt.clientX - r.left, y: pt.clientY - r.top };
+      }
+      function startDraw(e) {
+        e.preventDefault();
+        isDrawing = true;
+        var p = getPos(e);
+        sigCtx.beginPath();
+        sigCtx.moveTo(p.x, p.y);
+        document.getElementById('canvasHint').style.display = 'none';
+        STATE.hasSigned = true;
+        updateCheckPills();
+      }
+      function moveDraw(e) {
+        if (!isDrawing) return;
+        e.preventDefault();
+        var p = getPos(e);
+        sigCtx.lineTo(p.x, p.y);
+        sigCtx.stroke();
+      }
+      function endDraw(e) {
+        if (isDrawing) { e.preventDefault(); isDrawing = false; sigCtx.closePath(); }
+      }
+      canvas.addEventListener('mousedown', startDraw);
+      canvas.addEventListener('mousemove', moveDraw);
+      window.addEventListener('mouseup', endDraw);
+      canvas.addEventListener('touchstart', startDraw, { passive: false });
+      canvas.addEventListener('touchmove', moveDraw, { passive: false });
+      canvas.addEventListener('touchend', endDraw, { passive: false });
+    }
+
+    function clearSignatureCanvas() {
+      var canvas = document.getElementById('sigCanvas');
+      if (sigCtx) sigCtx.clearRect(0, 0, canvas.width, canvas.height);
+      STATE.hasSigned = false;
+      document.getElementById('canvasHint').style.display = 'block';
+      updateCheckPills();
+    }
+
+    function acquireGPSLocation(isSilent) {
+      var box = document.getElementById('gpsStatusBox');
+      var txt = document.getElementById('gpsCoordText');
+      if (!navigator.geolocation) {
+        txt.textContent = '此瀏覽器不支援 GPS 定位，請改用手機 Chrome 或 Safari 開啟！';
+        return;
+      }
+      txt.textContent = '正在向手機衛星取得高精準 GPS 定位座標...';
+      navigator.geolocation.getCurrentPosition(
+        function(pos) {
+          STATE.gps.lat = pos.coords.latitude.toFixed(6);
+          STATE.gps.lng = pos.coords.longitude.toFixed(6);
+          STATE.gps.accuracy = Math.round(pos.coords.accuracy || 0);
+          box.classList.remove('pending');
+          txt.innerHTML = '✅ 定位鎖定：<b>' + STATE.gps.lat + ', ' + STATE.gps.lng + '</b>（精準度 ±' + STATE.gps.accuracy + 'm）';
+          updateCheckPills();
+          if (!isSilent) showToast('✅ GPS 防偽座標已鎖定！');
+        },
+        function() {
+          box.classList.add('pending');
+          txt.textContent = '⚠️ 無法取得 GPS（請開啟手機定位權限，或點右上角以預設瀏覽器開啟）。';
+          if (!isSilent) showToast('請允許瀏覽器存取位置權限以完成防偽簽署');
+        },
+        { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
+      );
+    }
+
+    document.getElementById('esignPhone').addEventListener('input', updateCheckPills);
+    function updateCheckPills() {
+      var phoneOk = /^09\d{8}$/.test(document.getElementById('esignPhone').value.replace(/\D/g, ''));
+      var pSig = document.getElementById('chkSig');
+      var pPh = document.getElementById('chkPhone');
+      var pUid = document.getElementById('chkUid');
+      var pGps = document.getElementById('chkGps');
+      pSig.className = 'check-pill' + (STATE.hasSigned ? ' ok' : '');
+      pSig.textContent = STATE.hasSigned ? '✅ ① 手寫筆跡已完成' : '⬜ ① 手寫筆跡未簽';
+      pPh.className = 'check-pill' + (phoneOk ? ' ok' : '');
+      pPh.textContent = phoneOk ? '✅ ② 實名手機已確認' : '⬜ ② 實名手機待填';
+      pUid.textContent = STATE.lineUid ? '✅ ③ LINE UID 綁定' : '✅ ③ 網頁實名存證';
+      pGps.className = 'check-pill' + (STATE.gps.lat ? ' ok' : '');
+      pGps.textContent = STATE.gps.lat ? ('✅ ⑤ GPS 已鎖定 (' + STATE.gps.lat + ', ' + STATE.gps.lng + ')') : '⬜ ⑤ 手機 GPS 經緯度尚未定位';
+    }
+
+    function submitESignature() {
+      var name = document.getElementById('esignName').value.trim();
+      var phone = document.getElementById('esignPhone').value.replace(/\D/g, '');
+      if (!name) return showToast('請填寫立約客戶真實姓名');
+      if (!/^09\d{8}$/.test(phone)) return showToast('請填寫正確的 10 碼實名手機號碼');
+      if (!STATE.gps.lat) { acquireGPSLocation(false); return showToast('簽署前請先完成 GPS 定位授權'); }
+      if (!STATE.hasSigned) return showToast('請先於簽名區以手指親筆簽名');
+      if (!document.getElementById('chkAgreeTerms').checked) return showToast('請勾選同意電子簽章法與契約條款');
+      var selIdx = Number(document.getElementById('esignContractSelect').value || 0);
+      var contract = STATE.contracts[selIdx] || { key: 'CONTRACT_TPL_01', title: '貸款代辦委託契約書', content: '' };
+      var canvas = document.getElementById('sigCanvas');
+      var sigDataUrl = canvas.toDataURL('image/png');
+      setLoading(true, '正在合成五重防偽 PDF 憑據並封存雲端硬碟...');
+      google.script.run
+        .withSuccessHandler(function(res) {
+          setLoading(false);
+          if (!res || !res.success) {
+            showToast(res ? res.message : '簽署產出失敗');
+            return;
+          }
+          STATE.activeCaseId = res.caseId;
+          var card = document.getElementById('esignSuccessCard');
+          card.classList.remove('hidden');
+          card.innerHTML = '<b style="color:#047857;font-size:17px;">🛡️ 電子契約防偽封存完成！</b>' +
+            '<div style="font-size:13px;margin-top:8px;line-height:1.8;color:#0f172a;">' +
+            '🔖 憑據編號：<b>' + escHtml(res.signId) + '</b><br>' +
+            '🕒 Google 標準時間：' + escHtml(res.serverTime) + '<br>' +
+            '📍 GPS 經緯度落款：' + escHtml(res.gpsCoord) + '<br>' +
+            '🔐 防偽校驗碼：<code>' + escHtml(res.hashCode) + '</code></div>' +
+            '<a class="btn btn-success" style="margin-top:12px;" href="' + escHtml(res.pdfUrl) + '" target="_blank" rel="noopener">📥 立即檢視／下載防偽 PDF 憑據</a>';
+          clearSignatureCanvas();
+          showToast('✅ 防偽 PDF 憑據已生成並推播通知！');
+        })
+        .withFailureHandler(function(err) {
+          setLoading(false);
+          showToast('簽署傳輸錯誤：' + err.message);
+        })
+        .Dept03_apiSubmitESignature({
+          caseId: STATE.activeCaseId,
+          clientId: STATE.activeClientId,
+          clientName: name,
+          phone: phone,
+          lineUid: STATE.lineUid,
+          contractKey: contract.key,
+          contractTitle: contract.title,
+          contractContent: contract.content,
+          amountSummary: document.getElementById('esignAmountSummary').value.trim(),
+          signatureDataUrl: sigDataUrl,
+          gpsLat: STATE.gps.lat,
+          gpsLng: STATE.gps.lng,
+          gpsAccuracy: STATE.gps.accuracy,
+          deviceInfo: navigator.userAgent
+        });
+    }
+  </script>
+</body>
+</html>
