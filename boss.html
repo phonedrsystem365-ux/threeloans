@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>三貸同堂｜劉總決策戰情室與八大參數控制台</title>
+  <style>
+    :root {
+      --navy-dark: #0b132b;
+      --navy-mid: #1c2541;
+      --gold: #c5a059;
+      --gold-bright: #f59e0b;
+      --line-green: #06c755;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --text-main: #0f172a;
+      --text-sub: #475569;
+      --success: #059669;
+      --danger: #dc2626;
+      --warn: #d97706;
+      --border: #cbd5e1;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0; padding: 0 0 88px 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      background: var(--bg); color: var(--text-main); line-height: 1.5;
+    }
+    .top-header {
+      background: linear-gradient(135deg, #0b132b 0%, #1e293b 100%);
+      color: #fff; padding: 14px 16px 16px; border-bottom: 3px solid var(--gold);
+      position: sticky; top: 0; z-index: 40; box-shadow: 0 4px 14px rgba(0,0,0,0.28);
+    }
+    .hdr-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .hdr-title { font-size: 18px; font-weight: 900; color: #fbbf24; margin: 0; letter-spacing: 0.4px; }
+    .hdr-sub { font-size: 12px; color: #cbd5e1; margin-top: 2px; }
+    .hdr-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .hdr-share-btn {
+      display: inline-flex; align-items: center; gap: 3px; background: var(--line-green);
+      color: #fff; text-decoration: none; padding: 4px 9px; border-radius: 99px;
+      font-size: 11.5px; font-weight: 800; border: 1px solid #34d399; white-space: nowrap;
+    }
+    .env-badge {
+      padding: 4px 9px; border-radius: 99px; font-size: 11px; font-weight: 800;
+      background: rgba(245,158,11,0.2); border: 1px solid var(--gold); color: #fde68a; white-space: nowrap;
+    }
+    .env-badge.prod { background: rgba(16,185,129,0.25); border-color: #34d399; color: #a7f3d0; }
+    .container { max-width: 860px; margin: 0 auto; padding: 14px; }
+    .tab-pane { display: none; animation: fadeIn 0.2s ease; }
+    .tab-pane.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .card {
+      background: var(--card); border-radius: 14px; padding: 15px; margin-bottom: 13px;
+      box-shadow: 0 2px 10px rgba(15,23,42,0.06); border: 1px solid #e2e8f0;
+    }
+    .card-navy { background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid)); color: #fff; border: 1.5px solid var(--gold); }
+    .section-title {
+      font-size: 16px; font-weight: 800; color: var(--navy-dark); margin: 0 0 11px;
+      padding-left: 10px; border-left: 4px solid var(--gold-bright);
+      display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .card-navy .section-title { color: #fbbf24; }
+    /* 區間切換列與子頁籤 */
+    .period-bar {
+      display: flex; align-items: center; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 10px;
+    }
+    .period-pill {
+      border: 1.5px solid #cbd5e1; background: #fff; color: #334155; padding: 6px 11px;
+      border-radius: 99px; font-size: 12.5px; font-weight: 800; cursor: pointer; white-space: nowrap;
+    }
+    .period-pill.active { background: var(--navy-dark); color: #fbbf24; border-color: var(--gold); }
+    .subtab-bar {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px;
+      background: #e2e8f0; padding: 4px; border-radius: 12px;
+    }
+    .subtab-btn {
+      border: none; background: transparent; color: #475569; padding: 8px 4px; border-radius: 9px;
+      font-size: 12px; font-weight: 800; cursor: pointer; transition: 0.15s;
+    }
+    .subtab-btn.active { background: #fff; color: var(--navy-dark); box-shadow: 0 2px 6px rgba(15,23,42,0.1); }
+    .war-subpane { display: none; }
+    .war-subpane.active { display: block; }
+    /* KPI 方塊 */
+    .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 12px; }
+    @media (min-width: 600px) { .kpi-grid { grid-template-columns: repeat(4, 1fr); } }
+    .kpi-tile {
+      background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 11px 9px;
+      text-align: center; box-shadow: 0 2px 6px rgba(15,23,42,0.04);
+    }
+    .kpi-num { font-size: 21px; font-weight: 900; color: var(--navy-dark); }
+    .kpi-lbl { font-size: 11.5px; color: var(--text-sub); font-weight: 700; margin-top: 2px; }
+    .kpi-sub { font-size: 11px; color: #64748b; margin-top: 2px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .fin-box {
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(197,160,89,0.35);
+      border-radius: 10px; padding: 10px 8px; text-align: center;
+    }
+    .fin-lbl { font-size: 11.5px; color: #cbd5e1; }
+    .fin-val { font-size: 18px; font-weight: 900; margin-top: 2px; }
+    .metric-card {
+      background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 11px; padding: 11px 12px;
+    }
+    .metric-card.warn { background: #fffbeb; border-color: #fcd34d; }
+    .metric-card.danger { background: #fef2f2; border-color: #fca5a5; }
+    .metric-card.ok { background: #ecfdf5; border-color: #6ee7b7; }
+    .m-lbl { font-size: 12px; color: #475569; font-weight: 700; }
+    .m-val { font-size: 20px; font-weight: 900; color: var(--navy-dark); margin-top: 2px; }
+    .m-sub { font-size: 11.5px; color: #64748b; margin-top: 2px; }
+    .form-group { margin-bottom: 11px; }
+    label { display: block; font-size: 13px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px; }
+    input, select, textarea {
+      width: 100%; padding: 10px 12px; font-size: 15px; border: 1.5px solid var(--border);
+      border-radius: 9px; background: #fff; color: var(--text-main); outline: none;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--gold-bright); }
+    .btn {
+      display: inline-flex; justify-content: center; align-items: center; gap: 6px;
+      width: 100%; padding: 12px 15px; border-radius: 11px; font-size: 14.5px; font-weight: 800;
+      border: none; cursor: pointer; text-decoration: none; text-align: center;
+    }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-gold { background: linear-gradient(135deg, #d97706, #f59e0b); color: #fff; }
+    .btn-line { background: linear-gradient(135deg, #06c755, #05a847); color: #fff; }
+    .btn-navy { background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid)); color: #fde68a; border: 1px solid var(--gold); }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-outline { background: #fff; color: var(--navy-dark); border: 1.5px solid #94a3b8; }
+    .btn-sm { padding: 7px 11px; font-size: 12.5px; width: auto; border-radius: 8px; }
+    .list-row {
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;
+      padding: 10px 0; border-bottom: 1px solid #e2e8f0; font-size: 13.5px;
+    }
+    .list-row:last-child { border-bottom: none; }
+    .badge { display: inline-block; padding: 3px 8px; border-radius: 99px; font-size: 11.5px; font-weight: 800; white-space: nowrap; }
+    .badge-ok { background: #dcfce7; color: #166534; }
+    .badge-red { background: #fee2e2; color: #991b1b; }
+    .badge-blue { background: #dbeafe; color: #1e40af; }
+    .badge-gold { background: #fef3c7; color: #92400e; }
+    .badge-gray { background: #e2e8f0; color: #475569; }
+    .bar-mini { width: 100%; height: 8px; background: #e2e8f0; border-radius: 99px; overflow: hidden; margin-top: 5px; }
+    .bar-mini-fill { height: 100%; background: linear-gradient(90deg, #0284c7, #38bdf8); border-radius: 99px; }
+    .bar-mini-fill.gold { background: linear-gradient(90deg, #d97706, #fbbf24); }
+    .bar-mini-fill.green { background: linear-gradient(90deg, #059669, #34d399); }
+    /* 單案工作流卡片與 7 節點步驟條 */
+    .wf-card {
+      border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 12px; margin-bottom: 10px; background: #fff;
+    }
+    .wf-card.overdue { border-color: #fca5a5; background: #fef2f2; }
+    .wf-steps { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin: 8px 0; }
+    .wf-dot {
+      text-align: center; font-size: 10px; font-weight: 800; padding: 3px 1px; border-radius: 5px;
+      background: #e2e8f0; color: #64748b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .wf-dot.done { background: #bbf7d0; color: #166534; }
+    .wf-dot.curr { background: #0b132b; color: #fbbf24; border: 1px solid var(--gold); }
+    /* 個人雙欄排行卡 */
+    .rank-card {
+      border: 1px solid #e2e8f0; border-radius: 11px; padding: 11px 12px; margin-bottom: 9px; background: #f8fafc;
+    }
+    .rank-dual { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 7px; }
+    .rank-col { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 7px 9px; font-size: 12px; }
+    .rank-col.ref { background: #f0f9ff; border-color: #bae6fd; }
+    /* 推播開關核取群組 */
+    .chk-grid { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 6px; }
+    .chk-pill {
+      display: inline-flex; align-items: center; gap: 5px; background: #fff; border: 1.5px solid #cbd5e1;
+      border-radius: 8px; padding: 6px 10px; font-size: 13px; font-weight: 700; cursor: pointer;
+    }
+    .chk-pill input { width: 16px; height: 16px; margin: 0; }
+    .param-block {
+      background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 13px; margin-bottom: 12px;
+    }
+    .param-hdr { font-size: 14.5px; font-weight: 800; color: #1e3a8a; margin-bottom: 8px; }
+    .bind-banner {
+      background: #ecfdf5; border: 1.5px solid #34d399; border-radius: 10px; padding: 11px 12px;
+      margin-top: 10px; font-size: 13px; color: #065f46;
+    }
+    /* 底部 5 分頁導覽 */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; background: var(--navy-dark);
+      border-top: 2px solid var(--gold); display: flex; z-index: 50; padding-bottom: env(safe-area-inset-bottom);
+    }
+    .nav-btn {
+      flex: 1; background: none; border: none; color: #94a3b8; padding: 9px 2px 11px;
+      font-size: 11px; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px;
+    }
+    .nav-btn .ico { font-size: 18px; }
+    .nav-btn.active { color: #fbbf24; background: rgba(197,160,89,0.14); }
+    .loading-mask {
+      position: fixed; inset: 0; background: rgba(11,19,43,0.78); z-index: 99;
+      display: none; flex-direction: column; align-items: center; justify-content: center; color: #fff;
+    }
+    .spinner {
+      width: 42px; height: 42px; border: 4px solid rgba(255,255,255,0.25);
+      border-top-color: #fbbf24; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 10px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .toast {
+      position: fixed; top: 76px; left: 50%; transform: translateX(-50%); z-index: 95;
+      background: #0f172a; color: #fde68a; padding: 12px 18px; border-radius: 10px;
+      font-size: 14px; font-weight: 700; border: 1px solid var(--gold); display: none; max-width: 92%; text-align: center;
+    }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <header class="top-header">
+    <div class="hdr-row">
+      <div>
+        <h1 class="hdr-title">👑 三貸同堂｜總裁決策戰情室</h1>
+        <div class="hdr-sub" id="hdrBossInfo">請先驗證最高權限身分</div>
+      </div>
+      <div class="hdr-actions">
+        <a id="hdrBossShareBtn" class="hdr-share-btn hidden" href="#" target="_blank" rel="noopener">📤 分享管家</a>
+        <span id="hdrEnvBadge" class="env-badge">待驗證</span>
+      </div>
+    </div>
+  </header>
+  <div id="toastBox" class="toast"></div>
+  <div id="loadingMask" class="loading-mask">
+    <div class="spinner"></div>
+    <div id="loadingText" style="font-weight:700;font-size:15px;">雲端戰情數據彙整中...</div>
+  </div>
+
+  <!-- 最高權限驗證牆 -->
+  <div id="loginWall" class="container hidden">
+    <div class="card">
+      <div class="section-title">🔐 劉總／部門主管最高權限驗證</div>
+      <p style="font-size:13.5px;color:#475569;margin-top:0;">
+        輸入實名授權手機門號完成驗證後，本機將自動記憶登入狀態（從 LINE 管家點入將自動帶入 UID 免重登）：
+      </p>
+      <div class="form-group">
+        <label>授權實名手機號碼 *</label>
+        <input type="tel" id="inpBossPhone" maxlength="10" placeholder="例如：0900000001 或 0900000000">
+      </div>
+      <div class="form-group">
+        <label>員工代碼（選填，如 S001 / S000）</label>
+        <input type="text" id="inpBossCode" placeholder="S001">
+      </div>
+      <button class="btn btn-gold" onclick="doBossLogin()">🔓 驗證進入總裁戰情室</button>
+    </div>
+  </div>
+
+  <main id="mainApp" class="container hidden">
+    <!-- ================================================================ -->
+    <!-- 分頁 1：業績會議數據戰情室（4 大維度 × 12 項指標 ＋ 全案工作流透視） -->
+    <!-- ================================================================ -->
+    <section id="tab-war" class="tab-pane active">
+      <div class="period-bar">
+        <button class="period-pill active" data-period="ALL" onclick="changePeriod('ALL')">全期累計</button>
+        <button class="period-pill" data-period="THIS_MONTH" onclick="changePeriod('THIS_MONTH')">本月</button>
+        <button class="period-pill" data-period="LAST_MONTH" onclick="changePeriod('LAST_MONTH')">上月</button>
+        <button class="period-pill" data-period="THIS_QUARTER" onclick="changePeriod('THIS_QUARTER')">本季</button>
+        <button class="period-pill" data-period="THIS_YEAR" onclick="changePeriod('THIS_YEAR')">本年度</button>
+        <button class="period-pill" style="margin-left:auto;border-color:#c5a059;color:#92400e;" onclick="reloadWarRoom()">🔄 刷新</button>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-tile">
+          <div class="kpi-num" id="kTotal">0</div>
+          <div class="kpi-lbl">總進件案件</div>
+          <div class="kpi-sub" id="kPeriodTag">全期累計</div>
+        </div>
+        <div class="kpi-tile">
+          <div class="kpi-num" style="color:#0284c7;" id="kActive">0</div>
+          <div class="kpi-lbl">活躍水位進行中</div>
+          <div class="kpi-sub" id="kSuppTag">補件中 0 件</div>
+        </div>
+        <div class="kpi-tile">
+          <div class="kpi-num" style="color:#059669;" id="kClosed">0</div>
+          <div class="kpi-lbl">累計核准結案</div>
+          <div class="kpi-sub" id="kConvTag">總轉換率 0%</div>
+        </div>
+        <div class="kpi-tile" style="cursor:pointer;" onclick="switchWarSub('risk')">
+          <div class="kpi-num" style="color:#dc2626;" id="kOverdue">0</div>
+          <div class="kpi-lbl">🚨 逾時紅燈督導</div>
+          <div class="kpi-sub" id="kZombieTag">殭屍單 0 件</div>
+        </div>
+      </div>
+      <div class="subtab-bar">
+        <button class="subtab-btn active" id="subbtn-finance" onclick="switchWarSub('finance')">💰 財務現金</button>
+        <button class="subtab-btn" id="subbtn-perf" onclick="switchWarSub('perf')">🏆 小組/個人</button>
+        <button class="subtab-btn" id="subbtn-workflow" onclick="switchWarSub('workflow')">🔄 全案進度</button>
+        <button class="subtab-btn" id="subbtn-risk" onclick="switchWarSub('risk')">🎯 窗口/風控</button>
+      </div>
+
+      <!-- ===== 子頁籤 1：財務損益與在途現金流 ===== -->
+      <div id="warSub-finance" class="war-subpane active">
+        <div class="card card-navy">
+          <div class="section-title">
+            <span>💰 實績財務損益總覽</span>
+            <span class="badge badge-gold" id="finRetainRateBadge">公司毛利率 0%</span>
+          </div>
+          <div class="grid-2" style="margin-bottom:8px;">
+            <div class="fin-box">
+              <div class="fin-lbl">核准放款總額度</div>
+              <div class="fin-val" style="color:#fbbf24;" id="kAppWan">0 萬</div>
+            </div>
+            <div class="fin-box">
+              <div class="fin-lbl">實際淨佣收（扣介紹費）</div>
+              <div class="fin-val" style="color:#34d399;" id="kNetComm">$0</div>
+            </div>
+            <div class="fin-box">
+              <div class="fin-lbl">六節點＋級距總獎金</div>
+              <div class="fin-val" style="color:#38bdf8;" id="kPayout">$0</div>
+            </div>
+            <div class="fin-box">
+              <div class="fin-lbl">🏦 公司淨留存毛利</div>
+              <div class="fin-val" style="color:#fde68a;" id="kRetained">$0</div>
+            </div>
+          </div>
+          <div style="font-size:12px;color:#cbd5e1;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;padding-top:4px;">
+            <span id="finGrossMeta">毛佣總額：$0｜完款單數：0 筆</span>
+            <span id="finPaidMeta">獎金已核發：$0｜待核發：$0</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-title">
+            <span>⏳ 在途現金流監控（已核准/對保・尚未完款）</span>
+            <span class="badge badge-blue" id="inTransitCntBadge">0 筆</span>
+          </div>
+          <div class="grid-2" style="margin-bottom:10px;">
+            <div class="metric-card ok">
+              <div class="m-lbl">在途預計實收佣金</div>
+              <div class="m-val" style="color:#047857;" id="finInTransitComm">$0</div>
+              <div class="m-sub" id="finInTransitWan">核准額度共 0 萬</div>
+            </div>
+            <div class="metric-card warn">
+              <div class="m-lbl">平均實收服務費率</div>
+              <div class="m-val" style="color:#b45309;" id="finAvgFeePct">0%</div>
+              <div class="m-sub" id="finRedlineSub">紅線特批 0 筆（佔 0%）</div>
+            </div>
+          </div>
+          <div class="metric-card" style="margin-bottom:10px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span class="m-lbl">🤝 外部介紹人回佣支出佔比</span>
+              <span class="badge badge-gold" id="finIntroRatio">佔毛佣 0%</span>
+            </div>
+            <div style="font-size:13px;color:#334155;margin-top:4px;" id="finIntroDetail">
+              累計介紹費支出 $0（共 0 筆含介紹人）
+            </div>
+          </div>
+          <div id="finInTransitList"></div>
+        </div>
+      </div>
+
+      <!-- ===== 子頁籤 2：小組與個人雙欄戰力排行（防灌水口徑） ===== -->
+      <div id="warSub-perf" class="war-subpane">
+        <div class="card">
+          <div class="section-title">🏢 小組（部門／單位）業績與水位戰力榜</div>
+          <div id="warUnitRankings"></div>
+        </div>
+        <div class="card">
+          <div class="section-title">
+            <span>🏅 個人戰力雙欄排行（經辦實績 vs. 分享引流）</span>
+          </div>
+          <p style="font-size:12px;color:#64748b;margin:-4px 0 10px;">
+            📌 防灌水透明口徑：並列顯示「自己經辦成交」與「分享管家引流成交」兩組實績，公司總盤嚴格不重複計算。
+          </p>
+          <div id="warStaffRankings"></div>
+        </div>
+        <div class="card">
+          <div class="section-title">📣 官方 LINE 分享引流王排行榜</div>
+          <div id="warRefLeaderboard"></div>
+        </div>
+      </div>
+
+      <!-- ===== 子頁籤 3：全案件工作流透視＆7 節點轉換漏斗 ===== -->
+      <div id="warSub-workflow" class="war-subpane">
+        <div class="card">
+          <div class="section-title">
+            <span>📉 7 大節點逐層轉換漏斗＆平均停留天數</span>
+            <span class="badge badge-blue" id="wfCycleBadge">平均成案 0 天</span>
+          </div>
+          <div id="wfStageFunnel"></div>
+        </div>
+        <div class="card">
+          <div class="section-title">
+            <span>🔍 全公司單案工作流即時透視表</span>
+            <span class="badge badge-gray" id="wfFilteredCnt">0 件</span>
+          </div>
+          <div class="grid-2" style="margin-bottom:8px;">
+            <input type="text" id="wfSearch" placeholder="🔍 搜客戶名、案號、經辦..." oninput="renderWorkflowCases()">
+            <select id="wfFilterUnit" onchange="renderWorkflowCases()"><option value="">全部小組／單位</option></select>
+          </div>
+          <div class="grid-3" style="margin-bottom:8px;">
+            <select id="wfFilterNode" onchange="renderWorkflowCases()">
+              <option value="">全部節點</option>
+              <option value="洽談">洽談</option><option value="委託">委託</option>
+              <option value="收件">收件</option><option value="討論">討論</option>
+              <option value="照會">照會</option><option value="送件窗口核價">送件窗口核價</option>
+              <option value="對保">對保</option>
+            </select>
+            <select id="wfFilterStatus" onchange="renderWorkflowCases()">
+              <option value="">全部狀態</option>
+              <option value="持續追蹤">持續追蹤</option><option value="補件">補件</option>
+              <option value="結案">結案</option><option value="撤銷">撤銷</option>
+            </select>
+            <select id="wfFilterAlert" onchange="renderWorkflowCases()">
+              <option value="">全部案件</option>
+              <option value="OVERDUE">🚨 僅看逾時紅燈</option>
+              <option value="ZOMBIE">🧟 僅看殭屍卡關</option>
+            </select>
+          </div>
+          <div id="wfCaseList"></div>
+        </div>
+      </div>
+
+      <!-- ===== 子頁籤 4：送件窗口、產品線、渠道 ROI 與風控稽核 ===== -->
+      <div id="warSub-risk" class="war-subpane">
+        <div class="card">
+          <div class="section-title">🏛️ 各送件窗口／銀行核准勝率排行</div>
+          <div id="warWindowRankings"></div>
+        </div>
+        <div class="card">
+          <div class="section-title">📊 五大產品線業績佔比與撤銷率</div>
+          <div id="warProductRankings"></div>
+        </div>
+        <div class="card">
+          <div class="section-title">📈 6 大客戶來源變現矩陣 (ROI)</div>
+          <div id="warSourceStats"></div>
+        </div>
+        <div class="card">
+          <div class="section-title">🌊 水位健康度、舊客二次增貸與風控稽核</div>
+          <div class="grid-2" style="margin-bottom:10px;">
+            <div class="metric-card">
+              <div class="m-lbl">全公司 30 員水位負載</div>
+              <div class="m-val" id="rkWaterUsage">0 / 0</div>
+              <div class="m-sub" id="rkWaterSub">滿載 0 人｜週轉率 0%</div>
+            </div>
+            <div class="metric-card ok">
+              <div class="m-lbl">🔁 舊客二次增貸貢獻</div>
+              <div class="m-val" style="color:#047857;" id="rkWakeComm">$0</div>
+              <div class="m-sub" id="rkWakeSub">喚醒 0 件｜成交 0 件</div>
+            </div>
+            <div class="metric-card danger">
+              <div class="m-lbl">🛡️ 防弊風控攔截計數</div>
+              <div class="m-val" style="color:#b91c1c;" id="rkAuditHits">0 次</div>
+              <div class="m-sub" id="rkAuditSub">舊客識破 0｜防搶單 0｜轉派 0</div>
+            </div>
+            <div class="metric-card warn">
+              <div class="m-lbl">📅 60 天內到期可喚醒舊客</div>
+              <div class="m-val" style="color:#b45309;" id="rkUpcomingCnt">0 筆</div>
+              <div class="m-sub">依報件單再追蹤年月預告</div>
+            </div>
+          </div>
+          <div id="rkUpcomingList"></div>
+          <div id="rkHighCancelBox" style="margin-top:8px;"></div>
+        </div>
+        <div class="card" style="border-color:#fca5a5;">
+          <div class="section-title" style="border-left-color:#dc2626;color:#991b1b;">🚨 節點逾時／補件卡關紅燈督導清單</div>
+          <div id="warOverdueList"></div>
+        </div>
+        <div class="card">
+          <div class="section-title">📉 近期案件撤銷原因分析</div>
+          <div id="warCancelList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <!-- 分頁 2：價值鏈六節點分潤算獎與紅線特批                            -->
+    <!-- ================================================================ -->
+    <section id="tab-comm" class="tab-pane">
+      <div id="commRedlineCard" class="card hidden" style="border:2px solid #dc2626;background:#fef2f2;">
+        <div class="section-title" style="border-left-color:#dc2626;color:#991b1b;">🚨 服務費率低於紅線・待劉總特批</div>
+        <div id="commRedlineList"></div>
+      </div>
+      <div class="card">
+        <div class="section-title">
+          <span>🏆 員工身兼多職疊加獎金總榜</span>
+          <button class="btn btn-navy btn-sm boss-only" onclick="recalcAllCommissions()">⚡ 一鍵套用新級距重算</button>
+        </div>
+        <div id="commBonusRank"></div>
+      </div>
+      <div class="card">
+        <div class="section-title">📑 六大節點分潤算獎核銷明細表</div>
+        <div id="commRecentList"></div>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <!-- 分頁 3：劉總最高權限 8 大動態參數 ＋ 劉總關鍵節點即時推播開關     -->
+    <!-- ================================================================ -->
+    <section id="tab-params" class="tab-pane">
+      <div class="card">
+        <div class="section-title">⚙️ 劉總專屬：八大動態營運參數控制台</div>
+        <div class="param-block" style="background:#eff6ff;border-color:#93c5fd;">
+          <div class="param-hdr" style="color:#1e40af;">🔔 劉總關鍵節點 LINE 即時推播開關（防洗版控管）</div>
+          <p style="font-size:12px;color:#334155;margin:0 0 8px;">
+            單位／部門主管維持全節點推播；劉總可自由勾選需要「即時同步通知自己」的關鍵關卡，免受日常瑣碎回報洗版：
+          </p>
+          <div class="chk-grid" style="margin-bottom:8px;">
+            <label class="chk-pill"><input type="checkbox" id="bnEnabled" class="boss-only"> 啟用劉總即時通報</label>
+            <label class="chk-pill"><input type="checkbox" id="bnAllNodes" class="boss-only"> 全部節點皆通知（含常規）</label>
+          </div>
+          <div style="font-size:12.5px;font-weight:800;color:#1e3a8a;margin-top:6px;">📍 勾選需通報劉總之作業節點：</div>
+          <div class="chk-grid" id="bnNodesWrap"></div>
+          <div style="font-size:12.5px;font-weight:800;color:#1e3a8a;margin-top:8px;">📌 勾選需通報劉總之案件狀態：</div>
+          <div class="chk-grid" id="bnStatusesWrap"></div>
+          <div style="font-size:12.5px;font-weight:800;color:#1e3a8a;margin-top:8px;">🚨 特殊管制事件即時通報：</div>
+          <div class="chk-grid">
+            <label class="chk-pill"><input type="checkbox" id="bnCancelReq" class="boss-only"> 撤銷申請/核准</label>
+            <label class="chk-pill"><input type="checkbox" id="bnTransferReq" class="boss-only"> 轉派申請/核准</label>
+            <label class="chk-pill"><input type="checkbox" id="bnDispatch" class="boss-only"> 公海派單/領單</label>
+          </div>
+        </div>
+        <div class="param-block">
+          <div class="param-hdr">1️⃣ 業績達標加碼級距（JSON 門檻設定）</div>
+          <textarea id="pTierJson" rows="3"></textarea>
+        </div>
+        <div class="param-block">
+          <div class="param-hdr">2️⃣ 六大節點分潤拆算比例（%｜身兼多職自動疊加）</div>
+          <div class="grid-3">
+            <div class="form-group"><label>引流 (%)</label><input type="number" id="rRef" step="0.5"></div>
+            <div class="form-group"><label>接流 (%)</label><input type="number" id="rIntake" step="0.5"></div>
+            <div class="form-group"><label>經辦 (%)</label><input type="number" id="rHandler" step="0.5"></div>
+            <div class="form-group"><label>專案 (%)</label><input type="number" id="rProject" step="0.5"></div>
+            <div class="form-group"><label>主管 (%)</label><input type="number" id="rMgr" step="0.5"></div>
+            <div class="form-group"><label>劉總 (%)</label><input type="number" id="rBoss" step="0.5"></div>
+          </div>
+        </div>
+        <div class="param-block">
+          <div class="param-hdr">3️⃣ 服務費率紅線 & 4️⃣ 個人水位上限</div>
+          <div class="grid-2">
+            <div class="form-group"><label>最低服務費紅線 (%)</label><input type="number" id="pRedline" step="0.5"></div>
+            <div class="form-group"><label>全體預設水位上限 (員)</label><input type="number" id="pWaterLimit"></div>
+          </div>
+          <div class="form-group"><label>五職級差異化水位配額 JSON</label><input type="text" id="pRankWaterJson"></div>
+        </div>
+        <div class="param-block">
+          <div class="param-hdr">5️⃣ 逾時紅燈警報 & 6️⃣ 舊客喚醒與引流保護期</div>
+          <div class="grid-2">
+            <div class="form-group"><label>派單未聯繫紅燈 (小時)</label><input type="number" id="pOverdueHrs"></div>
+            <div class="form-group"><label>補件/追蹤卡關紅燈 (天)</label><input type="number" id="pOverdueDays"></div>
+            <div class="form-group"><label>再追蹤到期前喚醒 (天)</label><input type="number" id="pWakeupDays"></div>
+            <div class="form-group"><label>分享引流首次鎖定 (天)</label><input type="number" id="pRefProtect"></div>
+          </div>
+        </div>
+        <div class="param-block">
+          <div class="param-hdr">📣 全民官方 LINE 統一分享公版文案</div>
+          <textarea id="pShareText" rows="3"></textarea>
+        </div>
+        <button class="btn btn-gold boss-only" onclick="saveBossParams()">💾 一鍵儲存參數與推播開關至全系統</button>
+      </div>
+      <div class="card">
+        <div class="section-title">8️⃣ 電子合約範本動態管理（即時同步手機簽名板）</div>
+        <div class="form-group">
+          <label>選擇編輯現有範本，或新增全新合約種類</label>
+          <select id="tplSelect" onchange="onSelectContractTpl()"></select>
+        </div>
+        <div class="form-group"><label>合約正式名稱 *</label><input type="text" id="tplTitle" placeholder="例如：標準合約三：民間代書專案委託書"></div>
+        <div class="form-group"><label>契約條款全文 *</label><textarea id="tplContent" rows="6"></textarea></div>
+        <button class="btn btn-navy boss-only" onclick="saveContractTpl()">💾 儲存並同步更新手機電子簽名板</button>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <!-- 分頁 4：參數 7 手機一鍵新增員工、升降職與離職移交（免開試算表）   -->
+    <!-- ================================================================ -->
+    <section id="tab-hr" class="tab-pane">
+      <div class="card">
+        <div class="section-title">
+          <span>➕ 手機一鍵新增員工／調整職級與水位</span>
+          <button class="btn btn-outline btn-sm boss-only" onclick="prepareNewStaffForm()">✨ 新增新人(自動產碼)</button>
+        </div>
+        <p style="font-size:12.5px;color:#475569;margin:-4px 0 10px;">
+          完全不用開試算表！建檔後把「員工綁定指令」傳給新人，新人在官方 LINE 貼上傳送即刻開通對應職級權限與專屬分享連結。
+        </p>
+        <div class="grid-3">
+          <div class="form-group"><label>員工代碼（留空自動編碼）</label><input type="text" id="hrCode" placeholder="AUTO"></div>
+          <div class="form-group"><label>真實姓名 *</label><input type="text" id="hrName" placeholder="林專員"></div>
+          <div class="form-group"><label>實名手機 *</label><input type="tel" id="hrPhone" maxlength="10" placeholder="09xxxxxxxx"></div>
+        </div>
+        <div class="grid-3">
+          <div class="form-group"><label>系統權限角色</label>
+            <select id="hrRole"><option value="經辦">經辦</option><option value="接流">接流</option><option value="專案">專案</option><option value="單位主管">單位主管</option><option value="部門主管">部門主管</option><option value="行政">行政</option><option value="劉總">劉總</option></select>
+          </div>
+          <div class="form-group"><label>業務職級</label>
+            <select id="hrRank"><option value="專員">專員</option><option value="主任">主任</option><option value="襄理">襄理</option><option value="副理">副理</option><option value="經理">經理</option><option value="總經理">總經理</option></select>
+          </div>
+          <div class="form-group"><label>個人水位上限</label><input type="number" id="hrLimit" value="30"></div>
+        </div>
+        <div class="grid-3">
+          <div class="form-group"><label>所屬單位／小組</label><input type="text" id="hrUnit" value="業務一處"></div>
+          <div class="form-group"><label>單位主管代碼</label><input type="text" id="hrUnitMgr" value="S001"></div>
+          <div class="form-group"><label>部門主管代碼</label><input type="text" id="hrDeptMgr" value="S001"></div>
+        </div>
+        <button class="btn btn-gold boss-only" onclick="saveStaffProfile()">💾 儲存（新增／更新）員工權限與水位</button>
+        <div id="newStaffBindBanner" class="bind-banner hidden">
+          <b>✅ 新人已開通！請複製以下綁定指令傳給對方於官方 LINE 送出：</b>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px;">
+            <code id="newStaffBindCmd" style="font-size:15px;font-weight:900;color:#0b132b;"></code>
+            <button class="btn btn-success btn-sm" onclick="copyBindCmd()">📋 複製指令</button>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="border:2px solid #dc2626;background:#fef2f2;">
+        <div class="section-title" style="border-left-color:#dc2626;color:#991b1b;">🚨 員工離職：一鍵撤銷權限 ＋ 名下客戶批次移交</div>
+        <div class="grid-2">
+          <div class="form-group"><label>選擇離職停權人員 *</label><select id="hrResignSel"></select></div>
+          <div class="form-group"><label>指定接手全部活躍案件之同仁 *</label><select id="hrSuccessorSel"></select></div>
+        </div>
+        <button class="btn btn-danger boss-only" onclick="execResignHandover()">🔒 立即撤銷權限並批次移交所有水位客戶</button>
+      </div>
+      <div class="card">
+        <div class="section-title">👥 全體內部組織與 LINE 綁定名冊（點擊載入編輯）</div>
+        <div id="hrStaffList"></div>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <!-- 分頁 5：舊名單批次匯入、排程巡檢與 @threeloans 正式機切換          -->
+    <!-- ================================================================ -->
+    <section id="tab-ops" class="tab-pane">
+      <div class="card card-navy">
+        <div class="section-title">🚀 劉總電腦 30 秒無縫切換正式機 (@threeloans)</div>
+        <p style="font-size:13px;color:#cbd5e1;margin-top:0;">
+          目前環境：<b id="opsCurrEnv" style="color:#fbbf24;">-</b>。當您於劉總電腦登入 <code>developers.line.biz</code> 取得正式帳號 <b>@threeloans (2008560286)</b> 的 Channel Access Token 後，貼入下方一鍵即可切換正式環境並自動部署六宮格！
+        </p>
+        <div class="form-group">
+          <label style="color:#fde68a;">三貸同堂正式機 Channel Access Token (Long-lived)</label>
+          <textarea id="opsProdToken" rows="2" placeholder="貼入 @threeloans 的正式 Channel access token..."></textarea>
+        </div>
+        <label style="display:flex;align-items:center;gap:8px;color:#e2e8f0;font-size:13px;margin-bottom:12px;">
+          <input type="checkbox" id="opsClearUids" checked style="width:18px;height:18px;">
+          <span>同步清空展示中心測試期間綁定的測試員工 UID（讓全員於 @threeloans 重新手機驗證綁定）</span>
+        </label>
+        <div class="grid-2">
+          <button class="btn btn-gold boss-only" onclick="switchEnvMode('PRODUCTION')">🚀 切換為三貸同堂正式機</button>
+          <button class="btn btn-outline boss-only" onclick="switchEnvMode('STAGING')">🧪 切回展示中心 (@660rbtey)</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">📥 舊系統客戶清單 (CSV) 批次匯入水庫</div>
+        <p style="font-size:13px;color:#475569;margin-top:0;">
+          支援將舊系統匯出之 CSV 電子檔批次匯入新水庫，自動正規化台灣手機號碼並過濾重複門號。<br>
+          欄位順序：<code>姓名,手機,身分證ID,客戶來源,申辦類別,需求萬,經辦代碼,再追蹤年月,備註</code>
+        </p>
+        <div class="grid-2" style="margin-bottom:10px;">
+          <button class="btn btn-outline btn-sm" style="width:100%;" onclick="downloadCsvTemplate()">📄 下載標準 CSV 匯入範本</button>
+          <input type="file" id="csvFileInput" accept=".csv,.txt" onchange="parseCsvFile(this)">
+        </div>
+        <div id="csvPreviewInfo" style="font-size:13px;font-weight:700;color:#047857;margin-bottom:10px;"></div>
+        <button class="btn btn-navy boss-only" id="btnRunImport" disabled onclick="execBatchImport()">📤 確認批次匯入總水庫</button>
+      </div>
+      <div class="card">
+        <div class="section-title">⏰ 每日自動化巡檢（逾時紅燈督導 ＋ 舊客到期喚醒）</div>
+        <p style="font-size:13px;color:#475569;margin-top:0;">
+          系統每日 09:00 自動巡檢全水庫逾時未回報案件並推播主管，同時針對「再追蹤年月」到期舊客自動重新入水庫喚醒二次增貸開發。
+        </p>
+        <div class="grid-2">
+          <button class="btn btn-success boss-only" onclick="installDailyCron()">⏰ 安裝每日 09:00 自動排程</button>
+          <button class="btn btn-gold boss-only" onclick="runCronNow()">⚡ 立即手動執行一次巡檢</button>
+        </div>
+      </div>
+      <button class="btn btn-outline" style="color:#64748b;margin-top:4px;" onclick="logoutBossSession()">🔄 切換登入帳號／清除本機記憶</button>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="nav-war" onclick="switchTab('war')"><span class="ico">📊</span><span>戰情室</span></button>
+    <button class="nav-btn" id="nav-comm" onclick="switchTab('comm')"><span class="ico">💰</span><span>分潤算獎</span></button>
+    <button class="nav-btn" id="nav-params" onclick="switchTab('params')"><span class="ico">⚙️</span><span>八大參數</span></button>
+    <button class="nav-btn" id="nav-hr" onclick="switchTab('hr')"><span class="ico">👥</span><span>人事移交</span></button>
+    <button class="nav-btn" id="nav-ops" onclick="switchTab('ops')"><span class="ico">🚀</span><span>匯入切換</span></button>
+  </nav>
+
+  <script>
+    // ==================== V7.0 GitHub Pages ➔ GAS JSON API 橋接中樞 ====================
+    var GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzofnwdYqJprOQIu_4vXmtqoWT_uyfnxg27otb9u_CxHX8m_0D2qYTTX8NBqTMxlQNzZg/exec';
+    var STAFF_STORAGE_KEY = 'THREELOANS_STAFF_SESSION_V7';
+
+    function parseUrlParams() {
+      var obj = {};
+      try {
+        var sp = new URLSearchParams(window.location.search);
+        sp.forEach(function(v, k) { obj[k] = v; });
+      } catch (e) {}
+      return obj;
+    }
+
+    function callGasApi(apiAction, args, onSuccess, onFailure) {
+      fetch(GAS_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ apiAction: apiAction, args: args || [] }),
+        redirect: 'follow'
+      })
+      .then(function(res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.text();
+      })
+      .then(function(txt) {
+        var json;
+        try {
+          json = JSON.parse(txt);
+        } catch (parseErr) {
+          throw new Error('雲端 API 回應格式異常，請確認 GAS 部署權限為「所有人」');
+        }
+        if (json && json.ok === true) {
+          if (typeof onSuccess === 'function') onSuccess(json.result);
+        } else {
+          var errMsg = (json && (json.error || json.message)) || '雲端服務執行失敗';
+          if (typeof onFailure === 'function') onFailure(new Error(errMsg));
+        }
+      })
+      .catch(function(err) {
+        if (typeof onFailure === 'function') onFailure(err);
+      });
+    }
+
+    (function initGasBridge() {
+      if (window.google && window.google.script && window.google.script.run) return;
+      function createRunner(successCb, failureCb) {
+        return new Proxy({}, {
+          get: function(_target, prop) {
+            if (prop === 'withSuccessHandler') {
+              return function(fn) { return createRunner(fn, failureCb); };
+            }
+            if (prop === 'withFailureHandler') {
+              return function(fn) { return createRunner(successCb, fn); };
+            }
+            return function() {
+              var args = Array.prototype.slice.call(arguments);
+              callGasApi(String(prop), args, successCb, failureCb);
+            };
+          }
+        });
+      }
+      window.google = window.google || {};
+      window.google.script = window.google.script || {};
+      window.google.script.run = createRunner(null, null);
+    })();
+
+    // ==================== 身分自動解析與共用免重登記憶 ====================
+    var RAW_PARAMS = parseUrlParams();
+    var SAVED_SESSION = {};
+    try { SAVED_SESSION = JSON.parse(localStorage.getItem(STAFF_STORAGE_KEY) || '{}') || {}; } catch (e) {}
+
+    var ALL_NODES = ['洽談', '委託', '收件', '討論', '照會', '送件窗口核價', '對保'];
+    var ALL_STATUSES = ['持續追蹤', '補件', '結案', '撤銷'];
+    var BOSS = {
+      lineUid: RAW_PARAMS.uid || SAVED_SESSION.lineUid || '',
+      staffCode: (RAW_PARAMS.ref || SAVED_SESSION.staffCode || '').toUpperCase(),
+      phone: RAW_PARAMS.uid ? '' : (SAVED_SESSION.phone || ''),
+      period: String(RAW_PARAMS.period || 'ALL').toUpperCase(),
+      data: null,
+      parsedCsvRows: []
+    };
+
+    window.addEventListener('DOMContentLoaded', function() {
+      initNotifyCheckboxes();
+      var initTab = String(RAW_PARAMS.tab || '').toLowerCase();
+      if (['war', 'comm', 'params', 'hr', 'ops'].indexOf(initTab) !== -1) {
+        switchTab(initTab);
+      }
+      if (BOSS.lineUid || BOSS.phone) {
+        reloadWarRoom();
+      } else {
+        if (BOSS.staffCode) document.getElementById('inpBossCode').value = BOSS.staffCode;
+        document.getElementById('loginWall').classList.remove('hidden');
+      }
+    });
+
+    function saveBossSession(res) {
+      try {
+        var found = (res.staffList || []).find(function(s) {
+          return String(s['員工代碼'] || '').toUpperCase() === String(res.user.code || '').toUpperCase();
+        });
+        localStorage.setItem(STAFF_STORAGE_KEY, JSON.stringify({
+          lineUid: (found && found['綁定LINE_UID']) || BOSS.lineUid || '',
+          phone: (found && found['手機號碼']) || BOSS.phone || '',
+          staffCode: (res.user && res.user.code) || BOSS.staffCode || ''
+        }));
+      } catch (e) {}
+    }
+
+    function clearBossSession() {
+      try { localStorage.removeItem(STAFF_STORAGE_KEY); } catch (e) {}
+    }
+
+    function logoutBossSession() {
+      clearBossSession();
+      BOSS.lineUid = '';
+      BOSS.phone = '';
+      BOSS.staffCode = '';
+      BOSS.data = null;
+      document.getElementById('mainApp').classList.add('hidden');
+      document.getElementById('hdrBossShareBtn').classList.add('hidden');
+      document.getElementById('hdrBossInfo').textContent = '請輸入授權手機重新驗證';
+      document.getElementById('hdrEnvBadge').textContent = '待驗證';
+      document.getElementById('inpBossPhone').value = '';
+      document.getElementById('inpBossCode').value = '';
+      document.getElementById('loginWall').classList.remove('hidden');
+      showToast('已清除本機登入記憶，請重新驗證');
+    }
+
+    function initNotifyCheckboxes() {
+      document.getElementById('bnNodesWrap').innerHTML = ALL_NODES.map(function(n) {
+        return '<label class="chk-pill"><input type="checkbox" class="bn-node-chk boss-only" value="' + esc(n) + '"> ' + esc(n) + '</label>';
+      }).join('');
+      document.getElementById('bnStatusesWrap').innerHTML = ALL_STATUSES.map(function(s) {
+        return '<label class="chk-pill"><input type="checkbox" class="bn-status-chk boss-only" value="' + esc(s) + '"> ' + esc(s) + '</label>';
+      }).join('');
+    }
+    function esc(s) {
+      return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+    function fmtMoney(v) {
+      return '$' + Math.round(Number(v || 0)).toLocaleString('zh-TW');
+    }
+    function showToast(msg) {
+      var box = document.getElementById('toastBox');
+      box.textContent = msg; box.style.display = 'block';
+      setTimeout(function() { box.style.display = 'none'; }, 4200);
+    }
+    function setLoading(show, txt) {
+      document.getElementById('loadingText').textContent = txt || '雲端戰情數據彙整中...';
+      document.getElementById('loadingMask').style.display = show ? 'flex' : 'none';
+    }
+    function switchTab(t) {
+      ['war', 'comm', 'params', 'hr', 'ops'].forEach(function(k) {
+        document.getElementById('tab-' + k).classList.toggle('active', k === t);
+        document.getElementById('nav-' + k).classList.toggle('active', k === t);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function switchWarSub(sub) {
+      ['finance', 'perf', 'workflow', 'risk'].forEach(function(k) {
+        document.getElementById('warSub-' + k).classList.toggle('active', k === sub);
+        document.getElementById('subbtn-' + k).classList.toggle('active', k === sub);
+      });
+    }
+    function changePeriod(pKey) {
+      BOSS.period = pKey;
+      document.querySelectorAll('.period-pill[data-period]').forEach(function(btn) {
+        btn.classList.toggle('active', btn.getAttribute('data-period') === pKey);
+      });
+      reloadWarRoom();
+    }
+    function doBossLogin() {
+      var ph = document.getElementById('inpBossPhone').value.trim();
+      var cd = document.getElementById('inpBossCode').value.trim().toUpperCase();
+      if (!ph) return showToast('請輸入授權手機門號');
+      BOSS.phone = ph; BOSS.staffCode = cd;
+      reloadWarRoom();
+    }
+
+    function reloadWarRoom() {
+      setLoading(true, '正在彙整全公司 4 大維度戰情、全案進度與八大參數...');
+      google.script.run
+        .withSuccessHandler(function(res) {
+          setLoading(false);
+          if (!res || !res.success) {
+            clearBossSession();
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('loginWall').classList.remove('hidden');
+            if (res && res.message) showToast(res.message);
+            return;
+          }
+          BOSS.data = res;
+          BOSS.staffCode = res.user.code;
+          saveBossSession(res);
+          document.getElementById('loginWall').classList.add('hidden');
+          document.getElementById('mainApp').classList.remove('hidden');
+          renderAllBossPanels(res);
+        })
+        .withFailureHandler(function(err) {
+          setLoading(false);
+          document.getElementById('loginWall').classList.remove('hidden');
+          showToast('載入錯誤：' + err.message);
+        })
+        .Dept06_apiLoadBossWarRoom({
+          lineUid: BOSS.lineUid,
+          phone: BOSS.phone,
+          staffCode: BOSS.staffCode,
+          period: BOSS.period
+        });
+    }
+
+    function renderAllBossPanels(res) {
+      var u = res.user, k = res.kpi, p = res.bossParams;
+      var an = res.analytics || {};
+      var fin = an.finance || {};
+      var wf = an.workflow || {};
+      var perf = an.performance || {};
+      var rk = an.riskAndChannel || {};
+
+      document.getElementById('hdrBossInfo').textContent = u.name + ' (' + u.code + '｜' + u.role + ')';
+      var shareBtn = document.getElementById('hdrBossShareBtn');
+      if (res.bossSharePackage && res.bossSharePackage.lineShareUrl) {
+        shareBtn.href = res.bossSharePackage.lineShareUrl;
+        shareBtn.classList.remove('hidden');
+      }
+      var envBadge = document.getElementById('hdrEnvBadge');
+      var isProd = (p.activeEnvMode === 'PRODUCTION');
+      envBadge.textContent = (isProd ? '🟢 正式機 ' : '🧪 展示中心 ') + p.lineBasicId;
+      envBadge.className = 'env-badge' + (isProd ? ' prod' : '');
+      document.getElementById('opsCurrEnv').textContent = p.activeEnvMode + ' (' + p.lineBasicId + ')';
+
+      document.querySelectorAll('.boss-only').forEach(function(el) {
+        el.disabled = !u.isBoss;
+        if (!u.isBoss) el.title = '僅劉總最高權限可異動';
+      });
+
+      document.getElementById('kTotal').textContent = k.totalCases;
+      document.getElementById('kPeriodTag').textContent = (res.period && res.period.label) || '全期累計';
+      document.getElementById('kActive').textContent = k.activeCount;
+      document.getElementById('kSuppTag').textContent = '補件中 ' + (k.supplementCount || 0) + ' 件';
+      document.getElementById('kClosed').textContent = k.closedCount;
+      document.getElementById('kConvTag').textContent = '總轉換率 ' + (k.overallConversionRate || 0) + '%';
+      document.getElementById('kOverdue').textContent = k.overdueCount;
+      document.getElementById('kZombieTag').textContent = '殭屍單 ' + ((rk.waterHealth && rk.waterHealth.zombieCount) || 0) + ' 件';
+
+      // ===== 1. 子頁籤：財務現金流 =====
+      document.getElementById('kAppWan').textContent = (fin.totalApprovedWan || k.totalApprovedWan || 0) + ' 萬';
+      document.getElementById('kNetComm').textContent = fmtMoney(fin.totalNetCommission || k.totalNetCommission);
+      document.getElementById('kPayout').textContent = fmtMoney(fin.totalPayout || k.totalPayout);
+      document.getElementById('kRetained').textContent = fmtMoney(fin.companyRetained || k.companyRetained);
+      document.getElementById('finRetainRateBadge').textContent = '公司毛利率 ' + (fin.retainedRatePct || 0) + '%';
+      document.getElementById('finGrossMeta').textContent = '毛佣總額：' + fmtMoney(fin.grossCommission) + '｜完款報件：' + (fin.completedDealCount || 0) + ' 筆';
+      document.getElementById('finPaidMeta').textContent = '已核發：' + fmtMoney(fin.paidPayout) + '｜待核發：' + fmtMoney(fin.pendingPayout);
+      document.getElementById('inTransitCntBadge').textContent = (fin.inTransitCount || 0) + ' 筆';
+      document.getElementById('finInTransitComm').textContent = fmtMoney(fin.inTransitCommission);
+      document.getElementById('finInTransitWan').textContent = '在途核准額度共 ' + (fin.inTransitApprovedWan || 0) + ' 萬';
+      document.getElementById('finAvgFeePct').textContent = (fin.avgServiceFeePct || 0) + '%';
+      document.getElementById('finRedlineSub').textContent = '低紅線特批 ' + (fin.redlineCount || 0) + ' 筆（佔 ' + (fin.redlineRatioPct || 0) + '%）｜待批 ' + (fin.pendingRedlineCount || 0);
+      document.getElementById('finIntroRatio').textContent = '佔毛佣 ' + (fin.introducerFeeRatioPct || 0) + '%';
+      document.getElementById('finIntroDetail').textContent = '累計外部介紹費支出 ' + fmtMoney(fin.totalIntroducerFee) + '（共 ' + (fin.introducerDealCount || 0) + ' 筆案件有介紹人）';
+      var itList = fin.inTransitList || [];
+      document.getElementById('finInTransitList').innerHTML = itList.length === 0
+        ? '<div style="text-align:center;color:#64748b;font-size:13px;">目前無已核准尚未完款之在途案件。</div>'
+        : itList.map(function(it) {
+            return '<div class="list-row"><div><b>' + esc(it.clientName) + '</b>｜' + esc(it.product) + '<br>' +
+              '<span style="font-size:12px;color:#64748b;">對保：' + esc(it.signDate) + '｜一撥：' + esc(it.firstDisbDate) + '｜經辦：' + esc(it.handler) + '</span></div>' +
+              '<div style="text-align:right;"><span class="badge badge-ok">' + fmtMoney(it.estNetComm) + '</span><br>' +
+              '<span style="font-size:11px;color:#64748b;">核准 ' + esc(it.approvedWan) + '萬</span></div></div>';
+          }).join('');
+
+      // ===== 2. 子頁籤：小組與個人雙欄排行 =====
+      var units = perf.unitRankings || [];
+      document.getElementById('warUnitRankings').innerHTML = units.length === 0
+        ? '<div style="color:#64748b;font-size:13px;text-align:center;">尚無小組業績數據</div>'
+        : units.map(function(un, idx) {
+            return '<div class="rank-card">' +
+              '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+                '<div><b>#' + (idx + 1) + ' ' + esc(un.unitName) + '</b> <span class="badge badge-gray">' + un.headcount + ' 人</span></div>' +
+                '<span class="badge badge-ok">經辦佣收 ' + fmtMoney(un.handledCommission) + '</span>' +
+              '</div>' +
+              '<div style="font-size:12px;color:#475569;margin-top:5px;">' +
+                '進件 ' + un.totalLeads + '｜結案 ' + un.handledClosed + '（轉換率 <b>' + un.convRate + '%</b>）｜均單佣金 ' + fmtMoney(un.avgDealCommission) + '<br>' +
+                '🌊 團隊水位：' + un.activeWater + ' / ' + (un.waterCapacity || '∞') + '（負載 ' + un.waterUsagePct + '%）｜📣 引流貢獻：' + un.referredClosed + ' 件（' + fmtMoney(un.referredCommission) + '）' +
+              '</div>' +
+            '</div>';
+          }).join('');
+
+      var sRanks = perf.staffRankings || [];
+      document.getElementById('warStaffRankings').innerHTML = sRanks.length === 0
+        ? '<div style="color:#64748b;font-size:13px;text-align:center;">尚無個人戰力數據</div>'
+        : sRanks.map(function(sr, idx) {
+            return '<div class="rank-card">' +
+              '<div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">' +
+                '<div><b>#' + (idx + 1) + ' ' + esc(sr.staffName) + ' (' + esc(sr.staffCode) + ')</b> ' +
+                '<span style="font-size:11.5px;color:#64748b;">' + esc(sr.unitName) + '・' + esc(sr.rank) + '</span></div>' +
+                '<span class="badge badge-gold">總分潤 ' + fmtMoney(sr.totalBonus) + '</span>' +
+              '</div>' +
+              '<div class="rank-dual">' +
+                '<div class="rank-col">' +
+                  '<div style="font-weight:800;color:#0f172a;">💼 經辦實績</div>' +
+                  '結案 <b>' + sr.handledClosed + '</b> / ' + sr.handledLeads + '（' + sr.handledConvRate + '%）<br>' +
+                  '佣收 <b style="color:#047857;">' + fmtMoney(sr.handledCommission) + '</b><br>' +
+                  '<span style="color:#64748b;">水位 ' + sr.activeWater + '/' + (sr.role === '劉總' ? '∞' : sr.waterLimit) + '｜週轉 ' + sr.waterTurnoverPct + '%</span>' +
+                '</div>' +
+                '<div class="rank-col ref">' +
+                  '<div style="font-weight:800;color:#0369a1;">📣 分享引流實績</div>' +
+                  '成交 <b>' + sr.referredClosed + '</b> / ' + sr.referredLeads + ' 人（' + sr.referredConvRate + '%）<br>' +
+                  '貢獻 <b style="color:#0284c7;">' + fmtMoney(sr.referredCommission) + '</b><br>' +
+                  '<span style="color:#64748b;">撤銷率 ' + sr.cancelRatePct + '%</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>';
+          }).join('');
+
+      var refs = res.warRoom.refLeaderboard || [];
+      document.getElementById('warRefLeaderboard').innerHTML = refs.length === 0
+        ? '<div style="color:#64748b;font-size:13px;text-align:center;">尚無官方 LINE 引流紀錄</div>'
+        : refs.map(function(r, idx) {
+            return '<div class="list-row"><div><b>#' + (idx + 1) + ' ' + esc(r.staffName) + ' (' + esc(r.staffCode) + ')</b><br>' +
+              '<span style="font-size:12px;color:#64748b;">引流進件 ' + r.totalLeads + ' 人｜成交 ' + r.closedDeals + ' 件｜貢獻佣金 <b>' + fmtMoney(r.netCommission) + '</b></span></div>' +
+              '<span class="badge badge-ok">轉換率 ' + r.convRate + '%</span></div>';
+          }).join('');
+
+      // ===== 3. 子頁籤：7 節點轉換漏斗與全案工作流透視 =====
+      var cyc = wf.cycleMetrics || {};
+      document.getElementById('wfCycleBadge').textContent = '平均成案 ' + (cyc.avgCycleDays || 0) + ' 天（最快 ' + (cyc.minCycleDays || 0) + ' / 最慢 ' + (cyc.maxCycleDays || 0) + ' 天）';
+      var funnel = wf.stageFunnel || [];
+      document.getElementById('wfStageFunnel').innerHTML = funnel.length === 0
+        ? '<div style="color:#64748b;font-size:13px;text-align:center;">尚無漏斗資料</div>'
+        : funnel.map(function(f, idx) {
+            var fillCls = (idx === funnel.length - 1) ? 'green' : (idx >= 5 ? 'gold' : '');
+            return '<div style="margin-bottom:9px;">' +
+              '<div style="display:flex;justify-content:space-between;font-size:12.5px;gap:6px;">' +
+                '<b>' + (idx + 1) + '. ' + esc(f.stage) + '</b>' +
+                '<span>到達 <b>' + f.reachedCount + '</b> 件（' + f.reachRatePct + '%）｜關卡轉換 ' + f.stepConvPct + '%' +
+                (f.stage !== '結案完款' ? ('｜現停 ' + f.currentCount + ' 件・均停 ' + f.avgStayDays + ' 天') : '') + '</span>' +
+              '</div>' +
+              '<div class="bar-mini"><div class="bar-mini-fill ' + fillCls + '" style="width:' + Math.max(3, f.reachRatePct) + '%"></div></div>' +
+            '</div>';
+          }).join('');
+
+      var unitSel = document.getElementById('wfFilterUnit');
+      var prevUnit = unitSel.value;
+      unitSel.innerHTML = '<option value="">全部小組／單位</option>';
+      (res.unitOptions || []).forEach(function(un) {
+        var o = document.createElement('option');
+        o.value = un; o.textContent = un;
+        unitSel.appendChild(o);
+      });
+      var oPub = document.createElement('option'); oPub.value = '公海未分配'; oPub.textContent = '公海未分配';
+      unitSel.appendChild(oPub);
+      unitSel.value = prevUnit;
+      renderWorkflowCases();
+
+      // ===== 4. 子頁籤：窗口勝率、產品線、來源矩陣、風控 =====
+      var wins = perf.windowRankings || [];
+      document.getElementById('warWindowRankings').innerHTML = wins.length === 0
+        ? '<div style="color:#64748b;font-size:13px;text-align:center;">尚無報件送件窗口數據</div>'
+        : wins.map(function(w, idx) {
+            return '<div class="list-row"><div style="flex:1;"><b>#' + (idx + 1) + ' ' + esc(w.windowName) + '</b><br>' +
+              '<span style="font-size:12px;color:#64748b;">送件 ' + w.submitted + '｜完款 ' + w.completed + '｜核准 ' + w.approvedWan + ' 萬（均 ' + w.avgApprovedWan + ' 萬）｜佣收 <b>' + fmtMoney(w.netCommission) + '</b></span></div>' +
+              '<span class="badge badge-blue">勝率 ' + w.winRatePct + '%</span></div>';
+          }).join('');
+
+      var prods = perf.productRankings || [];
+      document.getElementById('warProductRankings').innerHTML = prods.length === 0
+        ? '<div style="color:#64748b;font-size:13px;text-align:center;">尚無產品線數據</div>'
+        : prods.map(function(pr) {
+            return '<div style="margin-bottom:10px;">' +
+              '<div style="display:flex;justify-content:space-between;font-size:13px;">' +
+                '<b>' + esc(pr.product) + '</b>' +
+                '<span>' + fmtMoney(pr.netCommission) + '（佔 <b>' + pr.sharePct + '%</b>）</span>' +
+              '</div>' +
+              '<div style="font-size:11.5px;color:#64748b;">進件 ' + pr.total + '｜結案 ' + pr.closed + '（轉換 ' + pr.convRatePct + '%）｜撤銷率 ' + pr.cancelRatePct + '%｜均佣 ' + fmtMoney(pr.avgCommission) + '</div>' +
+              '<div class="bar-mini"><div class="bar-mini-fill gold" style="width:' + Math.max(4, pr.sharePct) + '%"></div></div>' +
+            '</div>';
+          }).join('');
+
+      var srcs = (rk.sourceMatrix || res.warRoom.sourceStats || []);
+      document.getElementById('warSourceStats').innerHTML = srcs.length === 0
+        ? '<div style="color:#64748b;font-size:13px;text-align:center;">尚無進件來源數據</div>'
+        : srcs.map(function(s) {
+            return '<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:13px;">' +
+              '<b>' + esc(s.source) + '</b><span>' + s.total + ' 件｜結案 ' + s.closed + '（<b>' + s.convRate + '%</b>）｜' + fmtMoney(s.netCommission) + '</span></div>' +
+              '<div class="bar-mini"><div class="bar-mini-fill" style="width:' + Math.max(4, s.convRate) + '%"></div></div></div>';
+          }).join('');
+
+      var wh = rk.waterHealth || {};
+      var rt = rk.retrackMetrics || {};
+      var ra = rk.riskAudit || {};
+      document.getElementById('rkWaterUsage').textContent = (wh.totalWaterHeld || 0) + ' / ' + (wh.totalWaterCap || 0);
+      document.getElementById('rkWaterSub').textContent = '負載 ' + (wh.avgUsagePct || 0) + '%｜滿載 ' + (wh.fullStaffCount || 0) + ' 人｜週轉率 ' + (wh.turnoverRatePct || 0) + '%';
+      document.getElementById('rkWakeComm').textContent = fmtMoney(rt.wokenCommission);
+      document.getElementById('rkWakeSub').textContent = '喚醒 ' + (rt.wokenTotal || 0) + ' 件｜二次成交 ' + (rt.wokenClosed || 0) + ' 件';
+      document.getElementById('rkAuditHits').textContent = ((ra.returningDetectHits || 0) + (ra.antiPoachIntercepts || 0)) + ' 次';
+      document.getElementById('rkAuditSub').textContent = '舊客識破 ' + (ra.returningDetectHits || 0) + '｜防搶單 ' + (ra.antiPoachIntercepts || 0) + '｜轉派封存 ' + (ra.transferArchiveCount || 0);
+      document.getElementById('rkUpcomingCnt').textContent = (rt.upcomingCount || 0) + ' 筆';
+
+      var upList = rt.upcomingList || [];
+      document.getElementById('rkUpcomingList').innerHTML = upList.length === 0 ? '' : (
+        '<div style="font-size:12.5px;font-weight:800;color:#92400e;margin-bottom:4px;">📅 即將到期二次開發舊客預告：</div>' +
+        upList.slice(0, 8).map(function(uItem) {
+          return '<div class="list-row" style="padding:6px 0;"><div><b>' + esc(uItem.clientName) + '</b>｜' + esc(uItem.product) +
+            ' <span style="font-size:11.5px;color:#64748b;">(原核准 ' + esc(uItem.approvedWan) + '萬｜經辦:' + esc(uItem.handler) + ')</span></div>' +
+            '<span class="badge badge-gold">' + esc(uItem.retrackYm) + '</span></div>';
+        }).join('')
+      );
+
+      var hcList = ra.highCancelStaffs || [];
+      document.getElementById('rkHighCancelBox').innerHTML = hcList.length === 0 ? '' : (
+        '<div class="metric-card danger"><div style="font-weight:800;color:#991b1b;font-size:13px;">⚠️ 高撤銷率預警人員（撤銷率 ≥ 35%）</div>' +
+        hcList.map(function(h) {
+          return '<div style="font-size:12px;color:#7f1d1d;margin-top:4px;">• <b>' + esc(h.staffName) + ' (' + esc(h.staffCode) + ')</b>：撤銷 ' + h.handledCancelled + '/' + h.handledLeads + ' 件（<b>' + h.cancelRatePct + '%</b>）</div>';
+        }).join('') + '</div>'
+      );
+
+      var ov = res.warRoom.overdueCases || [];
+      document.getElementById('warOverdueList').innerHTML = ov.length === 0
+        ? '<div style="color:#059669;font-size:13.5px;text-align:center;font-weight:700;">✅ 全體水位進度正常，目前無逾時卡關案件！</div>'
+        : ov.map(function(o) {
+            return '<div class="list-row"><div><b style="color:#991b1b;">' + esc(o.clientName) + ' (' + esc(o.handlerName || o.handler) + ')</b><br>' +
+              '<span style="font-size:12px;color:#7f1d1d;">' + esc(o.alertReason) + '</span></div>' +
+              '<span class="badge badge-red">' + esc(o.node) + '</span></div>';
+          }).join('');
+
+      var cans = res.warRoom.cancelReasons || [];
+      document.getElementById('warCancelList').innerHTML = cans.length === 0
+        ? '<div style="color:#64748b;font-size:13px;text-align:center;">尚無撤銷案件紀錄</div>'
+        : cans.map(function(c) {
+            return '<div class="list-row"><div><b>' + esc(c.clientName) + '</b> (' + esc(c.handlerName || c.handler) + ')<br>' +
+              '<span style="font-size:12px;color:#64748b;">' + esc(c.summary) + '</span></div>' +
+              '<span style="font-size:11px;color:#94a3b8;">' + esc(String(c.time).substring(5, 16)) + '</span></div>';
+          }).join('');
+
+      // ===== 5. 分潤算獎與紅線特批 =====
+      var redList = res.commissions.pendingRedlineDeals || [];
+      var redCard = document.getElementById('commRedlineCard');
+      if (u.isBoss && redList.length > 0) {
+        redCard.classList.remove('hidden');
+        document.getElementById('commRedlineList').innerHTML = redList.map(function(d) {
+          return '<div class="list-row"><div><b>' + esc(d.clientName) + '｜' + esc(d.product) + '</b><br>' +
+            '<span style="font-size:12px;color:#991b1b;">費率 ' + esc(d.servicePct) + '%｜實收佣金 ' + fmtMoney(d.netComm) + '</span></div>' +
+            '<button class="btn btn-success btn-sm" onclick="approveRedline(\'' + esc(d.dealNo) + '\')">特批放行</button></div>';
+        }).join('');
+      } else { redCard.classList.add('hidden'); }
+
+      var br = res.commissions.bonusRank || [];
+      document.getElementById('commBonusRank').innerHTML = br.length === 0
+        ? '<div style="color:#64748b;font-size:13px;text-align:center;">尚無完款分潤紀錄</div>'
+        : br.map(function(b) {
+            return '<div class="list-row"><div><b>' + esc(b.staffName) + ' (' + esc(b.staffCode) + ')</b><br>' +
+              '<span style="font-size:12px;color:#64748b;">參與 ' + b.dealCount + ' 筆完款單｜累計疊加 ' + b.nodeHits + ' 個節點</span></div>' +
+              '<span class="badge badge-gold" style="font-size:14px;">' + fmtMoney(b.totalBonus) + '</span></div>';
+          }).join('');
+
+      var cms = res.commissions.recentRecords || [];
+      document.getElementById('commRecentList').innerHTML = cms.length === 0
+        ? '<div style="color:#64748b;font-size:13px;text-align:center;">尚無分潤核銷明細</div>'
+        : cms.map(function(cm) {
+            var isPaid = String(cm['核銷發放狀態'] || '').indexOf('已核發') !== -1;
+            return '<div style="border:1px solid #cbd5e1;border-radius:10px;padding:10px;margin-bottom:8px;font-size:12.5px;">' +
+              '<div style="display:flex;justify-content:space-between;"><b>' + esc(cm['客戶姓名']) + '｜母數 ' + fmtMoney(cm['實際總佣收母數']) + '</b>' +
+              '<span class="badge ' + (isPaid ? 'badge-ok' : 'badge-gold') + '">' + esc(cm['核銷發放狀態']) + '</span></div>' +
+              '<div style="color:#475569;margin-top:4px;line-height:1.6;">' +
+                '引流：' + esc(cm['引流_得獎人與金額']) + '<br>接流：' + esc(cm['接流_得獎人與金額']) + '<br>' +
+                '經辦：' + esc(cm['經辦_得獎人與金額']) + '<br>專案：' + esc(cm['專案_得獎人與金額']) + '<br>' +
+                '主管：' + esc(cm['主管_得獎人與金額']) + '｜加碼：' + esc(cm['動態級距加碼比例']) +
+              '</div>' +
+              (!isPaid && u.isBoss ? '<button class="btn btn-success btn-sm" style="margin-top:8px;" onclick="markCommPaid(\'' + esc(cm['算獎單號']) + '\')">✅ 標記已核發並推播通知</button>' : '') +
+            '</div>';
+          }).join('');
+
+      // ===== 6. 八大參數 ＋ 劉總關鍵節點推播開關回填 =====
+      var bn = p.bossNotifyConfig || {};
+      document.getElementById('bnEnabled').checked = (bn.enabled !== false);
+      document.getElementById('bnAllNodes').checked = Boolean(bn.notifyAllNodes);
+      document.getElementById('bnCancelReq').checked = (bn.notifyCancelRequest !== false);
+      document.getElementById('bnTransferReq').checked = (bn.notifyTransferRequest !== false);
+      document.getElementById('bnDispatch').checked = Boolean(bn.notifyDispatch);
+      var bnNodes = bn.nodes || [];
+      document.querySelectorAll('.bn-node-chk').forEach(function(chk) {
+        chk.checked = (bnNodes.indexOf(chk.value) !== -1);
+      });
+      var bnStatuses = bn.statuses || [];
+      document.querySelectorAll('.bn-status-chk').forEach(function(chk) {
+        chk.checked = (bnStatuses.indexOf(chk.value) !== -1);
+      });
+
+      document.getElementById('pTierJson').value = p.tierBonusJson;
+      var rates = { referral: 5, intake: 5, handler: 5, project: 5, manager: 5, boss: 5 };
+      try { rates = JSON.parse(p.nodeSplitJson); } catch (e) {}
+      document.getElementById('rRef').value = rates.referral;
+      document.getElementById('rIntake').value = rates.intake;
+      document.getElementById('rHandler').value = rates.handler;
+      document.getElementById('rProject').value = rates.project;
+      document.getElementById('rMgr').value = rates.manager;
+      document.getElementById('rBoss').value = rates.boss;
+      document.getElementById('pRedline').value = p.serviceFeeRedline;
+      document.getElementById('pWaterLimit').value = p.defaultWaterLimit;
+      document.getElementById('pRankWaterJson').value = p.rankWaterJson;
+      document.getElementById('pOverdueHrs').value = p.overdueContactHours;
+      document.getElementById('pOverdueDays').value = p.overdueFollowupDays;
+      document.getElementById('pWakeupDays').value = p.retrackWakeupDays;
+      document.getElementById('pRefProtect').value = p.referralProtectDays;
+      document.getElementById('pShareText').value = p.unifiedShareText;
+
+      var tplSel = document.getElementById('tplSelect');
+      tplSel.innerHTML = '<option value="">＋ 新增全新電子合約範本</option>';
+      (res.contracts || []).forEach(function(ct) {
+        var opt = document.createElement('option');
+        opt.value = ct.key; opt.textContent = ct.key + '｜' + ct.title;
+        tplSel.appendChild(opt);
+      });
+      if ((res.contracts || []).length > 0) {
+        tplSel.value = res.contracts[0].key;
+        onSelectContractTpl();
+      }
+
+      // ===== 7. 人事名冊與離職移交下拉 =====
+      if (!document.getElementById('hrCode').value) {
+        document.getElementById('hrCode').value = res.nextSuggestedCode || 'AUTO';
+      }
+      var activeStaff = (res.staffList || []).filter(function(s) { return s['在職狀態'] === '在職'; });
+      var rSel = document.getElementById('hrResignSel');
+      var sSel = document.getElementById('hrSuccessorSel');
+      rSel.innerHTML = ''; sSel.innerHTML = '';
+      activeStaff.forEach(function(s) {
+        var lbl = s['員工姓名'] + ' (' + s['員工代碼'] + '｜' + s['系統權限角色'] + '｜持有 ' + (s['目前持有活躍數'] || 0) + ' 員)';
+        if (s['員工代碼'] !== 'S001' && s['員工代碼'] !== 'S000') {
+          var o1 = document.createElement('option'); o1.value = s['員工代碼']; o1.textContent = lbl; rSel.appendChild(o1);
+        }
+        var o2 = document.createElement('option'); o2.value = s['員工代碼']; o2.textContent = lbl; sSel.appendChild(o2);
+      });
+      document.getElementById('hrStaffList').innerHTML = (res.staffList || []).map(function(s) {
+        var isAct = s['在職狀態'] === '在職';
+        var hasUid = Boolean(String(s['綁定LINE_UID'] || '').trim());
+        return '<div class="list-row"><div><b>' + esc(s['員工姓名']) + ' (' + esc(s['員工代碼']) + ')</b> ' +
+          '<span class="badge ' + (isAct ? 'badge-ok' : 'badge-red') + '">' + esc(s['在職狀態']) + '</span> ' +
+          '<span class="badge ' + (hasUid ? 'badge-blue' : 'badge-gray') + '">' + (hasUid ? 'LINE已綁定' : '待綁定LINE') + '</span><br>' +
+          '<span style="font-size:12px;color:#64748b;">' + esc(s['系統權限角色']) + '・' + esc(s['業務職級']) + '｜' + esc(s['所屬單位名稱'] || '') + '｜' + esc(s['手機號碼']) + '｜水位 ' + (s['目前持有活躍數'] || 0) + '/' + (s['系統權限角色'] === '劉總' ? '∞' : (s['個人水位上限'] || 30)) + '</span></div>' +
+          '<button class="btn btn-outline btn-sm" onclick="editStaffToForm(\'' + esc(s['員工代碼']) + '\')">編輯</button></div>';
+      }).join('');
+    }
+
+    function renderWorkflowCases() {
+      var list = (BOSS.data && BOSS.data.analytics && BOSS.data.analytics.workflow && BOSS.data.analytics.workflow.allCaseWorkflows) || [];
+      var q = (document.getElementById('wfSearch').value || '').trim().toLowerCase();
+      var uFilter = document.getElementById('wfFilterUnit').value;
+      var nFilter = document.getElementById('wfFilterNode').value;
+      var sFilter = document.getElementById('wfFilterStatus').value;
+      var aFilter = document.getElementById('wfFilterAlert').value;
+      var filtered = list.filter(function(c) {
+        if (uFilter && c.unitName !== uFilter) return false;
+        if (nFilter && c.node !== nFilter) return false;
+        if (sFilter && c.status !== sFilter) return false;
+        if (aFilter === 'OVERDUE' && !c.isOverdue) return false;
+        if (aFilter === 'ZOMBIE' && !c.isZombie) return false;
+        if (q) {
+          var blob = (c.clientName + c.caseId + c.handlerName + c.refName + c.loanType + c.phone).toLowerCase();
+          if (blob.indexOf(q) === -1) return false;
+        }
+        return true;
+      });
+      document.getElementById('wfFilteredCnt').textContent = filtered.length + ' 件';
+      var box = document.getElementById('wfCaseList');
+      if (filtered.length === 0) {
+        box.innerHTML = '<div style="text-align:center;color:#64748b;font-size:13px;padding:12px;">無符合篩選條件之工作流案件。</div>';
+        return;
+      }
+      box.innerHTML = filtered.slice(0, 60).map(function(c) {
+        var stepHtml = ALL_NODES.map(function(nd, idx) {
+          var cls = (c.status === '結案' || idx < c.nodeIdx) ? 'done' : (idx === c.nodeIdx ? 'curr' : '');
+          var shortLbl = nd === '送件窗口核價' ? '核價' : nd;
+          return '<div class="wf-dot ' + cls + '">' + esc(shortLbl) + '</div>';
+        }).join('');
+        var stBadge = c.status === '結案' ? 'badge-ok' : (c.status === '撤銷' ? 'badge-red' : (c.status === '補件' ? 'badge-gold' : 'badge-blue'));
+        return '<div class="wf-card ' + (c.isOverdue ? 'overdue' : '') + '">' +
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px;">' +
+            '<div><b>' + esc(c.clientName) + '</b> <span style="font-size:12px;color:#475569;">(' + esc(c.phone || '無電話') + ')</span>' +
+            (c.isOverdue ? ' <span class="badge badge-red">逾時</span>' : '') +
+            (c.isZombie ? ' <span class="badge badge-red">殭屍 ' + c.stagnantDays + '天</span>' : '') +
+            '<div style="font-size:11.5px;color:#64748b;">' + esc(c.caseId) + '｜' + esc(c.unitName) + '｜' + esc(c.source) + '</div></div>' +
+            '<span class="badge ' + stBadge + '">' + esc(c.node) + '・' + esc(c.status) + '</span>' +
+          '</div>' +
+          '<div class="wf-steps">' + stepHtml + '</div>' +
+          '<div style="font-size:12px;color:#334155;line-height:1.6;">' +
+            '👨‍💼 經辦：<b>' + esc(c.handlerName) + '</b>｜📣 引流：<b>' + esc(c.refName) + '</b>｜停滯 <b>' + c.stagnantDays + '</b> 天' +
+            (c.dealCommission > 0 ? ('｜💰 已完款 <b style="color:#047857;">' + fmtMoney(c.dealCommission) + '</b>') : '') + '<br>' +
+            '📝 ' + esc(c.lastSummary || '尚無回報摘要') + ' <span style="color:#94a3b8;">(' + esc(String(c.lastUpdate).substring(5, 16)) + ')</span>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function approveRedline(dealNo) {
+      setLoading(true, '執行劉總紅線特批放行...');
+      google.script.run
+        .withSuccessHandler(function(r) { setLoading(false); showToast(r ? r.message : '完成'); reloadWarRoom(); })
+        .withFailureHandler(function(err) { setLoading(false); showToast('特批異常：' + err.message); })
+        .Dept05_apiBossApproveRedline({ bossCode: BOSS.staffCode, dealNo: dealNo, decision: 'APPROVE' });
+    }
+    function recalcAllCommissions() {
+      setLoading(true, '正在依最新比例與級距重算全部完款分潤...');
+      google.script.run
+        .withSuccessHandler(function(r) { setLoading(false); showToast(r ? r.message : '完成'); reloadWarRoom(); })
+        .withFailureHandler(function(err) { setLoading(false); showToast('重算異常：' + err.message); })
+        .Dept06_apiRecalculateAllCommissions(BOSS.staffCode);
+    }
+    function markCommPaid(commId) {
+      setLoading(true, '核發標記與 LINE 推播得獎同仁中...');
+      google.script.run
+        .withSuccessHandler(function(r) { setLoading(false); showToast(r ? r.message : '完成'); reloadWarRoom(); })
+        .withFailureHandler(function(err) { setLoading(false); showToast('核發異常：' + err.message); })
+        .Dept06_apiMarkCommissionPaid({ bossCode: BOSS.staffCode, commId: commId });
+    }
+    function saveBossParams() {
+      var splitObj = {
+        referral: Number(document.getElementById('rRef').value || 0),
+        intake: Number(document.getElementById('rIntake').value || 0),
+        handler: Number(document.getElementById('rHandler').value || 0),
+        project: Number(document.getElementById('rProject').value || 0),
+        manager: Number(document.getElementById('rMgr').value || 0),
+        boss: Number(document.getElementById('rBoss').value || 0)
+      };
+      var selectedNodes = [];
+      document.querySelectorAll('.bn-node-chk:checked').forEach(function(el) { selectedNodes.push(el.value); });
+      var selectedStatuses = [];
+      document.querySelectorAll('.bn-status-chk:checked').forEach(function(el) { selectedStatuses.push(el.value); });
+      var notifyCfg = {
+        enabled: document.getElementById('bnEnabled').checked,
+        notifyAllNodes: document.getElementById('bnAllNodes').checked,
+        nodes: selectedNodes,
+        statuses: selectedStatuses,
+        notifyCancelRequest: document.getElementById('bnCancelReq').checked,
+        notifyTransferRequest: document.getElementById('bnTransferReq').checked,
+        notifyDispatch: document.getElementById('bnDispatch').checked
+      };
+      setLoading(true, '儲存並同步劉總八大參數與關鍵節點推播開關...');
+      google.script.run
+        .withSuccessHandler(function(r) { setLoading(false); showToast(r ? r.message : '儲存完成'); if (r && r.success) reloadWarRoom(); })
+        .withFailureHandler(function(err) { setLoading(false); showToast('儲存失敗：' + err.message); })
+        .Dept06_apiSaveBossParams({
+          bossCode: BOSS.staffCode,
+          params: {
+            tierBonusJson: document.getElementById('pTierJson').value.trim(),
+            nodeSplitJson: JSON.stringify(splitObj),
+            serviceFeeRedline: document.getElementById('pRedline').value,
+            defaultWaterLimit: document.getElementById('pWaterLimit').value,
+            rankWaterJson: document.getElementById('pRankWaterJson').value.trim(),
+            overdueContactHours: document.getElementById('pOverdueHrs').value,
+            overdueFollowupDays: document.getElementById('pOverdueDays').value,
+            retrackWakeupDays: document.getElementById('pWakeupDays').value,
+            referralProtectDays: document.getElementById('pRefProtect').value,
+            unifiedShareText: document.getElementById('pShareText').value.trim(),
+            bossNotifyConfig: notifyCfg
+          }
+        });
+    }
+    function onSelectContractTpl() {
+      var k = document.getElementById('tplSelect').value;
+      if (!k) {
+        document.getElementById('tplTitle').value = '';
+        document.getElementById('tplContent').value = '';
+        return;
+      }
+      var ct = (BOSS.data.contracts || []).find(function(x) { return x.key === k; });
+      if (ct) {
+        document.getElementById('tplTitle').value = ct.title;
+        document.getElementById('tplContent').value = ct.content;
+      }
+    }
+    function saveContractTpl() {
+      setLoading(true, '更新電子合約範本至手機簽名板...');
+      google.script.run
+        .withSuccessHandler(function(r) { setLoading(false); showToast(r ? r.message : '完成'); if (r && r.success) reloadWarRoom(); })
+        .withFailureHandler(function(err) { setLoading(false); showToast('儲存失敗：' + err.message); })
+        .Dept06_apiSaveContractTemplate({
+          bossCode: BOSS.staffCode,
+          key: document.getElementById('tplSelect').value,
+          title: document.getElementById('tplTitle').value.trim(),
+          content: document.getElementById('tplContent').value.trim()
+        });
+    }
+    function prepareNewStaffForm() {
+      document.getElementById('hrCode').value = (BOSS.data && BOSS.data.nextSuggestedCode) || 'AUTO';
+      document.getElementById('hrName').value = '';
+      document.getElementById('hrPhone').value = '';
+      document.getElementById('hrRole').value = '經辦';
+      document.getElementById('hrRank').value = '專員';
+      document.getElementById('hrLimit').value = (BOSS.data && BOSS.data.bossParams && BOSS.data.bossParams.defaultWaterLimit) || 30;
+      document.getElementById('hrUnit').value = '業務一處';
+      document.getElementById('hrUnitMgr').value = 'S001';
+      document.getElementById('hrDeptMgr').value = 'S001';
+      document.getElementById('newStaffBindBanner').classList.add('hidden');
+      showToast('✨ 已帶入建議新員工代碼：' + document.getElementById('hrCode').value);
+    }
+    function editStaffToForm(code) {
+      var st = (BOSS.data.staffList || []).find(function(x) { return x['員工代碼'] === code; });
+      if (!st) return;
+      document.getElementById('hrCode').value = st['員工代碼'];
+      document.getElementById('hrName').value = st['員工姓名'];
+      document.getElementById('hrPhone').value = st['手機號碼'];
+      document.getElementById('hrRole').value = st['系統權限角色'];
+      document.getElementById('hrRank').value = st['業務職級'];
+      document.getElementById('hrLimit').value = st['個人水位上限'];
+      document.getElementById('hrUnit').value = st['所屬單位名稱'];
+      document.getElementById('hrUnitMgr').value = st['所屬單位主管代碼'];
+      document.getElementById('hrDeptMgr').value = st['所屬部門主管代碼'];
+      document.getElementById('newStaffBindBanner').classList.add('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function saveStaffProfile() {
+      setLoading(true, '寫入內部組織與權限表...');
+      google.script.run
+        .withSuccessHandler(function(r) {
+          setLoading(false);
+          showToast(r ? r.message : '完成');
+          if (r && r.success) {
+            if (r.bindCommand) {
+              document.getElementById('newStaffBindCmd').textContent = r.bindCommand;
+              document.getElementById('newStaffBindBanner').classList.remove('hidden');
+            }
+            document.getElementById('hrCode').value = '';
+            reloadWarRoom();
+          }
+        })
+        .withFailureHandler(function(err) { setLoading(false); showToast('寫入失敗：' + err.message); })
+        .Dept06_apiSaveStaffProfile({
+          bossCode: BOSS.staffCode,
+          staff: {
+            staffCode: document.getElementById('hrCode').value,
+            staffName: document.getElementById('hrName').value,
+            phone: document.getElementById('hrPhone').value,
+            role: document.getElementById('hrRole').value,
+            rank: document.getElementById('hrRank').value,
+            waterLimit: document.getElementById('hrLimit').value,
+            unitName: document.getElementById('hrUnit').value,
+            unitMgrCode: document.getElementById('hrUnitMgr').value,
+            deptMgrCode: document.getElementById('hrDeptMgr').value,
+            status: '在職'
+          }
+        });
+    }
+    function copyBindCmd() {
+      var txt = document.getElementById('newStaffBindCmd').textContent;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(function() { showToast('✅ 已複製綁定指令：' + txt); });
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = txt; document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); document.body.removeChild(ta);
+        showToast('✅ 已複製綁定指令：' + txt);
+      }
+    }
+    function execResignHandover() {
+      var rCode = document.getElementById('hrResignSel').value;
+      var sCode = document.getElementById('hrSuccessorSel').value;
+      if (!confirm('⚠️ 確定撤銷【' + rCode + '】系統權限，並將其名下所有活躍案件移交給【' + sCode + '】？')) return;
+      setLoading(true, '執行離職停權與批次移交中...');
+      google.script.run
+        .withSuccessHandler(function(r) { setLoading(false); showToast(r ? r.message : '完成'); if (r && r.success) reloadWarRoom(); })
+        .withFailureHandler(function(err) { setLoading(false); showToast('移交異常：' + err.message); })
+        .Dept06_apiResignAndHandoverStaff({ bossCode: BOSS.staffCode, resignCode: rCode, successorCode: sCode });
+    }
+
+    function downloadCsvTemplate() {
+      var csv = '\uFEFF姓名,手機,身分證ID,客戶來源,申辦類別,需求萬,經辦代碼,再追蹤年月,備註\n王大明,0912345678,A123456789,舊客,信用貸款與工作收入增貸,50,S005,2027-06,舊系統匯入範例\n';
+      var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = '三貸同堂_舊系統客戶批次匯入範本.csv';
+      a.click();
+    }
+    function parseCsvFile(input) {
+      if (!input.files || !input.files[0]) return;
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var lines = String(e.target.result || '').replace(/^\uFEFF/, '').split(/\r?\n/).filter(function(l) { return l.trim() !== ''; });
+        var rows = [];
+        for (var i = 1; i < lines.length; i++) {
+          var cols = lines[i].split(',').map(function(c) { return c.replace(/^"|"$/g, '').trim(); });
+          if (cols.length >= 2 && cols[0]) {
+            rows.push({
+              clientName: cols[0], phone: cols[1], idCard: cols[2] || '', source: cols[3] || '舊客',
+              loanType: cols[4] || '舊系統匯入', amountWan: cols[5] || '', handlerCode: cols[6] || '',
+              retrackYm: cols[7] || '', note: cols[8] || '舊系統批次匯入'
+            });
+          }
+        }
+        BOSS.parsedCsvRows = rows;
+        document.getElementById('csvPreviewInfo').textContent = '✅ 已解析完成共 ' + rows.length + ' 筆客戶資料，點擊下方按鈕即可匯入總水庫！';
+        document.getElementById('btnRunImport').disabled = (rows.length === 0 || !BOSS.data.user.isBoss);
+      };
+      reader.readAsText(input.files[0], 'UTF-8');
+    }
+    function execBatchImport() {
+      if (!BOSS.parsedCsvRows.length) return;
+      setLoading(true, '正在批次匯入舊系統名單並自動去重...');
+      google.script.run
+        .withSuccessHandler(function(r) {
+          setLoading(false); showToast(r ? r.message : '匯入完成');
+          BOSS.parsedCsvRows = []; document.getElementById('btnRunImport').disabled = true;
+          reloadWarRoom();
+        })
+        .withFailureHandler(function(err) { setLoading(false); showToast('匯入失敗：' + err.message); })
+        .Dept06_apiBatchImportLegacyClients({ bossCode: BOSS.staffCode, rows: BOSS.parsedCsvRows });
+    }
+
+    function switchEnvMode(targetMode) {
+      if (targetMode === 'PRODUCTION' && !confirm('🚀 確定切換為三貸同堂正式機 (@threeloans) 並自動部署六宮格選單？')) return;
+      setLoading(true, '正在執行環境無縫切換與六宮格部署...');
+      google.script.run
+        .withSuccessHandler(function(r) { setLoading(false); showToast(r ? r.message : '切換完成'); if (r && r.success) reloadWarRoom(); })
+        .withFailureHandler(function(err) { setLoading(false); showToast('切換異常：' + err.message); })
+        .Dept06_apiSwitchProductionEnv({
+          bossCode: BOSS.staffCode,
+          targetMode: targetMode,
+          prodAccessToken: document.getElementById('opsProdToken').value.trim(),
+          clearTestUids: document.getElementById('opsClearUids').checked
+        });
+    }
+    function installDailyCron() {
+      setLoading(true, '安裝每日 09:00 自動化督導與喚醒排程中...');
+      google.script.run
+        .withSuccessHandler(function(r) { setLoading(false); showToast(r ? r.message : '排程安裝成功'); })
+        .withFailureHandler(function(err) { setLoading(false); showToast('安裝異常：' + err.message); })
+        .Step3_安裝每日自動化逾時督導與舊客喚醒排程();
+    }
+    function runCronNow() {
+      setLoading(true, '立即執行逾時紅燈督導與舊客到期喚醒巡檢...');
+      google.script.run
+        .withSuccessHandler(function(r) { setLoading(false); showToast(r ? r.message : '巡檢完成'); reloadWarRoom(); })
+        .withFailureHandler(function(err) { setLoading(false); showToast('巡檢異常：' + err.message); })
+        .Dept06_apiRunCronManually(BOSS.staffCode);
+    }
+  </script>
+</body>
+</html>
