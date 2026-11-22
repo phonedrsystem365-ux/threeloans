@@ -60,6 +60,16 @@
     .tab-pane { display: none; animation: fadeIn 0.2s ease; }
     .tab-pane.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    /* V7.1 頂部智慧待辦引導條 */
+    .smart-banner {
+      display: flex; justify-content: space-between; align-items: center; gap: 10px;
+      padding: 11px 13px; border-radius: 12px; margin-bottom: 11px; font-size: 13px;
+      border: 1.5px solid #93c5fd; background: #eff6ff; color: #1e3a8a;
+    }
+    .smart-banner.danger { border-color: #fca5a5; background: #fef2f2; color: #991b1b; }
+    .smart-banner.warn { border-color: #fcd34d; background: #fffbeb; color: #92400e; }
+    .smart-banner.ok { border-color: #6ee7b7; background: #ecfdf5; color: #065f46; }
+    .smart-banner-txt { flex: 1; line-height: 1.45; }
     .card {
       background: var(--card); border-radius: 14px; padding: 16px; margin-bottom: 14px;
       box-shadow: 0 2px 10px rgba(15,23,42,0.06); border: 1px solid var(--border);
@@ -90,7 +100,7 @@
     .btn-success { background: var(--success); color: #fff; }
     .btn-danger { background: var(--danger); color: #fff; }
     .btn-outline { background: #fff; color: var(--navy-dark); border: 1.5px solid #94a3b8; }
-    .btn-sm { padding: 8px 12px; font-size: 13px; width: auto; border-radius: 9px; }
+    .btn-sm { padding: 8px 12px; font-size: 13px; width: auto; border-radius: 9px; white-space: nowrap; }
     /* 快速一鍵分享橫幅 */
     .quick-share-strip {
       display: flex; align-items: center; justify-content: space-between; gap: 10px;
@@ -168,6 +178,42 @@
       background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af;
       border-radius: 9px; padding: 8px 10px; font-size: 12px; margin-bottom: 12px; line-height: 1.5;
     }
+    /* V7.1 下一步自動引導彈窗 */
+    .guide-mask {
+      position: fixed; inset: 0; background: rgba(11,19,43,0.74); z-index: 92;
+      display: none; align-items: center; justify-content: center; padding: 16px;
+      backdrop-filter: blur(2px);
+    }
+    .guide-mask.show { display: flex; animation: fadeIn 0.18s ease; }
+    .guide-modal {
+      width: 100%; max-width: 440px; background: #fff; border-radius: 16px;
+      border: 2px solid var(--gold); overflow: hidden; box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+    }
+    .guide-hdr {
+      background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid));
+      color: #fbbf24; padding: 14px 16px; font-size: 16px; font-weight: 900;
+      display: flex; justify-content: space-between; align-items: center; gap: 8px;
+      border-bottom: 2px solid var(--gold);
+    }
+    .guide-close {
+      background: rgba(255,255,255,0.12); color: #e2e8f0; border: none; border-radius: 8px;
+      width: 28px; height: 28px; font-size: 16px; font-weight: 900; cursor: pointer;
+    }
+    .guide-body { padding: 15px 16px 16px; font-size: 13.5px; color: #334155; }
+    .guide-desc { margin: 0 0 10px; line-height: 1.55; }
+    .guide-extra {
+      background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px;
+      padding: 10px 12px; margin-bottom: 12px; font-size: 12.5px; color: #0f172a; line-height: 1.65;
+    }
+    .guide-extra.gold { background: #fffbeb; border-color: #fcd34d; }
+    .guide-extra.ok { background: #ecfdf5; border-color: #6ee7b7; }
+    .guide-extra.danger { background: #fef2f2; border-color: #fca5a5; color: #991b1b; }
+    .guide-next-lbl {
+      font-size: 12px; font-weight: 800; color: #b45309; margin-bottom: 8px;
+      letter-spacing: 0.3px; display: flex; align-items: center; gap: 5px;
+    }
+    .guide-actions { display: flex; flex-direction: column; gap: 8px; }
+    .guide-actions .btn { padding: 12px 14px; font-size: 14.5px; }
     /* 底部固定導覽列 */
     .bottom-nav {
       position: fixed; bottom: 0; left: 0; right: 0; background: var(--navy-dark);
@@ -221,7 +267,21 @@
     <div class="spinner"></div>
     <div id="loadingText" style="font-weight:700;font-size:15px;">雲端水位同步中...</div>
   </div>
-
+  <!-- V7.1 全動線下一步自動引導彈窗 -->
+  <div id="guideMask" class="guide-mask" onclick="if(event.target===this) closeNextStepModal();">
+    <div class="guide-modal">
+      <div class="guide-hdr">
+        <span id="guideTitle">✅ 操作已完成</span>
+        <button class="guide-close" onclick="closeNextStepModal()" aria-label="關閉">✕</button>
+      </div>
+      <div class="guide-body">
+        <p id="guideDesc" class="guide-desc"></p>
+        <div id="guideExtra" class="guide-extra hidden"></div>
+        <div class="guide-next-lbl">👉 系統建議下一步動作：</div>
+        <div id="guideActions" class="guide-actions"></div>
+      </div>
+    </div>
+  </div>
   <!-- 內部權限實名驗證牆（未綁定者強制攔截） -->
   <div id="loginWall" class="container hidden">
     <div class="card">
@@ -240,11 +300,12 @@
       <button class="btn btn-gold" onclick="doStaffLogin()">🔓 驗證職級並進入行動工作台</button>
     </div>
   </div>
-
   <!-- 主工作台容器 -->
   <main id="mainApp" class="container hidden">
     <!-- ==================== 分頁 1：我的水位與防弊遮罩 ==================== -->
     <section id="tab-my" class="tab-pane active">
+      <!-- V7.1 頂部智慧待辦引導條 -->
+      <div id="staffSmartBanner" class="smart-banner hidden"></div>
       <div class="stat-grid">
         <div class="stat-tile"><div class="stat-num" id="stActive">0</div><div class="stat-lbl">目前水位活躍</div></div>
         <div class="stat-tile" style="cursor:pointer;" onclick="switchTab('share')">
@@ -262,7 +323,7 @@
         <a id="qsLineShareBtn" class="btn btn-line btn-sm" style="white-space:nowrap;flex-shrink:0;" href="#" target="_blank" rel="noopener">LINE 分享</a>
       </div>
       <div style="display:flex;gap:8px;margin-bottom:12px;">
-        <input type="text" id="searchMyInput" placeholder="🔍 搜尋姓名、案號或節點..." oninput="renderMyActiveCases()">
+        <input type="text" id="searchMyInput" placeholder="🔍 搜尋姓名、案號、節點或狀態..." oninput="renderMyActiveCases()">
         <button class="btn btn-navy btn-sm" style="white-space:nowrap;" onclick="openOfflineLeadModal()">＋ 新增客戶</button>
       </div>
       <div class="section-title">
@@ -275,7 +336,6 @@
       </div>
       <div id="myMaskedList"></div>
     </section>
-
     <!-- ==================== 分頁 2：總水庫公海派單與主管審批 ==================== -->
     <section id="tab-pool" class="tab-pane">
       <div id="managerApprovalSection" class="hidden">
@@ -290,7 +350,6 @@
       </div>
       <div id="publicPoolList"></div>
     </section>
-
     <!-- ==================== 分頁 3：一鍵分享管家＆我的引流成績單 ==================== -->
     <section id="tab-share" class="tab-pane">
       <div class="card">
@@ -324,7 +383,6 @@
           📌 <b>雙軌業績透明統計：</b>您自己經辦完款 <b>0 件</b>（經辦佣收 <b>$0</b>）；靠分享管家引流完款 <b>0 件</b>（引流貢獻佣收 <b>$0</b>）。若同一案由您自己分享＋自己接流＋自己經辦，系統將自動疊加多節點分潤！
         </div>
       </div>
-
       <div class="card card-navy">
         <div class="section-title">📣 一鍵分享三貸同堂智能管家</div>
         <p style="font-size:13.5px;color:#e2e8f0;margin-top:0;">
@@ -342,7 +400,6 @@
           🔗 單獨複製「60 秒試算表單」專屬引流連結
         </button>
       </div>
-
       <div class="card">
         <div class="section-title">📲 我的專屬官方 LINE 引流 QR Code</div>
         <div class="qr-box">
@@ -351,13 +408,11 @@
           <div style="font-size:12.5px;color:#64748b;">現場見客戶直接請對方掃碼，加入按傳送立即歸戶計入您的業績！</div>
         </div>
       </div>
-
       <div class="card">
         <div class="section-title">🏅 我已成功引流的客戶與成交追蹤 (<span id="myRefListCnt">0</span>)</div>
         <div id="myReferredList"></div>
       </div>
     </section>
-
     <!-- ==================== 分頁 4：團隊水位與跨部門快捷入口 ==================== -->
     <section id="tab-team" class="tab-pane">
       <div class="card card-navy">
@@ -375,7 +430,6 @@
       <button class="btn btn-outline" style="color:#64748b;margin-top:4px;" onclick="logoutStaffSession()">🔄 切換登入帳號／清除本機記憶</button>
     </section>
   </main>
-
   <!-- ==================== 彈窗 1：7 大節點 × 4 大狀態即時回報 ==================== -->
   <div id="modalReport" class="modal-bg">
     <div class="modal-sheet">
@@ -413,7 +467,6 @@
       </div>
     </div>
   </div>
-
   <!-- ==================== 彈窗 2：申請撤銷／轉派 ==================== -->
   <div id="modalCancel" class="modal-bg">
     <div class="modal-sheet">
@@ -441,7 +494,6 @@
       </div>
     </div>
   </div>
-
   <!-- ==================== 彈窗 3：主管派單／審批轉派 ==================== -->
   <div id="modalDispatch" class="modal-bg">
     <div class="modal-sheet">
@@ -471,7 +523,6 @@
       </div>
     </div>
   </div>
-
   <!-- ==================== 彈窗 4：業務手動新增線下客戶 ==================== -->
   <div id="modalOfflineLead" class="modal-bg">
     <div class="modal-sheet">
@@ -505,7 +556,6 @@
       </div>
     </div>
   </div>
-
   <!-- 底部固定四分頁導覽 -->
   <nav class="bottom-nav">
     <button class="nav-btn active" id="nav-my" onclick="switchTab('my')"><span class="ico">🌊</span><span>我的水位</span></button>
@@ -513,12 +563,10 @@
     <button class="nav-btn" id="nav-share" onclick="switchTab('share')"><span class="ico">📣</span><span>分享引流</span></button>
     <button class="nav-btn" id="nav-team" onclick="switchTab('team')"><span class="ico">👥</span><span>團隊/報表</span></button>
   </nav>
-
   <script>
-    // ==================== V7.0 GitHub Pages ➔ GAS JSON API 橋接中樞 ====================
+    // ==================== V7.1 GitHub Pages ➔ GAS JSON API 橋接中樞 ====================
     var GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzofnwdYqJprOQIu_4vXmtqoWT_uyfnxg27otb9u_CxHX8m_0D2qYTTX8NBqTMxlQNzZg/exec';
     var STAFF_STORAGE_KEY = 'THREELOANS_STAFF_SESSION_V7';
-
     function parseUrlParams() {
       var obj = {};
       try {
@@ -527,7 +575,6 @@
       } catch (e) {}
       return obj;
     }
-
     function callGasApi(apiAction, args, onSuccess, onFailure) {
       fetch(GAS_API_URL, {
         method: 'POST',
@@ -557,7 +604,6 @@
         if (typeof onFailure === 'function') onFailure(err);
       });
     }
-
     (function initGasBridge() {
       if (window.google && window.google.script && window.google.script.run) return;
       function createRunner(successCb, failureCb) {
@@ -580,12 +626,10 @@
       window.google.script = window.google.script || {};
       window.google.script.run = createRunner(null, null);
     })();
-
     function isStandaloneHost() {
       var h = String(window.location.hostname || '').toLowerCase();
       return h !== '' && h.indexOf('script.google') === -1 && h.indexOf('googleusercontent.com') === -1;
     }
-
     function buildDeptUrl(dept, extraParams) {
       var st = (APP.data && APP.data.staff) ? APP.data.staff : {};
       var uid = st.lineUid || APP.lineUid || '';
@@ -600,7 +644,6 @@
       }
       if (uid) qs.push('uid=' + encodeURIComponent(uid));
       if (ref) qs.push('ref=' + encodeURIComponent(ref));
-
       if (isStandaloneHost()) {
         var fileMap = { client: './index.html', staff: './staff.html', forms: './forms.html', boss: './boss.html' };
         var targetFile = fileMap[dept] || './index.html';
@@ -611,19 +654,16 @@
       qs.push('openExternalBrowser=1');
       return baseUrl + '?' + qs.join('&');
     }
-
     // ==================== 身分自動解析與免重登記憶 ====================
     var RAW_PARAMS = parseUrlParams();
     var SAVED_SESSION = {};
     try { SAVED_SESSION = JSON.parse(localStorage.getItem(STAFF_STORAGE_KEY) || '{}') || {}; } catch (e) {}
-
     var APP = {
       lineUid: RAW_PARAMS.uid || SAVED_SESSION.lineUid || '',
       staffCode: (RAW_PARAMS.ref || SAVED_SESSION.staffCode || '').toUpperCase(),
       phone: RAW_PARAMS.uid ? '' : (SAVED_SESSION.phone || ''),
       data: null
     };
-
     window.addEventListener('DOMContentLoaded', function() {
       var initTab = String(RAW_PARAMS.tab || '').toLowerCase();
       if (['my', 'pool', 'share', 'team'].indexOf(initTab) !== -1) {
@@ -636,7 +676,89 @@
         document.getElementById('loginWall').classList.remove('hidden');
       }
     });
-
+    // ==================== V7.1 全動線自動引導引擎 ====================
+    var GUIDE_HANDLERS = [];
+    function showNextStepModal(cfg) {
+      document.getElementById('guideTitle').textContent = cfg.title || '✅ 操作已完成';
+      document.getElementById('guideDesc').textContent = cfg.desc || '';
+      var extraEl = document.getElementById('guideExtra');
+      if (cfg.extraHtml) {
+        extraEl.innerHTML = cfg.extraHtml;
+        extraEl.className = 'guide-extra' + (cfg.extraTone ? ' ' + cfg.extraTone : '');
+      } else {
+        extraEl.innerHTML = '';
+        extraEl.className = 'guide-extra hidden';
+      }
+      GUIDE_HANDLERS = [];
+      var actions = cfg.actions || [];
+      var actWrap = document.getElementById('guideActions');
+      actWrap.innerHTML = actions.map(function(act, idx) {
+        GUIDE_HANDLERS.push(act);
+        var cls = act.btnClass || (idx === 0 ? 'btn-gold' : 'btn-outline');
+        return '<button class="btn ' + cls + '" onclick="runGuideAction(' + idx + ')">' + escHtml(act.label) + '</button>';
+      }).join('') + '<button class="btn btn-outline" style="color:#64748b;border-color:#cbd5e1;" onclick="closeNextStepModal()">留在目前畫面</button>';
+      document.getElementById('guideMask').classList.add('show');
+    }
+    function runGuideAction(idx) {
+      var act = GUIDE_HANDLERS[idx];
+      if (!act) return;
+      if (!act.keepOpen) closeNextStepModal();
+      if (typeof act.onClick === 'function') act.onClick();
+    }
+    function closeNextStepModal() {
+      document.getElementById('guideMask').classList.remove('show');
+    }
+    function filterMyCasesByKeyword(kw) {
+      var inp = document.getElementById('searchMyInput');
+      if (inp) {
+        inp.value = kw || '';
+        renderMyActiveCases();
+      }
+      var listEl = document.getElementById('myActiveList');
+      if (listEl) listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    function renderStaffSmartBanner() {
+      var box = document.getElementById('staffSmartBanner');
+      if (!box || !APP.data) return;
+      var st = APP.data.staff || {};
+      var pending = APP.data.pendingApprovals || [];
+      var pool = APP.data.publicPoolCases || [];
+      var myCases = APP.data.myActiveCases || [];
+      var suppCases = myCases.filter(function(c) { return c.status === '補件'; });
+      if (st.isManager && pending.length > 0) {
+        box.className = 'smart-banner danger';
+        box.innerHTML = '<div class="smart-banner-txt"><b>🚨 待辦審批：</b>目前有 <b>' + pending.length + ' 件</b>撤銷／轉派申請待您審批處理。</div>' +
+          '<button class="btn btn-danger btn-sm" onclick="switchTab(\'pool\')">👉 立即審批</button>';
+        return;
+      }
+      if (st.isFull && !st.isBoss) {
+        box.className = 'smart-banner danger';
+        box.innerHTML = '<div class="smart-banner-txt"><b>🚫 水位已滿（' + st.activeCount + '/' + st.waterLimit + ' 員）：</b>請將舊案推進「結案」或申請「撤銷／轉派」釋出空位才能再接新單。</div>' +
+          '<button class="btn btn-outline btn-sm" onclick="filterMyCasesByKeyword(\'\')">🌊 整理名單</button>';
+        return;
+      }
+      if (pool.length > 0) {
+        if (st.isManager) {
+          box.className = 'smart-banner warn';
+          box.innerHTML = '<div class="smart-banner-txt"><b>📥 公海有新單待派：</b>總水庫目前有 <b>' + pool.length + ' 件</b>新進名單等待主管指派同仁。</div>' +
+            '<button class="btn btn-gold btn-sm" onclick="switchTab(\'pool\')">🎯 前往派單</button>';
+          return;
+        }
+        box.className = 'smart-banner';
+        box.innerHTML = '<div class="smart-banner-txt"><b>⚡ 公海有新單可領：</b>目前有 <b>' + pool.length + ' 件</b>待派名單，您尚有空位可立即領單跟進！</div>' +
+          '<button class="btn btn-gold btn-sm" onclick="switchTab(\'pool\')">⚡ 前往領單</button>';
+        return;
+      }
+      if (suppCases.length > 0) {
+        box.className = 'smart-banner warn';
+        box.innerHTML = '<div class="smart-banner-txt"><b>📎 補件追蹤提醒：</b>您名下有 <b>' + suppCases.length + ' 件</b>「補件」案件，請儘速聯繫客戶補齊避免紅燈督導。</div>' +
+          '<button class="btn btn-gold btn-sm" onclick="filterMyCasesByKeyword(\'補件\')">🔍 只看補件</button>';
+        return;
+      }
+      box.className = 'smart-banner ok';
+      box.innerHTML = '<div class="smart-banner-txt"><b>✅ 今日作業順暢：</b>目前無待審批與公海積壓，分享專屬連結給好友即可自動累積引流分潤！</div>' +
+        '<button class="btn btn-line btn-sm" onclick="switchTab(\'share\')">📣 分享引流</button>';
+    }
     function saveStaffSession(staffObj) {
       try {
         localStorage.setItem(STAFF_STORAGE_KEY, JSON.stringify({
@@ -646,11 +768,9 @@
         }));
       } catch (e) {}
     }
-
     function clearStaffSession() {
       try { localStorage.removeItem(STAFF_STORAGE_KEY); } catch (e) {}
     }
-
     function logoutStaffSession() {
       clearStaffSession();
       APP.lineUid = '';
@@ -667,7 +787,6 @@
       document.getElementById('loginWall').classList.remove('hidden');
       showToast('已清除本機登入記憶，請重新驗證');
     }
-
     function escHtml(str) {
       return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
@@ -694,7 +813,6 @@
     }
     function openModal(id) { document.getElementById(id).classList.add('open'); }
     function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
     function doStaffLogin() {
       var ph = document.getElementById('inpStaffPhone').value.trim();
       var cd = document.getElementById('inpStaffCode').value.trim().toUpperCase();
@@ -703,8 +821,7 @@
       APP.staffCode = cd;
       reloadDashboard();
     }
-
-    function reloadDashboard() {
+    function reloadDashboard(onAfterLoad) {
       setLoading(true, '正在檢核五層職級權限、30 員水位與引流業績...');
       google.script.run
         .withSuccessHandler(function(res) {
@@ -724,6 +841,7 @@
           document.getElementById('loginWall').classList.add('hidden');
           document.getElementById('mainApp').classList.remove('hidden');
           renderAllSections();
+          if (typeof onAfterLoad === 'function') onAfterLoad(res);
         })
         .withFailureHandler(function(err) {
           setLoading(false);
@@ -736,12 +854,12 @@
           staffCode: APP.staffCode
         });
     }
-
     function renderAllSections() {
       var d = APP.data;
       var st = d.staff;
       var pkg = d.refPackage || {};
       var perf = d.myReferralStats || {};
+      renderStaffSmartBanner();
       // 1. 頂部個人資訊、一鍵分享鈕與水位視覺進度條
       document.getElementById('hdrStaffInfo').textContent = st.staffName + ' (' + st.staffCode + ')｜' + st.unitName;
       document.getElementById('hdrRoleBadge').textContent = st.role + '・' + st.rank;
@@ -791,7 +909,6 @@
       renderShareCenter();
       renderTeamWaterList();
     }
-
     function fillSelect(id, arr) {
       var el = document.getElementById(id);
       el.innerHTML = '';
@@ -801,7 +918,6 @@
         el.appendChild(opt);
       });
     }
-
     function fillStaffSelect(id, teamList, allowEmpty) {
       var el = document.getElementById(id);
       el.innerHTML = allowEmpty ? '<option value="">-- 由主管決定接手人 --</option>' : '';
@@ -813,12 +929,11 @@
         el.appendChild(opt);
       });
     }
-
     function renderMyActiveCases() {
       var q = (document.getElementById('searchMyInput').value || '').trim().toLowerCase();
       var list = (APP.data.myActiveCases || []).filter(function(c) {
         if (!q) return true;
-        return (c.clientName + c.caseId + c.currentNode + c.loanType + c.phone).toLowerCase().indexOf(q) !== -1;
+        return (c.clientName + c.caseId + c.currentNode + c.status + c.loanType + c.phone).toLowerCase().indexOf(q) !== -1;
       });
       var box = document.getElementById('myActiveList');
       if (list.length === 0) {
@@ -853,7 +968,6 @@
         '</div>';
       }).join('');
     }
-
     function renderMaskedCases() {
       var list = APP.data.myMaskedCases || [];
       var box = document.getElementById('myMaskedList');
@@ -872,7 +986,6 @@
         '</div>';
       }).join('');
     }
-
     function renderPendingApprovals() {
       var sec = document.getElementById('managerApprovalSection');
       var list = APP.data.pendingApprovals || [];
@@ -894,7 +1007,6 @@
         '</div>';
       }).join('');
     }
-
     function renderPublicPool() {
       var list = APP.data.publicPoolCases || [];
       document.getElementById('publicCnt').textContent = list.length;
@@ -918,7 +1030,6 @@
         '</div>';
       }).join('');
     }
-
     function renderShareCenter() {
       var pkg = APP.data.refPackage || {};
       var perf = APP.data.myReferralStats || {};
@@ -962,7 +1073,6 @@
         '</div>';
       }).join('');
     }
-
     function renderTeamWaterList() {
       var team = APP.data.teamList || [];
       document.getElementById('teamWaterList').innerHTML = team.map(function(t) {
@@ -976,7 +1086,6 @@
         '</div>';
       }).join('');
     }
-
     // ==================== 互動操作函式 ====================
     function shareNativeOrCopy() {
       var pkg = APP.data.refPackage || {};
@@ -1013,13 +1122,11 @@
       document.execCommand('copy'); document.body.removeChild(ta);
       showToast(okMsg);
     }
-
     function findCaseInApp(caseId) {
       var all = [].concat(APP.data.myActiveCases || [], APP.data.publicPoolCases || [], APP.data.pendingApprovals || []);
       for (var i = 0; i < all.length; i++) { if (all[i].caseId === caseId) return all[i]; }
       return null;
     }
-
     function openReportModal(caseId) {
       var c = findCaseInApp(caseId);
       if (!c) return;
@@ -1042,17 +1149,72 @@
       }
       openModal('modalReport');
     }
-
     function submitNodeReport() {
       var note = document.getElementById('repNote').value.trim();
       if (!note) return showToast('請填寫本次進度回報摘要');
+      var caseId = document.getElementById('repCaseId').value;
+      var node = document.getElementById('repNode').value;
+      var status = document.getElementById('repStatus').value;
+      var cObj = findCaseInApp(caseId) || {};
+      var clientPhone = (!cObj.isMasked && cObj.phone) ? cObj.phone : '';
       setLoading(true, '正在回報節點並推播通知主管...');
       google.script.run
         .withSuccessHandler(function(res) {
           setLoading(false);
           closeModal('modalReport');
-          showToast(res ? res.message : '回報完成');
-          if (res && res.success) reloadDashboard();
+          if (!res || !res.success) return showToast(res ? res.message : '回報失敗');
+          var msg = res.message || '進度回報已完成！';
+          reloadDashboard(function() {
+            if (node === '對保' || node === '送件窗口核價' || status === '結案') {
+              var dealActs = [
+                { label: '💰 立即填寫本案《數位化業績報件單》', btnClass: 'btn-gold', onClick: function() { window.open(buildDeptUrl('forms', { tab: 'deal', caseId: caseId }), '_blank', 'noopener'); } },
+                { label: '📋 檢視／補齊本案《客戶資料表》', btnClass: 'btn-navy', onClick: function() { window.open(buildDeptUrl('forms', { tab: 'client', caseId: caseId }), '_blank', 'noopener'); } }
+              ];
+              if (status === '結案') {
+                dealActs.push({ label: '📥 水位已釋出・前往公海領新單', btnClass: 'btn-success', onClick: function() { switchTab('pool'); } });
+              }
+              showNextStepModal({
+                title: '✅ 已更新節點：' + node + '・' + status,
+                desc: msg + ' 已即時推播通知主管。',
+                extraTone: 'ok',
+                extraHtml: '💡 本案已進入關鍵<b>「' + escHtml(node) + '／' + escHtml(status) + '」</b>階段！建議立即前往填寫《數位化業績報件單》，以便系統追蹤在途現金流並結算六節點分潤。',
+                actions: dealActs
+              });
+            } else if (node === '委託' || node === '收件') {
+              showNextStepModal({
+                title: '✅ 已更新節點：' + node + '・' + status,
+                desc: msg + ' 已即時推播通知主管。',
+                extraTone: 'ok',
+                extraHtml: '💡 進入「' + escHtml(node) + '」階段後，建議立即建立《數位化客戶資料表》盤點 18 項職收與三大負債資產，加速後續討論與送件！',
+                actions: [
+                  { label: '📋 立即填寫本案《客戶資料表》', btnClass: 'btn-gold', onClick: function() { window.open(buildDeptUrl('forms', { tab: 'client', caseId: caseId }), '_blank', 'noopener'); } },
+                  { label: '🌊 返回「我的水位」處理下一案', btnClass: 'btn-navy', onClick: function() { switchTab('my'); } }
+                ]
+              });
+            } else if (status === '補件') {
+              var suppActs = [];
+              if (clientPhone) {
+                suppActs.push({ label: '📞 立即撥打客戶電話提醒補件 (' + clientPhone + ')', btnClass: 'btn-success', keepOpen: true, onClick: function() { window.location.href = 'tel:' + clientPhone; } });
+              }
+              suppActs.push({ label: '📋 開啟本案《客戶資料表》補登資料', btnClass: 'btn-gold', onClick: function() { window.open(buildDeptUrl('forms', { tab: 'client', caseId: caseId }), '_blank', 'noopener'); } });
+              showNextStepModal({
+                title: '📎 已回報「補件」狀態並通知主管',
+                desc: msg,
+                extraTone: 'gold',
+                extraHtml: '⏰ 提醒：補件停留超過公司設定天數將觸發逾時紅燈督導！建議立刻聯繫客戶約定補齊時間。',
+                actions: suppActs
+              });
+            } else {
+              showNextStepModal({
+                title: '✅ 案件節點已回報並推播主管',
+                desc: msg,
+                actions: [
+                  { label: '📋 開啟本案《客戶資料表》紀錄詳情', btnClass: 'btn-gold', onClick: function() { window.open(buildDeptUrl('forms', { tab: 'client', caseId: caseId }), '_blank', 'noopener'); } },
+                  { label: '📥 前往「公海派單」查看新進名單', btnClass: 'btn-navy', onClick: function() { switchTab('pool'); } }
+                ]
+              });
+            }
+          });
         })
         .withFailureHandler(function(err) {
           setLoading(false);
@@ -1060,15 +1222,14 @@
         })
         .Dept04_apiUpdateCaseNode({
           staffCode: APP.staffCode,
-          caseId: document.getElementById('repCaseId').value,
-          node: document.getElementById('repNode').value,
-          status: document.getElementById('repStatus').value,
+          caseId: caseId,
+          node: node,
+          status: status,
           source: document.getElementById('repSource').value,
           retrackYm: document.getElementById('repRetrackYm').value.trim(),
           reportNote: note
         });
     }
-
     function openCancelModal(caseId) {
       var c = findCaseInApp(caseId);
       if (!c) return;
@@ -1078,22 +1239,33 @@
       toggleSuggestStaff();
       openModal('modalCancel');
     }
-
     function toggleSuggestStaff() {
       var isTr = document.getElementById('canType').value === 'TRANSFER';
       document.getElementById('canSuggestWrap').classList.toggle('hidden', !isTr);
     }
-
     function submitCancelRequest() {
       var reason = document.getElementById('canReason').value.trim();
       if (!reason) return showToast('請填寫具體撤銷或轉派原因');
+      var reqType = document.getElementById('canType').value;
       setLoading(true, '正在送交主管審批並發送推播...');
       google.script.run
         .withSuccessHandler(function(res) {
           setLoading(false);
           closeModal('modalCancel');
-          showToast(res ? res.message : '已送出申請');
-          if (res && res.success) reloadDashboard();
+          if (!res || !res.success) return showToast(res ? res.message : '申請送出失敗');
+          var msg = res.message || '申請已送交主管審批！';
+          reloadDashboard(function() {
+            showNextStepModal({
+              title: '📩 ' + (reqType === 'TRANSFER' ? '轉派' : '撤銷') + '申請已送交主管',
+              desc: msg,
+              extraTone: 'gold',
+              extraHtml: '⏳ 主管核准前本案仍暫佔 1 員水位；核准後系統會自動遮罩原電話並釋出空位，<b>請靜待審批、無須重複送出</b>。',
+              actions: [
+                { label: '🌊 回到「我的水位」跟進其他案件', btnClass: 'btn-gold', onClick: function() { switchTab('my'); } },
+                { label: '📣 前往「分享引流」開發新客戶', btnClass: 'btn-line', onClick: function() { switchTab('share'); } }
+              ]
+            });
+          });
         })
         .withFailureHandler(function(err) {
           setLoading(false);
@@ -1102,19 +1274,36 @@
         .Dept04_apiRequestCancelOrTransfer({
           staffCode: APP.staffCode,
           caseId: document.getElementById('canCaseId').value,
-          requestType: document.getElementById('canType').value,
+          requestType: reqType,
           suggestedStaffCode: document.getElementById('canSuggestStaff').value,
           reason: reason
         });
     }
-
     function claimCaseToSelf(caseId) {
+      var cObj = findCaseInApp(caseId) || {};
+      var clientPhone = cObj.phone || '';
       setLoading(true, '正在檢核 30 員水位並鎖定領單...');
       google.script.run
         .withSuccessHandler(function(res) {
           setLoading(false);
-          showToast(res ? res.message : '處理完成');
-          if (res && res.success) reloadDashboard();
+          if (!res || !res.success) return showToast(res ? res.message : '領單未成功');
+          var msg = res.message || '領單成功，已納入您的個人水位！';
+          reloadDashboard(function() {
+            var acts = [
+              { label: '📋 立即填寫本案《客戶資料表》', btnClass: 'btn-gold', onClick: function() { window.open(buildDeptUrl('forms', { tab: 'client', caseId: caseId }), '_blank', 'noopener'); } },
+              { label: '📊 立刻回報首次聯繫節點', btnClass: 'btn-navy', onClick: function() { switchTab('my'); openReportModal(caseId); } }
+            ];
+            if (clientPhone && clientPhone.indexOf('*') === -1) {
+              acts.push({ label: '📞 立即撥打客戶電話 (' + clientPhone + ')', btnClass: 'btn-success', keepOpen: true, onClick: function() { window.location.href = 'tel:' + clientPhone; } });
+            }
+            showNextStepModal({
+              title: '⚡ 領單成功！已納入您的活躍水位',
+              desc: msg,
+              extraTone: 'ok',
+              extraHtml: '⏰ 提醒：接單後逾時未聯繫將觸發紅燈督導！建議立即致電客戶初評並填寫《客戶資料表》。',
+              actions: acts
+            });
+          });
         })
         .withFailureHandler(function(err) {
           setLoading(false);
@@ -1127,7 +1316,6 @@
           assignRoleField: '經辦人員代碼'
         });
     }
-
     function openDispatchModal(caseId, mode) {
       var c = findCaseInApp(caseId);
       if (!c) return;
@@ -1139,7 +1327,6 @@
       document.getElementById('dispNoteWrap').classList.toggle('hidden', mode !== 'TRANSFER');
       openModal('modalDispatch');
     }
-
     function submitDispatchOrApproveTransfer() {
       var mode = document.getElementById('dispMode').value;
       var caseId = document.getElementById('dispCaseId').value;
@@ -1149,8 +1336,24 @@
         google.script.run
           .withSuccessHandler(function(res) {
             setLoading(false); closeModal('modalDispatch');
-            showToast(res ? res.message : '轉派完成');
-            if (res && res.success) reloadDashboard();
+            if (!res || !res.success) return showToast(res ? res.message : '轉派失敗');
+            var msg = res.message || '轉派移交已完成！';
+            reloadDashboard(function(fresh) {
+              var remPending = (fresh && fresh.pendingApprovals) ? fresh.pendingApprovals.length : 0;
+              var acts = [];
+              if (remPending > 0) {
+                acts.push({ label: '🚨 繼續審批下一筆待辦（剩 ' + remPending + ' 件）', btnClass: 'btn-danger', onClick: function() { switchTab('pool'); } });
+              }
+              acts.push({ label: '👥 查看「團隊／報表」核對最新水位', btnClass: 'btn-gold', onClick: function() { switchTab('team'); } });
+              acts.push({ label: '📥 檢視「公海派單」待派名單', btnClass: 'btn-navy', onClick: function() { switchTab('pool'); } });
+              showNextStepModal({
+                title: '🔄 已核准轉派移交並執行防飛單遮罩',
+                desc: msg,
+                extraTone: 'ok',
+                extraHtml: '✅ 系統已寫入歷史封存軌跡、將原業務電話遮罩為 <code>09XX-***-XXX</code>，並即時推播通知接手同仁。',
+                actions: acts
+              });
+            });
           })
           .withFailureHandler(function(err) {
             setLoading(false); showToast('轉派失敗：' + err.message);
@@ -1166,8 +1369,21 @@
         google.script.run
           .withSuccessHandler(function(res) {
             setLoading(false); closeModal('modalDispatch');
-            showToast(res ? res.message : '派單完成');
-            if (res && res.success) reloadDashboard();
+            if (!res || !res.success) return showToast(res ? res.message : '派單失敗');
+            var msg = res.message || '派單已完成！';
+            reloadDashboard(function(fresh) {
+              var remPool = (fresh && fresh.publicPoolCases) ? fresh.publicPoolCases.length : 0;
+              var acts = [];
+              if (remPool > 0) {
+                acts.push({ label: '📥 繼續派發下一筆公海名單（剩 ' + remPool + ' 件）', btnClass: 'btn-gold', onClick: function() { switchTab('pool'); } });
+              }
+              acts.push({ label: '👥 查看「團隊／報表」即時水位分佈', btnClass: 'btn-navy', onClick: function() { switchTab('team'); } });
+              showNextStepModal({
+                title: '🎯 主管派單完成並已推播通知同仁',
+                desc: msg,
+                actions: acts
+              });
+            });
           })
           .withFailureHandler(function(err) {
             setLoading(false); showToast('派單失敗：' + err.message);
@@ -1180,34 +1396,60 @@
           });
       }
     }
-
     function quickApproveCancel(caseId) {
       if (!confirm('確定核准撤銷此案件？核准後原業務將立即遮罩電話為 09XX-***-XXX 並釋出水位空位。')) return;
       setLoading(true, '執行撤銷遮罩與釋放水位中...');
       google.script.run
         .withSuccessHandler(function(res) {
-          setLoading(false); showToast(res ? res.message : '完成');
-          if (res && res.success) reloadDashboard();
+          setLoading(false);
+          if (!res || !res.success) return showToast(res ? res.message : '核准撤銷失敗');
+          var msg = res.message || '已核准撤銷並遮罩原電話！';
+          reloadDashboard(function(fresh) {
+            var remPending = (fresh && fresh.pendingApprovals) ? fresh.pendingApprovals.length : 0;
+            var acts = [];
+            if (remPending > 0) {
+              acts.push({ label: '🚨 繼續審批下一筆申請（剩 ' + remPending + ' 件）', btnClass: 'btn-danger', onClick: function() { switchTab('pool'); } });
+            }
+            acts.push({ label: '📥 前往「公海派單」補派新單給同仁', btnClass: 'btn-gold', onClick: function() { switchTab('pool'); } });
+            acts.push({ label: '👥 查看「團隊／報表」最新水位', btnClass: 'btn-navy', onClick: function() { switchTab('team'); } });
+            showNextStepModal({
+              title: '🛡️ 已核准撤銷並完成防飛單遮罩',
+              desc: msg,
+              extraTone: 'ok',
+              extraHtml: '✅ 原業務畫面之客戶電話已遮罩為 <code>09XX-***-XXX</code>，並已釋出 1 員活躍水位。',
+              actions: acts
+            });
+          });
         })
         .withFailureHandler(function(err) {
           setLoading(false); showToast('操作失敗：' + err.message);
         })
         .Dept04_apiApproveCancelOrTransfer({ managerCode: APP.staffCode, caseId: caseId, decision: 'APPROVE_CANCEL' });
     }
-
     function quickRejectReq(caseId) {
       setLoading(true, '處理駁回指令中...');
       google.script.run
         .withSuccessHandler(function(res) {
-          setLoading(false); showToast(res ? res.message : '已駁回');
-          if (res && res.success) reloadDashboard();
+          setLoading(false);
+          if (!res || !res.success) return showToast(res ? res.message : '駁回失敗');
+          var msg = res.message || '已駁回申請並退回原經辦！';
+          reloadDashboard(function(fresh) {
+            var remPending = (fresh && fresh.pendingApprovals) ? fresh.pendingApprovals.length : 0;
+            showNextStepModal({
+              title: '↩️ 已駁回該筆撤銷／轉派申請',
+              desc: msg + ' 系統已推播通知原經辦持續跟進此案件。',
+              actions: [
+                { label: remPending > 0 ? ('🚨 繼續審批下一筆（剩 ' + remPending + ' 件）') : '📥 返回「公海／審批」頁籤', btnClass: 'btn-gold', onClick: function() { switchTab('pool'); } },
+                { label: '🌊 返回「我的水位」', btnClass: 'btn-navy', onClick: function() { switchTab('my'); } }
+              ]
+            });
+          });
         })
         .withFailureHandler(function(err) {
           setLoading(false); showToast('操作失敗：' + err.message);
         })
         .Dept04_apiApproveCancelOrTransfer({ managerCode: APP.staffCode, caseId: caseId, decision: 'REJECT' });
     }
-
     function openOfflineLeadModal() {
       document.getElementById('newName').value = '';
       document.getElementById('newPhone').value = '';
@@ -1215,19 +1457,43 @@
       document.getElementById('newNote').value = '';
       openModal('modalOfflineLead');
     }
-
     function submitOfflineLead() {
       var name = document.getElementById('newName').value.trim();
       var ph = document.getElementById('newPhone').value.trim();
       if (!name || !/^09\d{8}$/.test(ph.replace(/\D/g, ''))) return showToast('請填寫正確的客戶姓名與 10 碼手機');
+      var assignSelf = document.getElementById('newAssignSelf').checked;
       setLoading(true, '正在穿透歷史封存庫識破舊客並寫入水庫...');
       google.script.run
         .withSuccessHandler(function(res) {
           setLoading(false);
           if (!res || !res.success) return showToast(res ? res.message : '建檔失敗');
           closeModal('modalOfflineLead');
-          showToast(res.alertMessage ? (res.message + ' ' + res.alertMessage) : res.message);
-          reloadDashboard();
+          var newCaseId = res.caseId || '';
+          var alertMsg = res.alertMessage || '';
+          var msg = res.message || '新客戶建檔完成！';
+          reloadDashboard(function() {
+            var extraTone = alertMsg ? 'danger' : (assignSelf ? 'ok' : 'gold');
+            var extraHtml = alertMsg
+              ? ('<b>⚠️ 舊客歷史軌跡識破提醒：</b><br>' + escHtml(alertMsg))
+              : (assignSelf
+                  ? ('案件編號 <b>' + escHtml(newCaseId) + '</b> 已納入您的活躍水位，建議立即填寫《客戶資料表》完整建檔。')
+                  : ('案件編號 <b>' + escHtml(newCaseId) + '</b> 已寫入總水庫公海待派區，可立即前往指派負責同仁。'));
+            var acts = [];
+            if (assignSelf && newCaseId) {
+              acts.push({ label: '📋 立即填寫本案《客戶資料表》', btnClass: 'btn-gold', onClick: function() { window.open(buildDeptUrl('forms', { tab: 'client', caseId: newCaseId }), '_blank', 'noopener'); } });
+              acts.push({ label: '📊 立刻回報案件進度節點', btnClass: 'btn-navy', onClick: function() { switchTab('my'); openReportModal(newCaseId); } });
+            } else {
+              acts.push({ label: '📥 前往「公海派單」立即指派同仁', btnClass: 'btn-gold', onClick: function() { switchTab('pool'); } });
+              acts.push({ label: '🌊 返回「我的水位」', btnClass: 'btn-navy', onClick: function() { switchTab('my'); } });
+            }
+            showNextStepModal({
+              title: alertMsg ? '⚠️ 新客戶已建檔（偵測舊客紀錄）' : '✅ 新客戶建檔成功！',
+              desc: msg,
+              extraTone: extraTone,
+              extraHtml: extraHtml,
+              actions: acts
+            });
+          });
         })
         .withFailureHandler(function(err) {
           setLoading(false);
@@ -1241,7 +1507,7 @@
           loanType: document.getElementById('newLoanType').value,
           amountWan: document.getElementById('newAmt').value.trim(),
           note: document.getElementById('newNote').value.trim(),
-          assignToSelf: document.getElementById('newAssignSelf').checked
+          assignToSelf: assignSelf
         });
     }
   </script>
