@@ -44,6 +44,16 @@
     .tab-pane { display: none; animation: fadeIn 0.2s ease; }
     .tab-pane.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    /* V7.1 頂部智慧引導條 */
+    .smart-banner {
+      display: flex; justify-content: space-between; align-items: center; gap: 10px;
+      padding: 11px 13px; border-radius: 12px; margin-bottom: 12px; font-size: 13px;
+      border: 1.5px solid #93c5fd; background: #eff6ff; color: #1e3a8a;
+    }
+    .smart-banner.danger { border-color: #fca5a5; background: #fef2f2; color: #991b1b; }
+    .smart-banner.warn { border-color: #fcd34d; background: #fffbeb; color: #92400e; }
+    .smart-banner.ok { border-color: #6ee7b7; background: #ecfdf5; color: #065f46; }
+    .smart-banner-txt { flex: 1; line-height: 1.45; }
     .card {
       background: var(--card); border-radius: 14px; padding: 16px; margin-bottom: 14px;
       box-shadow: 0 2px 8px rgba(15,23,42,0.06); border: 1px solid #e2e8f0;
@@ -98,14 +108,19 @@
     .btn {
       display: inline-flex; justify-content: center; align-items: center; gap: 6px;
       width: 100%; padding: 14px 16px; border-radius: 11px; font-size: 16px; font-weight: 800;
-      border: none; cursor: pointer; text-decoration: none;
+      border: none; cursor: pointer; text-decoration: none; text-align: center;
     }
     .btn-gold { background: linear-gradient(135deg, #d97706, #f59e0b); color: #fff; box-shadow: 0 4px 12px rgba(217,119,6,0.28); }
     .btn-navy { background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid)); color: #fde68a; border: 1px solid var(--gold); }
     .btn-success { background: var(--success); color: #fff; }
     .btn-danger { background: var(--danger); color: #fff; }
     .btn-outline { background: #fff; color: var(--navy-dark); border: 1.5px solid #94a3b8; }
-    .btn-sm { padding: 8px 12px; font-size: 13px; width: auto; border-radius: 8px; }
+    .btn-sm { padding: 8px 12px; font-size: 13px; width: auto; border-radius: 8px; white-space: nowrap; }
+    .btn-pulse { animation: pulseGold 1.4s ease-in-out 3; }
+    @keyframes pulseGold {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.55); }
+      50% { box-shadow: 0 0 0 10px rgba(245,158,11,0); }
+    }
     .record-item {
       border: 1px solid #cbd5e1; border-radius: 11px; padding: 12px; margin-bottom: 10px; background: #fff;
     }
@@ -113,6 +128,42 @@
     .badge-ok { background: #dcfce7; color: #166534; }
     .badge-red { background: #fee2e2; color: #991b1b; }
     .badge-blue { background: #dbeafe; color: #1e40af; }
+    /* V7.1 下一步自動引導彈窗 */
+    .guide-mask {
+      position: fixed; inset: 0; background: rgba(11,19,43,0.72); z-index: 90;
+      display: none; align-items: center; justify-content: center; padding: 16px;
+      backdrop-filter: blur(2px);
+    }
+    .guide-mask.show { display: flex; animation: fadeIn 0.18s ease; }
+    .guide-modal {
+      width: 100%; max-width: 440px; background: #fff; border-radius: 16px;
+      border: 2px solid var(--gold); overflow: hidden; box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+    }
+    .guide-hdr {
+      background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid));
+      color: #fbbf24; padding: 14px 16px; font-size: 16px; font-weight: 900;
+      display: flex; justify-content: space-between; align-items: center; gap: 8px;
+      border-bottom: 2px solid var(--gold);
+    }
+    .guide-close {
+      background: rgba(255,255,255,0.12); color: #e2e8f0; border: none; border-radius: 8px;
+      width: 28px; height: 28px; font-size: 16px; font-weight: 900; cursor: pointer;
+    }
+    .guide-body { padding: 15px 16px 16px; font-size: 13.5px; color: #334155; }
+    .guide-desc { margin: 0 0 10px; line-height: 1.55; }
+    .guide-extra {
+      background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px;
+      padding: 10px 12px; margin-bottom: 12px; font-size: 12.5px; color: #0f172a; line-height: 1.65;
+    }
+    .guide-extra.gold { background: #fffbeb; border-color: #fcd34d; }
+    .guide-extra.ok { background: #ecfdf5; border-color: #6ee7b7; }
+    .guide-extra.danger { background: #fef2f2; border-color: #fca5a5; color: #991b1b; }
+    .guide-next-lbl {
+      font-size: 12px; font-weight: 800; color: #b45309; margin-bottom: 8px;
+      letter-spacing: 0.3px; display: flex; align-items: center; gap: 5px;
+    }
+    .guide-actions { display: flex; flex-direction: column; gap: 8px; }
+    .guide-actions .btn { padding: 12px 14px; font-size: 14.5px; }
     /* 底部固定導覽 */
     .bottom-nav {
       position: fixed; bottom: 0; left: 0; right: 0; background: var(--navy-dark);
@@ -148,7 +199,10 @@
         <h1 class="hdr-title">📋 三貸同堂｜兩大核心數位表單系統</h1>
         <div class="hdr-sub" id="hdrStaffTxt">請先驗證內部人員身分</div>
       </div>
-      <button class="btn btn-outline btn-sm" style="background:rgba(255,255,255,0.12);color:#fde68a;border-color:#c5a059;" onclick="initWorkspace()">🔄 刷新</button>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button class="btn btn-outline btn-sm" style="background:rgba(255,255,255,0.12);color:#fde68a;border-color:#c5a059;" onclick="openSiblingPage('staff.html','tab=my')">🌊 工作台</button>
+        <button class="btn btn-outline btn-sm" style="background:rgba(255,255,255,0.12);color:#fde68a;border-color:#c5a059;" onclick="initWorkspace()">🔄 刷新</button>
+      </div>
     </div>
     <div id="casePickerWrap" class="case-picker-bar hidden">
       <div style="font-size:11.5px;color:#fde68a;font-weight:700;margin-bottom:4px;">🔗 關聯水庫案件（選擇後自動帶入客戶資料、角色與鎖定引流人）：</div>
@@ -160,7 +214,21 @@
     <div class="spinner"></div>
     <div id="loadingText" style="font-weight:700;font-size:15px;">雲端加密處理中...</div>
   </div>
-
+  <!-- V7.1 全動線下一步自動引導彈窗 -->
+  <div id="guideMask" class="guide-mask" onclick="if(event.target===this) closeNextStepModal();">
+    <div class="guide-modal">
+      <div class="guide-hdr">
+        <span id="guideTitle">✅ 操作已完成</span>
+        <button class="guide-close" onclick="closeNextStepModal()" aria-label="關閉">✕</button>
+      </div>
+      <div class="guide-body">
+        <p id="guideDesc" class="guide-desc"></p>
+        <div id="guideExtra" class="guide-extra hidden"></div>
+        <div class="guide-next-lbl">👉 系統建議下一步動作：</div>
+        <div id="guideActions" class="guide-actions"></div>
+      </div>
+    </div>
+  </div>
   <!-- 內部驗證牆 -->
   <div id="loginWall" class="container hidden">
     <div class="card">
@@ -179,9 +247,10 @@
       <button class="btn btn-gold" onclick="doLogin()">🔓 驗證並進入數位表單系統</button>
     </div>
   </div>
-
   <!-- 主系統區塊 -->
   <main id="mainApp" class="container hidden">
+    <!-- V7.1 頂部智慧狀態引導條 -->
+    <div id="formsSmartBanner" class="smart-banner hidden"></div>
     <!-- ================================================================ -->
     <!-- 分頁 1：《數位化客戶資料表》（初審收件與三大負債資產盤點）          -->
     <!-- ================================================================ -->
@@ -286,7 +355,6 @@
         <button class="btn btn-gold" onclick="submitClientForm()">💾 儲存《數位化客戶資料表》並同步主水庫</button>
       </div>
     </section>
-
     <!-- ================================================================ -->
     <!-- 分頁 2：《數位化業績報件單》（核准、對保、紅線檢核與存封拍照）      -->
     <!-- ================================================================ -->
@@ -371,10 +439,9 @@
           <div class="comm-big" id="dfNetCommDisplay">NT$ 0</div>
           <div id="dfSplitPreview" class="split-preview-grid"></div>
         </div>
-        <button class="btn btn-gold" onclick="submitDealForm()">🚀 儲存《數位化業績報件單》並結算算獎</button>
+        <button class="btn btn-gold" id="btnSubmitDeal" onclick="submitDealForm()">🚀 儲存《數位化業績報件單》並結算算獎</button>
       </div>
     </section>
-
     <!-- ================================================================ -->
     <!-- 分頁 3：已建檔表單紀錄與劉總紅線特批區                              -->
     <!-- ================================================================ -->
@@ -394,18 +461,15 @@
       <button class="btn btn-outline" style="color:#64748b;margin-top:4px;" onclick="logoutFormsSession()">🔄 切換登入帳號／清除本機記憶</button>
     </section>
   </main>
-
   <nav class="bottom-nav">
     <button class="nav-btn active" id="nav-client" onclick="switchTab('client')"><span class="ico">📋</span><span>客戶資料表</span></button>
     <button class="nav-btn" id="nav-deal" onclick="switchTab('deal')"><span class="ico">💰</span><span>業績報件單</span></button>
     <button class="nav-btn" id="nav-list" onclick="switchTab('list')"><span class="ico">🗂️</span><span>歷史/特批</span></button>
   </nav>
-
   <script>
-    // ==================== V7.0 GitHub Pages ➔ GAS JSON API 橋接中樞 ====================
+    // ==================== V7.1 GitHub Pages ➔ GAS JSON API 橋接中樞 ====================
     var GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzofnwdYqJprOQIu_4vXmtqoWT_uyfnxg27otb9u_CxHX8m_0D2qYTTX8NBqTMxlQNzZg/exec';
     var STAFF_STORAGE_KEY = 'THREELOANS_STAFF_SESSION_V7';
-
     function parseUrlParams() {
       var obj = {};
       try {
@@ -414,7 +478,6 @@
       } catch (e) {}
       return obj;
     }
-
     function callGasApi(apiAction, args, onSuccess, onFailure) {
       fetch(GAS_API_URL, {
         method: 'POST',
@@ -444,7 +507,6 @@
         if (typeof onFailure === 'function') onFailure(err);
       });
     }
-
     (function initGasBridge() {
       if (window.google && window.google.script && window.google.script.run) return;
       function createRunner(successCb, failureCb) {
@@ -467,22 +529,22 @@
       window.google.script = window.google.script || {};
       window.google.script.run = createRunner(null, null);
     })();
-
     // ==================== 身分自動解析與共用免重登記憶 ====================
     var RAW_PARAMS = parseUrlParams();
     var SAVED_SESSION = {};
     try { SAVED_SESSION = JSON.parse(localStorage.getItem(STAFF_STORAGE_KEY) || '{}') || {}; } catch (e) {}
-
     var STATE = {
       lineUid: RAW_PARAMS.uid || SAVED_SESSION.lineUid || '',
       staffCode: (RAW_PARAMS.ref || SAVED_SESSION.staffCode || '').toUpperCase(),
       phone: RAW_PARAMS.uid ? '' : (SAVED_SESSION.phone || ''),
       caseIdParam: RAW_PARAMS.caseId || '',
       tabParam: String(RAW_PARAMS.tab || 'client').toLowerCase(),
+      activeTab: 'client',
       data: null,
+      currentClientForm: null,
+      currentDealForm: null,
       compressedReceiptBase64: ''
     };
-
     window.addEventListener('DOMContentLoaded', function() {
       buildDynamicDebtTables();
       if (STATE.tabParam === 'deal') switchTab('deal');
@@ -494,7 +556,106 @@
         document.getElementById('loginWall').classList.remove('hidden');
       }
     });
-
+    // ==================== V7.1 全動線自動引導引擎 ====================
+    var GUIDE_HANDLERS = [];
+    function openSiblingPage(fileName, extraQuery) {
+      var qs = [];
+      if (extraQuery) qs.push(extraQuery);
+      if (STATE.lineUid) qs.push('uid=' + encodeURIComponent(STATE.lineUid));
+      if (STATE.staffCode) qs.push('ref=' + encodeURIComponent(STATE.staffCode));
+      var url = fileName + (qs.length ? '?' + qs.join('&') : '');
+      window.location.href = url;
+    }
+    function focusFieldById(id) {
+      setTimeout(function() {
+        var el = document.getElementById(id);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          try { el.focus(); } catch (e) {}
+        }
+      }, 150);
+    }
+    function showNextStepModal(cfg) {
+      document.getElementById('guideTitle').textContent = cfg.title || '✅ 操作已完成';
+      document.getElementById('guideDesc').textContent = cfg.desc || '';
+      var extraEl = document.getElementById('guideExtra');
+      if (cfg.extraHtml) {
+        extraEl.innerHTML = cfg.extraHtml;
+        extraEl.className = 'guide-extra' + (cfg.extraTone ? ' ' + cfg.extraTone : '');
+      } else {
+        extraEl.innerHTML = '';
+        extraEl.className = 'guide-extra hidden';
+      }
+      GUIDE_HANDLERS = [];
+      var actions = cfg.actions || [];
+      var actWrap = document.getElementById('guideActions');
+      actWrap.innerHTML = actions.map(function(act, idx) {
+        GUIDE_HANDLERS.push(act);
+        var cls = act.btnClass || (idx === 0 ? 'btn-gold' : 'btn-outline');
+        return '<button class="btn ' + cls + '" onclick="runGuideAction(' + idx + ')">' + esc(act.label) + '</button>';
+      }).join('') + '<button class="btn btn-outline" style="color:#64748b;border-color:#cbd5e1;" onclick="closeNextStepModal()">留在目前畫面</button>';
+      document.getElementById('guideMask').classList.add('show');
+    }
+    function runGuideAction(idx) {
+      var act = GUIDE_HANDLERS[idx];
+      if (!act) return;
+      if (!act.keepOpen) closeNextStepModal();
+      if (typeof act.onClick === 'function') act.onClick();
+    }
+    function closeNextStepModal() {
+      document.getElementById('guideMask').classList.remove('show');
+    }
+    function renderFormsSmartBanner() {
+      var box = document.getElementById('formsSmartBanner');
+      if (!box || !STATE.data) return;
+      var pending = STATE.data.pendingRedlineDeals || [];
+      if (STATE.data.staff && STATE.data.staff.isBoss && pending.length > 0 && STATE.activeTab !== 'list') {
+        box.className = 'smart-banner danger';
+        box.innerHTML = '<div class="smart-banner-txt"><b>🚨 待辦提醒：</b>目前有 <b>' + pending.length + ' 筆</b>低於紅線費率報件單等待您特批放行。</div>' +
+          '<button class="btn btn-danger btn-sm" onclick="switchTab(\'list\')">👉 前往特批</button>';
+        return;
+      }
+      var caseId = document.getElementById('globalCaseSelect').value;
+      if (!caseId) {
+        box.className = 'smart-banner';
+        box.innerHTML = '<div class="smart-banner-txt"><b>💡 下一步提示：</b>建議先從上方「🔗 關聯水庫案件」選取客戶（自動帶入並鎖定引流人），或直接填表新建案件。</div>' +
+          '<button class="btn btn-navy btn-sm" onclick="openSiblingPage(\'staff.html\',\'tab=my\')">🌊 回工作台</button>';
+        return;
+      }
+      var cf = STATE.currentClientForm;
+      var df = STATE.currentDealForm;
+      if (!cf && !df) {
+        box.className = 'smart-banner';
+        box.innerHTML = '<div class="smart-banner-txt"><b>📋 案件進度：</b>已帶入案件 <b>' + esc(caseId) + '</b>，尚未建立初審資料表，請先填寫並儲存《客戶資料表》。</div>' +
+          (STATE.activeTab !== 'client' ? '<button class="btn btn-gold btn-sm" onclick="switchTab(\'client\')">👉 填客戶表</button>' : '');
+        return;
+      }
+      if (cf && !df) {
+        box.className = 'smart-banner ok';
+        box.innerHTML = '<div class="smart-banner-txt"><b>✅ 初審已完成：</b>《客戶資料表》已建檔（' + esc(cf['客戶資料表單號']) + '），核准／對保後即可切換填寫《業績報件單》。</div>' +
+          (STATE.activeTab !== 'deal' ? '<button class="btn btn-gold btn-sm" onclick="switchTab(\'deal\')">💰 填報件單</button>' : '');
+        return;
+      }
+      if (df) {
+        var isRed = String(df['紅線特批狀態'] || '') === '待劉總特批';
+        var hasPaid = Boolean(String(df['完款日期'] || '').trim());
+        if (isRed) {
+          box.className = 'smart-banner danger';
+          box.innerHTML = '<div class="smart-banner-txt"><b>🚨 特批審核中：</b>本案報件單（' + esc(df['報件單號']) + '）低於費率紅線，等待劉總特批放行（無須重複送單）。</div>' +
+            (STATE.data.staff.isBoss ? '<button class="btn btn-danger btn-sm" onclick="switchTab(\'list\')">👉 立即特批</button>' : '<button class="btn btn-outline btn-sm" onclick="switchTab(\'list\')">查看狀態</button>');
+          return;
+        }
+        if (!hasPaid) {
+          box.className = 'smart-banner warn';
+          box.innerHTML = '<div class="smart-banner-txt"><b>⏳ 報件在途追蹤中：</b>尚未填入「完款日期」。待客戶款項入帳後補填完款日期，即自動結案並拋轉算獎。</div>' +
+            '<button class="btn btn-gold btn-sm" onclick="switchTab(\'deal\');focusFieldById(\'dfPaidOffDate\');">👉 補填完款</button>';
+          return;
+        }
+        box.className = 'smart-banner ok';
+        box.innerHTML = '<div class="smart-banner-txt"><b>🎉 本案已完款結案：</b>報件單（' + esc(df['報件單號']) + '）已結案並拋轉六節點算獎，水位已釋出！</div>' +
+          '<button class="btn btn-success btn-sm" onclick="openSiblingPage(\'staff.html\',\'tab=pool\')">🌊 領新單</button>';
+      }
+    }
     function saveFormsSession(staffObj) {
       try {
         localStorage.setItem(STAFF_STORAGE_KEY, JSON.stringify({
@@ -504,11 +665,9 @@
         }));
       } catch (e) {}
     }
-
     function clearFormsSession() {
       try { localStorage.removeItem(STAFF_STORAGE_KEY); } catch (e) {}
     }
-
     function logoutFormsSession() {
       clearFormsSession();
       STATE.lineUid = '';
@@ -523,7 +682,6 @@
       document.getElementById('loginWall').classList.remove('hidden');
       showToast('已清除本機登入記憶，請重新驗證');
     }
-
     function esc(s) {
       return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
@@ -538,13 +696,14 @@
       document.getElementById('loadingMask').style.display = show ? 'flex' : 'none';
     }
     function switchTab(t) {
+      STATE.activeTab = t;
       ['client', 'deal', 'list'].forEach(function(k) {
         document.getElementById('tab-' + k).classList.toggle('active', k === t);
         document.getElementById('nav-' + k).classList.toggle('active', k === t);
       });
+      renderFormsSmartBanner();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-
     function buildDynamicDebtTables() {
       var ccHtml = '';
       for (var i = 1; i <= 4; i++) {
@@ -583,7 +742,6 @@
       }
       document.getElementById('loanRowsContainer').innerHTML = loanHtml;
     }
-
     function doLogin() {
       var ph = document.getElementById('inpPhone').value.trim();
       var cd = document.getElementById('inpCode').value.trim().toUpperCase();
@@ -592,8 +750,7 @@
       STATE.staffCode = cd;
       initWorkspace();
     }
-
-    function initWorkspace() {
+    function initWorkspace(onAfterLoad) {
       setLoading(true, '載入案件水庫與兩大數位表單系統...');
       google.script.run
         .withSuccessHandler(function(res) {
@@ -617,9 +774,13 @@
           renderRecordsTab(res);
           if (STATE.caseIdParam) {
             document.getElementById('globalCaseSelect').value = STATE.caseIdParam;
-            onGlobalCaseChange();
+            onGlobalCaseChange(onAfterLoad);
           } else {
+            STATE.currentClientForm = null;
+            STATE.currentDealForm = null;
             setDefaultNewFormValues(res);
+            renderFormsSmartBanner();
+            if (typeof onAfterLoad === 'function') onAfterLoad(res);
           }
         })
         .withFailureHandler(function(err) {
@@ -634,7 +795,6 @@
           caseId: STATE.caseIdParam
         });
     }
-
     function populateDropdowns(res) {
       var cSel = document.getElementById('globalCaseSelect');
       cSel.innerHTML = '<option value="">＋ 不關聯舊案（填表時自動新建水庫案件）</option>';
@@ -667,7 +827,6 @@
       });
       document.getElementById('lblRedlinePct').textContent = res.config.redlinePct;
     }
-
     function setDefaultNewFormValues(res) {
       document.getElementById('cfDate').value = res.config.todayStr;
       document.getElementById('dfUnitName').value = res.staff.unitName || '';
@@ -683,8 +842,7 @@
       document.getElementById('dfBindIntake').value = res.staff.code || '';
       recalcDealSummary();
     }
-
-    function onGlobalCaseChange() {
+    function onGlobalCaseChange(onDone) {
       var caseId = document.getElementById('globalCaseSelect').value;
       STATE.caseIdParam = caseId;
       var cfRefSel = document.getElementById('cfBindRef');
@@ -692,11 +850,15 @@
       cfRefSel.disabled = false; cfRefSel.classList.remove('locked-field');
       dfRefSel.disabled = false; dfRefSel.classList.remove('locked-field');
       if (!caseId) {
+        STATE.currentClientForm = null;
+        STATE.currentDealForm = null;
         document.getElementById('cfFormNo').value = '';
         document.getElementById('cfNoBadge').textContent = '新表單';
         document.getElementById('dfDealNo').value = '';
         document.getElementById('dfNoBadge').textContent = '新報件';
         setDefaultNewFormValues(STATE.data);
+        renderFormsSmartBanner();
+        if (typeof onDone === 'function') onDone();
         return;
       }
       var c = (STATE.data.accessibleCases || []).find(function(x) { return x.caseId === caseId; });
@@ -731,18 +893,25 @@
         .withSuccessHandler(function(res) {
           setLoading(false);
           if (res && res.success) {
+            STATE.currentClientForm = res.clientForm || null;
+            STATE.currentDealForm = res.dealForm || null;
             fillExistingClientForm(res.clientForm);
             fillExistingDealForm(res.dealForm);
+          } else {
+            STATE.currentClientForm = null;
+            STATE.currentDealForm = null;
           }
           recalcDealSummary();
+          renderFormsSmartBanner();
+          if (typeof onDone === 'function') onDone(res);
         })
         .withFailureHandler(function(err) {
           setLoading(false);
           showToast('載入案件表單異常：' + err.message);
+          if (typeof onDone === 'function') onDone();
         })
         .Dept05_apiLoadFormsByCase(caseId);
     }
-
     function fillExistingClientForm(f) {
       if (!f) {
         document.getElementById('cfFormNo').value = '';
@@ -818,7 +987,6 @@
         });
       } catch (e) {}
     }
-
     function fillExistingDealForm(d) {
       STATE.compressedReceiptBase64 = '';
       document.getElementById('receiptPreviewImg').style.display = 'none';
@@ -861,7 +1029,6 @@
       }
       recalcDealSummary();
     }
-
     function handleReceiptPhotoSelect(input) {
       if (!input.files || !input.files[0]) return;
       var file = input.files[0];
@@ -882,13 +1049,18 @@
           var prev = document.getElementById('receiptPreviewImg');
           prev.src = dataUrl;
           prev.style.display = 'inline-block';
-          document.getElementById('receiptUploadStatus').textContent = '✅ 存封照片壓縮完成，按下儲存報件單將自動上傳劉總雲端硬碟！';
+          document.getElementById('receiptUploadStatus').textContent = '✅ 存封照片壓縮完成！👉 下一步：核對下方六欄角色後，點擊最底部「🚀 儲存業績報件單」一併上傳雲端！';
+          var submitBtn = document.getElementById('btnSubmitDeal');
+          if (submitBtn) {
+            submitBtn.classList.remove('btn-pulse');
+            void submitBtn.offsetWidth;
+            submitBtn.classList.add('btn-pulse');
+          }
         };
         img.src = e.target.result;
       };
       reader.readAsDataURL(file);
     }
-
     function recalcDealSummary() {
       if (!STATE.data) return;
       var front = Number(document.getElementById('dfFrontComm').value || 0);
@@ -914,7 +1086,6 @@
         return '<div class="split-chip">' + n.label + ' (' + n.r + '%)：<b>$' + amt.toLocaleString() + '</b></div>';
       }).join('');
     }
-
     function submitClientForm() {
       var name = document.getElementById('cfName').value.trim();
       var ph = document.getElementById('cfPhone').value.replace(/\D/g, '');
@@ -950,8 +1121,29 @@
           setLoading(false);
           if (!res || !res.success) return showToast(res ? res.message : '儲存失敗');
           STATE.caseIdParam = res.caseId;
-          showToast(res.historyAlerts && res.historyAlerts.length > 0 ? ('⚠️ 舊客歷史識破！' + res.message) : res.message);
-          initWorkspace();
+          var alerts = res.historyAlerts || [];
+          var savedMsg = res.message || '《數位化客戶資料表》已存檔並同步主水庫！';
+          initWorkspace(function() {
+            var extraHtml = '';
+            var extraTone = 'ok';
+            if (alerts.length > 0) {
+              extraTone = 'danger';
+              extraHtml = '<b>⚠️ 舊客歷史軌跡識破提醒：</b><br>' + alerts.map(function(a) { return '• ' + esc(a); }).join('<br>');
+            } else {
+              extraHtml = '案件編號 <b>' + esc(res.caseId || STATE.caseIdParam) + '</b> 已關聯鎖定，切換至《業績報件單》將自動帶入本案客戶資料與六欄角色。';
+            }
+            showNextStepModal({
+              title: alerts.length > 0 ? '⚠️ 客戶資料已儲存（偵測舊客紀錄）' : '✅ 《數位化客戶資料表》已儲存',
+              desc: savedMsg,
+              extraTone: extraTone,
+              extraHtml: extraHtml,
+              actions: [
+                { label: '💰 下一步：填寫本案《業績報件單》', btnClass: 'btn-gold', onClick: function() { switchTab('deal'); } },
+                { label: '🌊 返回業務工作台更新案件節點', btnClass: 'btn-navy', onClick: function() { openSiblingPage('staff.html', 'tab=my'); } },
+                { label: '🗂️ 檢視已建檔歷史紀錄', btnClass: 'btn-outline', onClick: function() { switchTab('list'); } }
+              ]
+            });
+          });
         })
         .withFailureHandler(function(err) { setLoading(false); showToast('傳輸錯誤：' + err.message); })
         .Dept05_apiSaveClientDataForm({
@@ -994,18 +1186,70 @@
           bindReferral: document.getElementById('cfBindRef').value
         });
     }
-
     function submitDealForm() {
       var name = document.getElementById('dfClientName').value.trim();
       var prod = document.getElementById('dfProduct').value.trim();
       if (!name || !prod) return showToast('請填寫客戶姓名與產品專案名稱');
+      var pct = Number(document.getElementById('dfServicePct').value || 0);
+      var redline = Number((STATE.data && STATE.data.config && STATE.data.config.redlinePct) || 10);
+      var paidOffDate = document.getElementById('dfPaidOffDate').value.trim();
+      var hadPhoto = Boolean(STATE.compressedReceiptBase64);
+      var isBelowRedline = (pct > 0 && pct < redline);
       setLoading(true, '正在上傳存封憑證、檢核紅線與結算六節點分潤...');
       google.script.run
         .withSuccessHandler(function(res) {
           setLoading(false);
           if (!res || !res.success) return showToast(res ? res.message : '報件失敗');
-          showToast(res.message);
-          initWorkspace();
+          if (res.caseId) STATE.caseIdParam = res.caseId;
+          var savedMsg = res.message || '《數位化業績報件單》已儲存完成！';
+          var isBoss = Boolean(STATE.data && STATE.data.staff && STATE.data.staff.isBoss);
+          initWorkspace(function() {
+            if (isBelowRedline) {
+              var redActions = [];
+              if (isBoss) {
+                redActions.push({ label: '🚨 前往「歷史/特批」立即放行', btnClass: 'btn-danger', onClick: function() { switchTab('list'); } });
+              } else {
+                redActions.push({ label: '🗂️ 檢視報件審核狀態', btnClass: 'btn-gold', onClick: function() { switchTab('list'); } });
+              }
+              redActions.push({ label: '🌊 返回業務工作台處理其他案件', btnClass: 'btn-navy', onClick: function() { openSiblingPage('staff.html', 'tab=my'); } });
+              showNextStepModal({
+                title: '🚨 報件已送出・待劉總紅線特批',
+                desc: savedMsg,
+                extraTone: 'danger',
+                extraHtml: '因服務費率（<b>' + esc(pct) + '%</b>）低於公司底線（<b>' + esc(redline) + '%</b>），系統已鎖定分潤並即時推播通知劉總，<b>請靜待審核、無須重複送單</b>。' +
+                           (hadPhoto ? '<br>📸 存封照片已同步封存至雲端硬碟。' : ''),
+                actions: redActions
+              });
+            } else if (paidOffDate) {
+              var closedActions = [
+                { label: '🌊 返回業務工作台（水位已釋出・領新單）', btnClass: 'btn-gold', onClick: function() { openSiblingPage('staff.html', 'tab=pool'); } }
+              ];
+              if (isBoss) {
+                closedActions.push({ label: '👑 前往總裁戰情室核對／核發獎金', btnClass: 'btn-success', onClick: function() { openSiblingPage('boss.html', 'tab=comm'); } });
+              }
+              closedActions.push({ label: '🗂️ 檢視本次報件與存封紀錄', btnClass: 'btn-navy', onClick: function() { switchTab('list'); } });
+              showNextStepModal({
+                title: '🎉 完款結案成功！已拋轉六節點算獎',
+                desc: savedMsg,
+                extraTone: 'ok',
+                extraHtml: '✅ 本案已自動結案並釋出 <b>1 員活躍水位</b>，六節點分潤已寫入算獎表。' +
+                           (hadPhoto ? '<br>📸 存封憑證照片已成功歸檔至雲端硬碟。' : ''),
+                actions: closedActions
+              });
+            } else {
+              showNextStepModal({
+                title: '✅ 業績報件進度已儲存（在途追蹤中）',
+                desc: savedMsg,
+                extraTone: 'gold',
+                extraHtml: '💡 本案已列入總裁戰情室「在途現金流」。待客戶款項匯入後，請再回到本單補填<b>「✅ 完款日期」</b>與<b>「匯入明細」</b>，系統即自動結案並結算六節點分潤！' +
+                           (hadPhoto ? '<br>📸 存封憑證照片已成功歸檔至雲端硬碟。' : ''),
+                actions: [
+                  { label: '🌊 返回業務工作台更新節點進度', btnClass: 'btn-gold', onClick: function() { openSiblingPage('staff.html', 'tab=my'); } },
+                  { label: '🗂️ 檢視近期報件紀錄', btnClass: 'btn-navy', onClick: function() { switchTab('list'); } }
+                ]
+              });
+            }
+          });
         })
         .withFailureHandler(function(err) { setLoading(false); showToast('傳輸錯誤：' + err.message); })
         .Dept05_apiSaveDealReportForm({
@@ -1032,7 +1276,7 @@
           serviceFeePct: document.getElementById('dfServicePct').value,
           totalCollected: document.getElementById('dfTotalCollected').value,
           remittanceDetail: document.getElementById('dfRemitDetail').value,
-          paidOffDate: document.getElementById('dfPaidOffDate').value,
+          paidOffDate: paidOffDate,
           introducerName: document.getElementById('dfIntroName').value,
           introducerBank: document.getElementById('dfIntroBank').value,
           introducerFee: document.getElementById('dfIntroFee').value,
@@ -1046,7 +1290,6 @@
           bindReferral: document.getElementById('dfBindRef').value
         });
     }
-
     function renderRecordsTab(res) {
       var redSec = document.getElementById('bossRedlineSection');
       var pending = res.pendingRedlineDeals || [];
@@ -1087,20 +1330,39 @@
             '</div>';
           }).join('');
     }
-
     function loadCaseToTab(caseId, tabName) {
       document.getElementById('globalCaseSelect').value = caseId;
-      onGlobalCaseChange();
       switchTab(tabName);
+      onGlobalCaseChange();
     }
-
     function bossApproveRedline(dealNo, decision) {
       setLoading(true, '執行劉總紅線特批處理中...');
       google.script.run
         .withSuccessHandler(function(res) {
           setLoading(false);
-          showToast(res ? res.message : '完成');
-          if (res && res.success) initWorkspace();
+          if (!res || !res.success) return showToast(res ? res.message : '紅線特批未完成');
+          var msg = res.message || '已完成特批處理';
+          initWorkspace(function() {
+            if (decision === 'APPROVE') {
+              showNextStepModal({
+                title: '✅ 紅線特批已放行',
+                desc: msg + '，系統已自動解鎖並拋轉該筆六節點分潤算獎。',
+                actions: [
+                  { label: '👑 前往總裁戰情室「分潤算獎」核發獎金', btnClass: 'btn-gold', onClick: function() { openSiblingPage('boss.html', 'tab=comm'); } },
+                  { label: '🗂️ 繼續檢視其他待特批／報件紀錄', btnClass: 'btn-navy', onClick: function() { switchTab('list'); } }
+                ]
+              });
+            } else {
+              showNextStepModal({
+                title: '❌ 已駁回該筆低紅線報件',
+                desc: msg + '，經辦同仁需重新調整服務費率後再次送件。',
+                actions: [
+                  { label: '🗂️ 檢視近期報件紀錄', btnClass: 'btn-gold', onClick: function() { switchTab('list'); } },
+                  { label: '👑 返回總裁戰情室', btnClass: 'btn-navy', onClick: function() { openSiblingPage('boss.html', 'tab=war'); } }
+                ]
+              });
+            }
+          });
         })
         .withFailureHandler(function(err) {
           setLoading(false);
