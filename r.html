@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>三貸同堂｜免費額度初評</title>
+  <meta name="description" content="點此立即開啟三貸同堂官方 LINE，領取專屬免費額度初評服務。">
+  <!-- LINE / 社群分享預覽卡片設定（將金幣 Logo 上傳為 logo.jpg 即可顯示） -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="三貸同堂｜免費額度初評">
+  <meta property="og:description" content="點擊開啟官方 LINE 並按下傳送，立即啟動專屬免費額度初評。">
+  <meta property="og:image" content="https://phonedrsystem365-ux.github.io/threeloans/logo.jpg">
+  <style>
+    :root {
+      --bg-base: #FAF7F2;
+      --card-bg: #FFFFFF;
+      --primary: #C8A882;
+      --primary-dark: #A6845E;
+      --text-main: #3E3024;
+      --text-sub: #7A6A5B;
+      --line-green: #06C755;
+      --line-green-dark: #05A948;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", "PingFang TC", sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--card-bg);
+      border: 1px solid rgba(200, 168, 130, 0.35);
+      border-radius: 22px;
+      padding: 36px 26px 28px;
+      text-align: center;
+      box-shadow: 0 12px 32px rgba(62, 48, 36, 0.08);
+    }
+    .brand-logo {
+      width: 132px;
+      height: auto;
+      margin: 0 auto 14px;
+      display: block;
+      border-radius: 12px;
+    }
+    .brand-title {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+    .brand-sub {
+      font-size: 15px;
+      color: var(--text-sub);
+      margin-bottom: 22px;
+    }
+    .spinner {
+      width: 42px;
+      height: 42px;
+      border: 4px solid rgba(200, 168, 130, 0.25);
+      border-top-color: var(--primary-dark);
+      border-radius: 50%;
+      margin: 0 auto 16px;
+      animation: spin 0.85s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .status-text {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 10px;
+    }
+    .ref-badge {
+      display: inline-block;
+      background: #F4ECE1;
+      color: #6B4F35;
+      border: 1px solid rgba(200, 168, 130, 0.5);
+      border-radius: 999px;
+      padding: 6px 16px;
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+    .btn-line {
+      display: block;
+      width: 100%;
+      padding: 16px 20px;
+      background-color: var(--line-green);
+      color: #FFFFFF;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: 700;
+      border-radius: 14px;
+      box-shadow: 0 6px 16px rgba(6, 199, 85, 0.28);
+      transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+    .btn-line:active {
+      background-color: var(--line-green-dark);
+      transform: scale(0.98);
+    }
+    .tip {
+      margin-top: 16px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-sub);
+    }
+    .footer-note {
+      margin-top: 24px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(200, 168, 130, 0.25);
+      font-size: 12px;
+      color: #9A8B7C;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <img src="./logo.jpg" alt="三貸同堂" class="brand-logo" onerror="this.style.display='none'">
+    <div class="brand-title">三貸同堂</div>
+    <div class="brand-sub">正在為您開啟官方 LINE 免費額度初評</div>
+
+    <div class="spinner" aria-hidden="true"></div>
+    <div id="statusText" class="status-text">系統快速導向中，請稍候...</div>
+    <div id="refBadge" class="ref-badge" style="display:none;"></div>
+
+    <a id="manualBtn" class="btn-line" href="https://line.me/R/oaMessage/%40threeloans/?%E6%88%91%E8%A6%81%E5%85%8D%E8%B2%BB%E9%A1%8D%E5%BA%A6%E5%88%9D%E8%A9%95">
+      立即開啟 LINE 領取初評
+    </a>
+
+    <p class="tip">
+      若未自動跳轉，請點擊上方綠色按鈕；<br>
+      進入官方帳號後直接按下「傳送」即可完成歸戶。
+    </p>
+
+    <div class="footer-note">三貸同堂・全雲端智能管家系統</div>
+  </main>
+
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+
+      // 同時相容 ?c=、?ref=、?code= 三種參數寫法
+      var rawCode = (params.get('c') || params.get('ref') || params.get('code') || '').trim();
+      // 僅保留安全字元並限制長度，避免異常注入
+      var safeCode = rawCode.replace(/[^\w\-一-龥]/g, '').slice(0, 32);
+
+      // 預設指向正式藍盾 @threeloans（僅於測試時可選帶 ?oa=@862rlfji）
+      var rawOa = (params.get('oa') || '@threeloans').trim();
+      var oaId = rawOa.indexOf('@') === 0 ? rawOa : ('@' + rawOa);
+
+      // 與 GAS Dept02 正規表達式完全對齊之關鍵字文案
+      var messageText = safeCode
+        ? '我要免費額度初評（專屬推薦碼：' + safeCode + '）'
+        : '我要免費額度初評';
+
+      var targetUrl = 'https://line.me/R/oaMessage/' +
+        encodeURIComponent(oaId) + '/?' +
+        encodeURIComponent(messageText);
+
+      // 立即寫入備援按鈕並顯示推薦碼徽章
+      var btnEl = document.getElementById('manualBtn');
+      if (btnEl) {
+        btnEl.href = targetUrl;
+      }
+      if (safeCode) {
+        var badgeEl = document.getElementById('refBadge');
+        if (badgeEl) {
+          badgeEl.textContent = '專屬推薦碼：' + safeCode;
+          badgeEl.style.display = 'inline-block';
+        }
+      }
+
+      // 毫秒跳轉至 LINE oaMessage
+      window.location.replace(targetUrl);
+
+      // 若 1.8 秒後仍停留在頁面（例如被 App 內建瀏覽器攔截），更新提示文字引導手動點擊
+      window.setTimeout(function () {
+        var statusEl = document.getElementById('statusText');
+        if (statusEl) {
+          statusEl.textContent = '請點擊下方按鈕開啟官方 LINE';
+        }
+      }, 1800);
+    })();
+  </script>
+</body>
+</html>
