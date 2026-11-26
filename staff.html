@@ -6,238 +6,273 @@
   <title>三貸同堂｜內部行動工作台與 30 員水位系統</title>
   <style>
     :root {
-      --navy-dark: #0b132b;
-      --navy-mid: #1c2541;
-      --gold: #c5a059;
-      --gold-bright: #f59e0b;
-      --line-green: #06c755;
-      --line-green-dark: #05a847;
-      --bg: #f1f5f9;
-      --card: #ffffff;
-      --text-main: #0f172a;
-      --text-sub: #475569;
-      --success: #059669;
-      --danger: #dc2626;
-      --warn: #d97706;
-      --border: #e2e8f0;
+      --espresso: #3E3024;
+      --espresso-mid: #5C4735;
+      --milk-tea: #C8A882;
+      --milk-tea-deep: #A67F53;
+      --caramel: #B87B3E;
+      --cream-soft: #F6EFE6;
+      --line-green: #06C755;
+      --line-green-dark: #05A847;
+      --bg: #FAF7F2;
+      --card: #FFFFFF;
+      --text-main: #3E3024;
+      --text-sub: #7A6A5B;
+      --success: #1E7E5A;
+      --danger: #C53030;
+      --warn: #B7791F;
+      --border: #E6D9C8;
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
       margin: 0; padding: 0 0 88px 0;
       font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
-      background: var(--bg); color: var(--text-main); line-height: 1.55;
+      background: var(--bg); color: var(--text-main); line-height: 1.6;
     }
+    /* V7.3 頂部明亮奶茶品牌列 */
     .top-header {
-      background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-mid) 100%);
-      color: #fff; padding: 14px 16px 16px; border-bottom: 3px solid var(--gold);
-      position: sticky; top: 0; z-index: 40; box-shadow: 0 4px 12px rgba(11,19,43,0.22);
+      background: linear-gradient(180deg, #FFFFFF 0%, #FAF3E8 100%);
+      color: var(--espresso); padding: 13px 16px 14px; border-bottom: 2.5px solid var(--milk-tea);
+      position: sticky; top: 0; z-index: 40; box-shadow: 0 4px 14px rgba(62,48,36,0.07);
     }
     .hdr-flex { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-    .hdr-title { font-size: 18px; font-weight: 800; color: #fbbf24; margin: 0; }
-    .hdr-sub { font-size: 12.5px; color: #cbd5e1; margin-top: 2px; }
+    .hdr-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .brand-logo {
+      width: 44px; height: 44px; object-fit: contain; border-radius: 11px;
+      background: #FFFFFF; border: 1.5px solid var(--border); padding: 2px;
+      flex-shrink: 0; box-shadow: 0 2px 6px rgba(62,48,36,0.08);
+    }
+    .hdr-title { font-size: 18px; font-weight: 900; color: var(--espresso); margin: 0; line-height: 1.25; }
+    .hdr-sub { font-size: 13px; color: var(--text-sub); margin-top: 2px; font-weight: 600; }
     .hdr-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
     .role-pill {
-      background: rgba(197,160,89,0.22); border: 1px solid var(--gold); color: #fde68a;
-      padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: 800; white-space: nowrap;
+      background: var(--cream-soft); border: 1.5px solid var(--milk-tea); color: var(--espresso);
+      padding: 5px 10px; border-radius: 99px; font-size: 12px; font-weight: 800; white-space: nowrap;
     }
     .hdr-share-btn {
       display: inline-flex; align-items: center; gap: 4px;
-      background: var(--line-green); color: #fff; text-decoration: none;
-      padding: 5px 10px; border-radius: 99px; font-size: 12px; font-weight: 800;
-      border: 1px solid #34d399; white-space: nowrap; box-shadow: 0 2px 6px rgba(6,199,85,0.35);
+      background: var(--line-green); color: #FFFFFF; text-decoration: none;
+      padding: 6px 11px; border-radius: 99px; font-size: 12.5px; font-weight: 800;
+      border: 1px solid #05A847; white-space: nowrap; box-shadow: 0 2px 6px rgba(6,199,85,0.28);
     }
-    /* 水位視覺進度條 */
+    /* 水位視覺進度條（明亮暖白底高辨識版） */
     .water-bar-box {
-      margin-top: 10px; background: rgba(255,255,255,0.08); border-radius: 10px; padding: 9px 12px;
-      border: 1px solid rgba(197,160,89,0.35);
+      margin-top: 10px; background: #FFFFFF; border-radius: 12px; padding: 9px 12px;
+      border: 1.5px solid var(--border); box-shadow: 0 2px 6px rgba(62,48,36,0.04);
     }
-    .water-bar-top { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; margin-bottom: 6px; }
-    .bar-track { width: 100%; height: 9px; background: rgba(255,255,255,0.18); border-radius: 99px; overflow: hidden; }
-    .bar-fill { height: 100%; background: #10b981; border-radius: 99px; transition: width 0.35s ease; }
-    .bar-fill.warn { background: #f59e0b; }
-    .bar-fill.full { background: #ef4444; }
+    .water-bar-top { display: flex; justify-content: space-between; font-size: 13.5px; font-weight: 800; margin-bottom: 6px; color: var(--espresso); }
+    .bar-track { width: 100%; height: 9px; background: #EFE6DA; border-radius: 99px; overflow: hidden; }
+    .bar-fill { height: 100%; background: var(--success); border-radius: 99px; transition: width 0.35s ease; }
+    .bar-fill.warn { background: #D69E2E; }
+    .bar-fill.full { background: var(--danger); }
     .container { max-width: 720px; margin: 0 auto; padding: 14px; }
     .tab-pane { display: none; animation: fadeIn 0.2s ease; }
     .tab-pane.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-    /* V7.1 頂部智慧待辦引導條 */
+    /* 頂部智慧待辦引導條 */
     .smart-banner {
       display: flex; justify-content: space-between; align-items: center; gap: 10px;
-      padding: 11px 13px; border-radius: 12px; margin-bottom: 11px; font-size: 13px;
-      border: 1.5px solid #93c5fd; background: #eff6ff; color: #1e3a8a;
+      padding: 12px 14px; border-radius: 12px; margin-bottom: 12px; font-size: 13.5px;
+      border: 1.5px solid #D6B996; background: #FDF7EE; color: var(--espresso);
     }
-    .smart-banner.danger { border-color: #fca5a5; background: #fef2f2; color: #991b1b; }
-    .smart-banner.warn { border-color: #fcd34d; background: #fffbeb; color: #92400e; }
-    .smart-banner.ok { border-color: #6ee7b7; background: #ecfdf5; color: #065f46; }
-    .smart-banner-txt { flex: 1; line-height: 1.45; }
+    .smart-banner.danger { border-color: #F3A6A6; background: #FFF5F5; color: #9B1C1C; }
+    .smart-banner.warn { border-color: #E3B26B; background: #FFF8EB; color: #7C4D16; }
+    .smart-banner.ok { border-color: #7AD0AE; background: #EDF9F3; color: #145C41; }
+    .smart-banner-txt { flex: 1; line-height: 1.5; }
     .card {
-      background: var(--card); border-radius: 14px; padding: 16px; margin-bottom: 14px;
-      box-shadow: 0 2px 10px rgba(15,23,42,0.06); border: 1px solid var(--border);
+      background: var(--card); border-radius: 16px; padding: 16px; margin-bottom: 14px;
+      box-shadow: 0 4px 16px rgba(62,48,36,0.06); border: 1px solid var(--border);
     }
-    .card-navy { background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid)); color: #fff; border: 1px solid var(--gold); }
+    /* 原暗色卡片全面升級為明亮暖奶茶尊榮卡片 */
+    .card-navy {
+      background: linear-gradient(145deg, #FFFFFF 0%, #F7EDE0 100%);
+      color: var(--espresso); border: 1.5px solid var(--milk-tea);
+      box-shadow: 0 6px 18px rgba(166,127,83,0.13);
+    }
     .section-title {
-      font-size: 17px; font-weight: 800; color: var(--navy-dark); margin: 0 0 12px;
-      padding-left: 10px; border-left: 4px solid var(--gold-bright);
+      font-size: 17.5px; font-weight: 900; color: var(--espresso); margin: 0 0 12px;
+      padding-left: 11px; border-left: 4px solid var(--milk-tea-deep);
       display: flex; justify-content: space-between; align-items: center; gap: 8px;
     }
-    .card-navy .section-title { color: #fbbf24; }
-    .form-group { margin-bottom: 12px; }
-    label { display: block; font-size: 14px; font-weight: 700; color: var(--navy-mid); margin-bottom: 5px; }
+    .card-navy .section-title { color: var(--espresso); border-left-color: var(--caramel); }
+    .form-group { margin-bottom: 13px; }
+    label { display: block; font-size: 14.5px; font-weight: 800; color: var(--espresso-mid); margin-bottom: 5px; }
     input, select, textarea {
-      width: 100%; padding: 12px 13px; font-size: 16px; border: 1.5px solid #cbd5e1;
-      border-radius: 10px; background: #fff; color: var(--text-main); outline: none;
+      width: 100%; padding: 12px 13px; font-size: 16px; border: 1.5px solid #D9C9B6;
+      border-radius: 11px; background: #FFFDF9; color: var(--text-main); outline: none; transition: 0.18s;
     }
-    input:focus, select:focus, textarea:focus { border-color: var(--gold-bright); }
+    input:focus, select:focus, textarea:focus {
+      background: #FFFFFF; border-color: var(--milk-tea-deep);
+      box-shadow: 0 0 0 3px rgba(200,168,130,0.26);
+    }
     .btn {
       display: inline-flex; justify-content: center; align-items: center; gap: 6px;
-      width: 100%; padding: 13px 16px; border-radius: 11px; font-size: 15px; font-weight: 800;
+      width: 100%; padding: 13px 16px; border-radius: 12px; font-size: 15.5px; font-weight: 800;
       border: none; cursor: pointer; text-decoration: none; transition: 0.16s; text-align: center;
     }
     .btn:disabled { opacity: 0.55; cursor: not-allowed; }
-    .btn-gold { background: linear-gradient(135deg, #d97706, #f59e0b); color: #fff; }
-    .btn-line { background: linear-gradient(135deg, var(--line-green), var(--line-green-dark)); color: #fff; box-shadow: 0 4px 12px rgba(6,199,85,0.28); }
-    .btn-navy { background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid)); color: #fde68a; border: 1px solid var(--gold); }
-    .btn-success { background: var(--success); color: #fff; }
-    .btn-danger { background: var(--danger); color: #fff; }
-    .btn-outline { background: #fff; color: var(--navy-dark); border: 1.5px solid #94a3b8; }
-    .btn-sm { padding: 8px 12px; font-size: 13px; width: auto; border-radius: 9px; white-space: nowrap; }
-    /* 快速一鍵分享橫幅 */
+    .btn-gold {
+      background: linear-gradient(135deg, #B98B56 0%, #D1AC7E 100%);
+      color: #FFFFFF; box-shadow: 0 4px 12px rgba(166,127,83,0.28);
+    }
+    .btn-line {
+      background: linear-gradient(135deg, var(--line-green), var(--line-green-dark));
+      color: #FFFFFF; box-shadow: 0 4px 12px rgba(6,199,85,0.26);
+    }
+    .btn-navy {
+      background: linear-gradient(135deg, #4B392B 0%, #654E3B 100%);
+      color: #FFF8EE; border: 1px solid #8A6B4E; box-shadow: 0 3px 10px rgba(62,48,36,0.16);
+    }
+    .btn-success { background: var(--success); color: #FFFFFF; }
+    .btn-danger { background: var(--danger); color: #FFFFFF; }
+    .btn-outline { background: #FFFFFF; color: var(--espresso); border: 1.5px solid #CBB69D; }
+    .btn-sm { padding: 8px 12px; font-size: 13.5px; width: auto; border-radius: 9px; white-space: nowrap; }
+    /* 快速一鍵分享橫幅（明亮暖翠奶茶版） */
     .quick-share-strip {
       display: flex; align-items: center; justify-content: space-between; gap: 10px;
-      background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
-      border: 1.5px solid #34d399; border-radius: 13px; padding: 12px 14px; margin-bottom: 14px; color: #fff;
+      background: linear-gradient(135deg, #EDF9F3 0%, #E2F5EB 100%);
+      border: 1.5px solid #7AD0AE; border-radius: 14px; padding: 12px 14px; margin-bottom: 14px; color: #145C41;
     }
-    .quick-share-strip .qs-txt { font-size: 12.5px; line-height: 1.45; }
-    .quick-share-strip .qs-txt b { color: #fde68a; font-size: 14px; display: block; }
+    .quick-share-strip .qs-txt { font-size: 13px; line-height: 1.5; }
+    .quick-share-strip .qs-txt b { color: #0E4A34; font-size: 14.5px; display: block; margin-bottom: 2px; }
     /* 案件卡片 */
     .case-card {
-      background: #fff; border: 1.5px solid var(--border); border-radius: 13px; padding: 14px;
-      margin-bottom: 12px; box-shadow: 0 2px 6px rgba(15,23,42,0.04);
+      background: #FFFFFF; border: 1.5px solid var(--border); border-radius: 14px; padding: 15px;
+      margin-bottom: 12px; box-shadow: 0 3px 10px rgba(62,48,36,0.05);
     }
-    .case-card.masked { background: #fef2f2; border-color: #fca5a5; }
+    .case-card.masked { background: #FFF5F5; border-color: #F3A6A6; }
     .case-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
-    .case-name { font-size: 17px; font-weight: 800; color: var(--navy-dark); }
-    .badge { display: inline-block; padding: 3px 9px; border-radius: 99px; font-size: 12px; font-weight: 800; white-space: nowrap; }
-    .badge-node { background: #dbeafe; color: #1e40af; }
-    .badge-warn { background: #fef3c7; color: #92400e; }
-    .badge-done { background: #dcfce7; color: #166534; }
-    .badge-mask { background: #fee2e2; color: #991b1b; }
-    .badge-gold { background: #fef3c7; color: #b45309; border: 1px solid #fcd34d; }
-    .case-meta { font-size: 13.5px; color: var(--text-sub); line-height: 1.75; }
+    .case-name { font-size: 17.5px; font-weight: 900; color: var(--espresso); }
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: 800; white-space: nowrap; }
+    .badge-node { background: #F4E8D7; color: #7C5225; border: 1px solid #DFC4A3; }
+    .badge-warn { background: #FFF3D6; color: #925614; border: 1px solid #F0CB82; }
+    .badge-done { background: #E7F7EF; color: #145C41; border: 1px solid #96D8BC; }
+    .badge-mask { background: #FDE8E8; color: #9B1C1C; border: 1px solid #F3A6A6; }
+    .badge-gold { background: #FDF3E1; color: #8A5316; border: 1px solid #DFBA84; }
+    .case-meta { font-size: 14px; color: var(--espresso-mid); line-height: 1.75; }
     .case-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
     .phone-link {
-      display: inline-flex; align-items: center; gap: 4px; background: #ecfdf5; color: #047857;
-      padding: 2px 10px; border-radius: 8px; font-weight: 800; text-decoration: none; border: 1px solid #6ee7b7;
+      display: inline-flex; align-items: center; gap: 4px; background: #EDF9F3; color: #145C41;
+      padding: 2px 10px; border-radius: 8px; font-weight: 800; text-decoration: none; border: 1px solid #7AD0AE;
+      font-size: 14.5px;
     }
     .phone-masked {
-      display: inline-flex; align-items: center; gap: 4px; background: #fee2e2; color: #b91c1c;
-      padding: 2px 10px; border-radius: 8px; font-weight: 800; border: 1px solid #fca5a5;
+      display: inline-flex; align-items: center; gap: 4px; background: #FDE8E8; color: #9B1C1C;
+      padding: 2px 10px; border-radius: 8px; font-weight: 800; border: 1px solid #F3A6A6; font-size: 14px;
     }
     /* 分享引流預覽框與成績單 */
     .share-preview {
-      background: #0f172a; color: #e2e8f0; border-radius: 10px; padding: 12px;
-      font-size: 13px; white-space: pre-wrap; word-break: break-all; border: 1px solid var(--gold); margin-bottom: 12px;
+      background: #FFFDF9; color: var(--espresso); border-radius: 12px; padding: 13px;
+      font-size: 13.5px; white-space: pre-wrap; word-break: break-all;
+      border: 1.5px dashed var(--milk-tea-deep); margin-bottom: 12px; line-height: 1.65;
     }
-    .qr-box { text-align: center; background: #fff; padding: 14px; border-radius: 12px; border: 1.5px solid var(--gold); margin: 12px 0; }
-    .qr-box img { width: 210px; height: 210px; border-radius: 8px; }
-    .perf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 10px; }
+    .qr-box { text-align: center; background: #FFFDF9; padding: 16px; border-radius: 14px; border: 1.5px solid var(--milk-tea); margin: 12px 0; }
+    .qr-box img { width: 210px; height: 210px; border-radius: 10px; background: #FFFFFF; padding: 6px; border: 1px solid var(--border); }
+    .perf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
     .perf-box {
-      background: #f8fafc; border: 1.5px solid var(--border); border-radius: 12px; padding: 11px 12px;
+      background: #FCF9F4; border: 1.5px solid var(--border); border-radius: 13px; padding: 12px;
     }
-    .perf-box.highlight { background: #fffbeb; border-color: #fcd34d; }
-    .perf-box.green { background: #ecfdf5; border-color: #6ee7b7; }
-    .perf-lbl { font-size: 12px; color: var(--text-sub); font-weight: 700; }
-    .perf-val { font-size: 20px; font-weight: 900; color: var(--navy-dark); margin-top: 2px; }
-    .perf-sub { font-size: 11.5px; color: #64748b; margin-top: 2px; }
+    .perf-box.highlight { background: #FDF6E9; border-color: #E3C191; }
+    .perf-box.green { background: #EDF9F3; border-color: #8FD4B6; }
+    .perf-lbl { font-size: 12.5px; color: var(--text-sub); font-weight: 800; }
+    .perf-val { font-size: 21px; font-weight: 900; color: var(--espresso); margin-top: 3px; }
+    .perf-sub { font-size: 12px; color: var(--text-sub); margin-top: 3px; }
     .dual-strip {
-      background: #f8fafc; border: 1px dashed #94a3b8; border-radius: 10px;
-      padding: 10px 12px; font-size: 12.5px; color: #334155; line-height: 1.7;
+      background: #FAF5EC; border: 1.5px dashed #CBB69D; border-radius: 11px;
+      padding: 11px 13px; font-size: 13px; color: var(--espresso-mid); line-height: 1.75;
     }
     /* 統計方塊 */
     .stat-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-    .stat-tile { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 10px 8px; text-align: center; }
-    .stat-num { font-size: 22px; font-weight: 900; color: var(--navy-dark); }
-    .stat-lbl { font-size: 11.5px; color: var(--text-sub); font-weight: 700; }
+    .stat-tile {
+      background: #FFFFFF; border: 1.5px solid var(--border); border-radius: 14px; padding: 11px 8px;
+      text-align: center; box-shadow: 0 2px 8px rgba(62,48,36,0.04);
+    }
+    .stat-num { font-size: 23px; font-weight: 900; color: var(--espresso); }
+    .stat-lbl { font-size: 12px; color: var(--text-sub); font-weight: 800; margin-top: 2px; }
     /* 團隊水位列 */
     .team-row {
-      display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; padding: 11px 0;
-      border-bottom: 1px solid var(--border); font-size: 13.5px;
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; padding: 12px 0;
+      border-bottom: 1px solid var(--border); font-size: 14px;
     }
     .team-row:last-child { border-bottom: none; }
-    /* 彈窗 Modal */
+    /* 底部滑出彈窗 Modal */
     .modal-bg {
-      position: fixed; inset: 0; background: rgba(11,19,43,0.72); z-index: 80;
-      display: none; align-items: flex-end; justify-content: center;
+      position: fixed; inset: 0; background: rgba(62,48,36,0.52); z-index: 80;
+      display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(2px);
     }
     .modal-bg.open { display: flex; }
     .modal-sheet {
-      background: #fff; width: 100%; max-width: 680px; border-radius: 18px 18px 0 0;
-      padding: 20px 16px 26px; max-height: 90vh; overflow-y: auto; border-top: 4px solid var(--gold);
+      background: #FFFFFF; width: 100%; max-width: 680px; border-radius: 20px 20px 0 0;
+      padding: 20px 16px 26px; max-height: 90vh; overflow-y: auto; border-top: 4px solid var(--milk-tea);
     }
     .boss-tip-box {
-      background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af;
-      border-radius: 9px; padding: 8px 10px; font-size: 12px; margin-bottom: 12px; line-height: 1.5;
+      background: #FDF7EE; border: 1px solid #DFC4A3; color: #6E4B23;
+      border-radius: 10px; padding: 9px 11px; font-size: 12.5px; margin-bottom: 12px; line-height: 1.55;
     }
-    /* V7.1 下一步自動引導彈窗 */
+    /* 全動線下一步自動引導彈窗 */
     .guide-mask {
-      position: fixed; inset: 0; background: rgba(11,19,43,0.74); z-index: 92;
+      position: fixed; inset: 0; background: rgba(62,48,36,0.52); z-index: 92;
       display: none; align-items: center; justify-content: center; padding: 16px;
-      backdrop-filter: blur(2px);
+      backdrop-filter: blur(3px);
     }
     .guide-mask.show { display: flex; animation: fadeIn 0.18s ease; }
     .guide-modal {
-      width: 100%; max-width: 440px; background: #fff; border-radius: 16px;
-      border: 2px solid var(--gold); overflow: hidden; box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+      width: 100%; max-width: 440px; background: #FFFFFF; border-radius: 18px;
+      border: 2px solid var(--milk-tea); overflow: hidden; box-shadow: 0 18px 40px rgba(62,48,36,0.22);
     }
     .guide-hdr {
-      background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid));
-      color: #fbbf24; padding: 14px 16px; font-size: 16px; font-weight: 900;
+      background: linear-gradient(135deg, #FAF1E4 0%, #EFE0CB 100%);
+      color: var(--espresso); padding: 15px 16px; font-size: 16.5px; font-weight: 900;
       display: flex; justify-content: space-between; align-items: center; gap: 8px;
-      border-bottom: 2px solid var(--gold);
+      border-bottom: 2px solid var(--milk-tea);
     }
     .guide-close {
-      background: rgba(255,255,255,0.12); color: #e2e8f0; border: none; border-radius: 8px;
-      width: 28px; height: 28px; font-size: 16px; font-weight: 900; cursor: pointer;
+      background: rgba(62,48,36,0.1); color: var(--espresso); border: none; border-radius: 8px;
+      width: 30px; height: 30px; font-size: 16px; font-weight: 900; cursor: pointer;
     }
-    .guide-body { padding: 15px 16px 16px; font-size: 13.5px; color: #334155; }
-    .guide-desc { margin: 0 0 10px; line-height: 1.55; }
+    .guide-body { padding: 16px; font-size: 14px; color: var(--espresso-mid); }
+    .guide-desc { margin: 0 0 10px; line-height: 1.6; }
     .guide-extra {
-      background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px;
-      padding: 10px 12px; margin-bottom: 12px; font-size: 12.5px; color: #0f172a; line-height: 1.65;
+      background: #FCF9F4; border: 1px solid var(--border); border-radius: 12px;
+      padding: 11px 13px; margin-bottom: 12px; font-size: 13px; color: var(--espresso); line-height: 1.7;
     }
-    .guide-extra.gold { background: #fffbeb; border-color: #fcd34d; }
-    .guide-extra.ok { background: #ecfdf5; border-color: #6ee7b7; }
-    .guide-extra.danger { background: #fef2f2; border-color: #fca5a5; color: #991b1b; }
+    .guide-extra.gold { background: #FDF7EC; border-color: var(--milk-tea); }
+    .guide-extra.ok { background: #EDF9F3; border-color: #7AD0AE; }
+    .guide-extra.danger { background: #FFF5F5; border-color: #F3A6A6; color: #9B1C1C; }
     .guide-next-lbl {
-      font-size: 12px; font-weight: 800; color: #b45309; margin-bottom: 8px;
+      font-size: 13px; font-weight: 800; color: #9A5B1F; margin-bottom: 8px;
       letter-spacing: 0.3px; display: flex; align-items: center; gap: 5px;
     }
     .guide-actions { display: flex; flex-direction: column; gap: 8px; }
-    .guide-actions .btn { padding: 12px 14px; font-size: 14.5px; }
-    /* 底部固定導覽列 */
+    .guide-actions .btn { padding: 12px 14px; font-size: 15px; }
+    /* 底部明亮象牙白四分頁導覽列 */
     .bottom-nav {
-      position: fixed; bottom: 0; left: 0; right: 0; background: var(--navy-dark);
-      border-top: 2px solid var(--gold); display: flex; z-index: 50; padding-bottom: env(safe-area-inset-bottom);
+      position: fixed; bottom: 0; left: 0; right: 0; background: #FFFFFF;
+      border-top: 2px solid var(--milk-tea); display: flex; z-index: 50;
+      box-shadow: 0 -4px 16px rgba(62,48,36,0.08); padding-bottom: env(safe-area-inset-bottom);
     }
     .nav-btn {
-      flex: 1; background: none; border: none; color: #94a3b8; padding: 10px 4px 12px;
-      font-size: 12px; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px;
+      flex: 1; background: none; border: none; color: var(--text-sub); padding: 10px 4px 12px;
+      font-size: 12.5px; font-weight: 800; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px;
+      transition: 0.18s;
     }
     .nav-btn .ico { font-size: 19px; }
-    .nav-btn.active { color: #fbbf24; background: rgba(197,160,89,0.12); }
+    .nav-btn.active { color: var(--espresso); background: var(--cream-soft); box-shadow: inset 0 3px 0 var(--caramel); }
     .loading-mask {
-      position: fixed; inset: 0; background: rgba(11,19,43,0.78); z-index: 99;
-      display: none; flex-direction: column; align-items: center; justify-content: center; color: #fff;
+      position: fixed; inset: 0; background: rgba(62,48,36,0.62); z-index: 99;
+      display: none; flex-direction: column; align-items: center; justify-content: center; color: #FFFDF9;
+      backdrop-filter: blur(2px);
     }
     .spinner {
-      width: 42px; height: 42px; border: 4px solid rgba(255,255,255,0.25);
-      border-top-color: #fbbf24; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 10px;
+      width: 42px; height: 42px; border: 4px solid rgba(255,253,249,0.3);
+      border-top-color: #E8C79B; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 10px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
     .toast {
       position: fixed; top: 76px; left: 50%; transform: translateX(-50%); z-index: 95;
-      background: #0f172a; color: #fde68a; padding: 12px 18px; border-radius: 10px;
-      font-size: 14px; font-weight: 700; border: 1px solid var(--gold); display: none; max-width: 92%; text-align: center;
+      background: var(--espresso); color: #FFF8EE; padding: 12px 18px; border-radius: 12px;
+      font-size: 14.5px; font-weight: 700; border: 1.5px solid var(--milk-tea); display: none;
+      max-width: 92%; text-align: center; box-shadow: 0 8px 22px rgba(62,48,36,0.28);
     }
     .hidden { display: none !important; }
   </style>
@@ -245,9 +280,12 @@
 <body>
   <header class="top-header">
     <div class="hdr-flex">
-      <div>
-        <h1 class="hdr-title">💼 三貸同堂｜內部行動工作台</h1>
-        <div class="hdr-sub" id="hdrStaffInfo">請先驗證內部人員身分</div>
+      <div class="hdr-left">
+        <img src="./logo.jpg" alt="三貸同堂" class="brand-logo" onerror="this.style.display='none'">
+        <div>
+          <h1 class="hdr-title">三貸同堂｜內部行動工作台</h1>
+          <div class="hdr-sub" id="hdrStaffInfo">請先驗證內部人員身分</div>
+        </div>
       </div>
       <div class="hdr-right">
         <a id="hdrLineShareBtn" class="hdr-share-btn hidden" href="#" target="_blank" rel="noopener">📤 分享管家</a>
@@ -257,7 +295,7 @@
     <div id="waterBarBox" class="water-bar-box hidden">
       <div class="water-bar-top">
         <span id="waterBarLabel">🌊 個人名單水位：0 / 30 員</span>
-        <span id="waterBarStatus" style="color:#34d399;">正常可接單</span>
+        <span id="waterBarStatus" style="color:#1E7E5A;">正常可接單</span>
       </div>
       <div class="bar-track"><div id="waterBarFill" class="bar-fill" style="width:0%"></div></div>
     </div>
@@ -267,7 +305,7 @@
     <div class="spinner"></div>
     <div id="loadingText" style="font-weight:700;font-size:15px;">雲端水位同步中...</div>
   </div>
-  <!-- V7.1 全動線下一步自動引導彈窗 -->
+  <!-- 全動線下一步自動引導彈窗 -->
   <div id="guideMask" class="guide-mask" onclick="if(event.target===this) closeNextStepModal();">
     <div class="guide-modal">
       <div class="guide-hdr">
@@ -286,7 +324,7 @@
   <div id="loginWall" class="container hidden">
     <div class="card">
       <div class="section-title">🔐 內部人員實名驗證登入</div>
-      <p style="font-size:13.5px;color:#475569;margin-top:0;">
+      <p style="font-size:14px;color:#7A6A5B;margin-top:0;">
         本工作台為三貸同堂內部唯一作業入口，外部人員無法存取。請輸入登錄於組織表的實名手機號碼與員工代碼完成授權（登入成功後本機將自動記憶，下次秒開免重打）：
       </p>
       <div class="form-group">
@@ -304,15 +342,14 @@
   <main id="mainApp" class="container hidden">
     <!-- ==================== 分頁 1：我的水位與防弊遮罩 ==================== -->
     <section id="tab-my" class="tab-pane active">
-      <!-- V7.1 頂部智慧待辦引導條 -->
       <div id="staffSmartBanner" class="smart-banner hidden"></div>
       <div class="stat-grid">
         <div class="stat-tile"><div class="stat-num" id="stActive">0</div><div class="stat-lbl">目前水位活躍</div></div>
         <div class="stat-tile" style="cursor:pointer;" onclick="switchTab('share')">
-          <div class="stat-num" style="color:#0284c7;" id="stRef">0</div>
+          <div class="stat-num" style="color:#9A5B1F;" id="stRef">0</div>
           <div class="stat-lbl">分享引流歸戶 ▸</div>
         </div>
-        <div class="stat-tile"><div class="stat-num" style="color:#059669;" id="stClosed">0</div><div class="stat-lbl">累積結案總數</div></div>
+        <div class="stat-tile"><div class="stat-num" style="color:#1E7E5A;" id="stClosed">0</div><div class="stat-lbl">累積結案總數</div></div>
       </div>
       <!-- 一鍵分享管家捷徑列 -->
       <div class="quick-share-strip">
@@ -331,7 +368,7 @@
         <button class="btn btn-outline btn-sm" onclick="reloadDashboard()">🔄 刷新</button>
       </div>
       <div id="myActiveList"></div>
-      <div class="section-title" style="margin-top:20px;border-left-color:#dc2626;">
+      <div class="section-title" style="margin-top:20px;border-left-color:#C53030;">
         <span>🛡️ 已撤銷／改派防飛單遮罩紀錄</span>
       </div>
       <div id="myMaskedList"></div>
@@ -339,7 +376,7 @@
     <!-- ==================== 分頁 2：總水庫公海派單與主管審批 ==================== -->
     <section id="tab-pool" class="tab-pane">
       <div id="managerApprovalSection" class="hidden">
-        <div class="section-title" style="border-left-color:#dc2626;">
+        <div class="section-title" style="border-left-color:#C53030;">
           <span>🚨 主管待審批：撤銷／轉派申請 (<span id="pendingCnt">0</span>)</span>
         </div>
         <div id="pendingApprovalList"></div>
@@ -360,17 +397,17 @@
         <div class="perf-grid">
           <div class="perf-box">
             <div class="perf-lbl">📣 分享引流歸戶</div>
-            <div class="perf-val" style="color:#0284c7;" id="pfRefTotal">0 人</div>
+            <div class="perf-val" style="color:#9A5B1F;" id="pfRefTotal">0 人</div>
             <div class="perf-sub" id="pfRefConv">引流成交 0 件｜轉換率 0%</div>
           </div>
           <div class="perf-box highlight">
             <div class="perf-lbl">💰 引流貢獻總佣金</div>
-            <div class="perf-val" style="color:#b45309;" id="pfRefComm">$0</div>
+            <div class="perf-val" style="color:#8A5316;" id="pfRefComm">$0</div>
             <div class="perf-sub" id="pfRefWan">核准放款額度 0 萬</div>
           </div>
           <div class="perf-box green">
             <div class="perf-lbl">🎁 引流節點獎金</div>
-            <div class="perf-val" style="color:#047857;" id="pfRefBonus">$0</div>
+            <div class="perf-val" style="color:#145C41;" id="pfRefBonus">$0</div>
             <div class="perf-sub">即便改派他人辦照樣領引流</div>
           </div>
           <div class="perf-box">
@@ -385,8 +422,8 @@
       </div>
       <div class="card card-navy">
         <div class="section-title">📣 一鍵分享三貸同堂智能管家</div>
-        <p style="font-size:13.5px;color:#e2e8f0;margin-top:0;">
-          免做表單！直接點擊下方綠色按鈕透過 LINE 傳給好友或群組，客戶點進 <b id="shareLineId" style="color:#fbbf24;">@660rbtey</b> 按「傳送」或點試算連結留單，系統 100% 自動鎖定您為引流人並計入您的業績（客戶轉傳給親友照樣算您的）！
+        <p style="font-size:14px;color:#5C4735;margin-top:0;line-height:1.65;">
+          免做表單！直接點擊下方綠色按鈕透過 LINE 傳給好友或群組，客戶點進 <b id="shareLineId" style="color:#9A5B1F;">@threeloans</b> 按「傳送」或點試算連結留單，系統 100% 自動鎖定您為引流人並計入您的業績（客戶轉傳給親友照樣算您的）！
         </p>
         <a id="btnLineShareMain" class="btn btn-line" style="margin-bottom:10px;font-size:16px;" href="#" target="_blank" rel="noopener">
           📤 一鍵透過 LINE 分享給好友／群組
@@ -396,7 +433,7 @@
           <button class="btn btn-gold" onclick="copyTextValue('shareMsgPreview', '✅ 已複製完整分享文案！直接貼上 LINE / FB / Threads 即可引流')">📋 複製分享文案</button>
           <button class="btn btn-outline" onclick="shareNativeOrCopy()">📱 其他平台分享</button>
         </div>
-        <button class="btn btn-outline btn-sm" style="width:100%;background:rgba(255,255,255,0.1);color:#fde68a;border-color:rgba(197,160,89,0.5);" onclick="copyDirectUrl('calc')">
+        <button class="btn btn-outline btn-sm" style="width:100%;background:#FFFFFF;color:#6E4B23;border-color:#C8A882;" onclick="copyDirectUrl('calc')">
           🔗 單獨複製「60 秒試算表單」專屬引流連結
         </button>
       </div>
@@ -404,8 +441,8 @@
         <div class="section-title">📲 我的專屬官方 LINE 引流 QR Code</div>
         <div class="qr-box">
           <img id="shareQrImg" src="" alt="專屬引流 QR Code">
-          <div style="font-weight:800;font-size:15px;margin-top:8px;" id="shareOwnerTag">推薦代碼：-</div>
-          <div style="font-size:12.5px;color:#64748b;">現場見客戶直接請對方掃碼，加入按傳送立即歸戶計入您的業績！</div>
+          <div style="font-weight:900;font-size:15.5px;margin-top:8px;color:#3E3024;" id="shareOwnerTag">推薦代碼：-</div>
+          <div style="font-size:13px;color:#7A6A5B;margin-top:3px;">現場見客戶直接請對方掃碼，加入按傳送立即歸戶計入您的業績！</div>
         </div>
       </div>
       <div class="card">
@@ -427,14 +464,14 @@
         <div class="section-title">👥 全公司即時名單水位與引流實績</div>
         <div id="teamWaterList"></div>
       </div>
-      <button class="btn btn-outline" style="color:#64748b;margin-top:4px;" onclick="logoutStaffSession()">🔄 切換登入帳號／清除本機記憶</button>
+      <button class="btn btn-outline" style="color:#7A6A5B;margin-top:4px;" onclick="logoutStaffSession()">🔄 切換登入帳號／清除本機記憶</button>
     </section>
   </main>
   <!-- ==================== 彈窗 1：7 大節點 × 4 大狀態即時回報 ==================== -->
   <div id="modalReport" class="modal-bg">
     <div class="modal-sheet">
       <div class="section-title">📊 案件節點回報（自動推播主管）</div>
-      <div id="repCaseBanner" style="background:#f8fafc;padding:10px;border-radius:8px;font-size:13.5px;margin-bottom:10px;"></div>
+      <div id="repCaseBanner" style="background:#FAF7F2;border:1px solid #E6D9C8;padding:10px 12px;border-radius:10px;font-size:14px;margin-bottom:10px;color:#3E3024;"></div>
       <div id="repBossNotifyHint" class="boss-tip-box"></div>
       <input type="hidden" id="repCaseId">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
@@ -470,8 +507,8 @@
   <!-- ==================== 彈窗 2：申請撤銷／轉派 ==================== -->
   <div id="modalCancel" class="modal-bg">
     <div class="modal-sheet">
-      <div class="section-title" style="border-left-color:#dc2626;">⚠️ 申請案件撤銷或轉派（釋出水位）</div>
-      <div id="canCaseBanner" style="background:#fef2f2;padding:10px;border-radius:8px;font-size:13px;color:#991b1b;margin-bottom:12px;"></div>
+      <div class="section-title" style="border-left-color:#C53030;">⚠️ 申請案件撤銷或轉派（釋出水位）</div>
+      <div id="canCaseBanner" style="background:#FFF5F5;border:1px solid #F3A6A6;padding:10px 12px;border-radius:10px;font-size:13.5px;color:#9B1C1C;margin-bottom:12px;"></div>
       <input type="hidden" id="canCaseId">
       <div class="form-group">
         <label>申請類型 *</label>
@@ -498,7 +535,7 @@
   <div id="modalDispatch" class="modal-bg">
     <div class="modal-sheet">
       <div class="section-title" id="dispModalTitle">📥 主管派單指派</div>
-      <div id="dispCaseBanner" style="background:#f8fafc;padding:10px;border-radius:8px;font-size:13.5px;margin-bottom:12px;"></div>
+      <div id="dispCaseBanner" style="background:#FAF7F2;border:1px solid #E6D9C8;padding:10px 12px;border-radius:10px;font-size:14px;margin-bottom:12px;color:#3E3024;"></div>
       <input type="hidden" id="dispCaseId">
       <input type="hidden" id="dispMode">
       <div class="form-group" id="dispRoleWrap">
@@ -546,8 +583,8 @@
         </select>
       </div>
       <div class="form-group"><label>備註說明</label><textarea id="newNote" rows="2" placeholder="簡述客戶工作或負債條件..."></textarea></div>
-      <label style="display:flex;align-items:center;gap:8px;font-size:13.5px;margin-bottom:14px;">
-        <input type="checkbox" id="newAssignSelf" checked style="width:20px;height:20px;">
+      <label style="display:flex;align-items:center;gap:8px;font-size:14px;margin-bottom:14px;color:#5C4735;">
+        <input type="checkbox" id="newAssignSelf" checked style="width:20px;height:20px;accent-color:#B4834E;">
         <span>建檔後立即歸入我的 30 員個人水位直接跟進</span>
       </label>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
@@ -556,7 +593,7 @@
       </div>
     </div>
   </div>
-  <!-- 底部固定四分頁導覽 -->
+  <!-- 底部明亮四分頁導覽 -->
   <nav class="bottom-nav">
     <button class="nav-btn active" id="nav-my" onclick="switchTab('my')"><span class="ico">🌊</span><span>我的水位</span></button>
     <button class="nav-btn" id="nav-pool" onclick="switchTab('pool')"><span class="ico">📥</span><span>公海派單</span></button>
@@ -564,7 +601,7 @@
     <button class="nav-btn" id="nav-team" onclick="switchTab('team')"><span class="ico">👥</span><span>團隊/報表</span></button>
   </nav>
   <script>
-    // ==================== V7.1 GitHub Pages ➔ GAS JSON API 橋接中樞 ====================
+    // ==================== V7.3 GitHub Pages ➔ GAS JSON API 橋接中樞 ====================
     var GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzofnwdYqJprOQIu_4vXmtqoWT_uyfnxg27otb9u_CxHX8m_0D2qYTTX8NBqTMxlQNzZg/exec';
     var STAFF_STORAGE_KEY = 'THREELOANS_STAFF_SESSION_V7';
     function parseUrlParams() {
@@ -676,7 +713,7 @@
         document.getElementById('loginWall').classList.remove('hidden');
       }
     });
-    // ==================== V7.1 全動線自動引導引擎 ====================
+    // ==================== 全動線自動引導引擎 ====================
     var GUIDE_HANDLERS = [];
     function showNextStepModal(cfg) {
       document.getElementById('guideTitle').textContent = cfg.title || '✅ 操作已完成';
@@ -696,7 +733,7 @@
         GUIDE_HANDLERS.push(act);
         var cls = act.btnClass || (idx === 0 ? 'btn-gold' : 'btn-outline');
         return '<button class="btn ' + cls + '" onclick="runGuideAction(' + idx + ')">' + escHtml(act.label) + '</button>';
-      }).join('') + '<button class="btn btn-outline" style="color:#64748b;border-color:#cbd5e1;" onclick="closeNextStepModal()">留在目前畫面</button>';
+      }).join('') + '<button class="btn btn-outline" style="color:#7A6A5B;border-color:#D9C9B6;" onclick="closeNextStepModal()">留在目前畫面</button>';
       document.getElementById('guideMask').classList.add('show');
     }
     function runGuideAction(idx) {
@@ -880,7 +917,7 @@
       fill.className = 'bar-fill' + (st.isFull ? ' full' : (pct >= 75 ? ' warn' : ''));
       var wStatus = document.getElementById('waterBarStatus');
       wStatus.textContent = st.isFull ? '🚫 水位已滿（暫停派單）' : (st.isBoss ? '👑 總水庫最高權限' : ('剩餘 ' + Math.max(0, st.waterLimit - st.activeCount) + ' 個空位'));
-      wStatus.style.color = st.isFull ? '#fca5a5' : '#34d399';
+      wStatus.style.color = st.isFull ? '#C53030' : '#1E7E5A';
       document.getElementById('stActive').textContent = st.activeCount;
       document.getElementById('stRef').textContent = perf.referredTotalCount || st.referralCount || 0;
       document.getElementById('stClosed').textContent = st.closedCount;
@@ -891,7 +928,7 @@
       fillSelect('newSource', d.metaOptions.sources);
       fillStaffSelect('dispTargetStaff', d.teamList);
       fillStaffSelect('canSuggestStaff', d.teamList, true);
-      // 3. 跨部門快捷連結（獨立前端環境自動導向 ./forms.html 與 ./boss.html 無橫幅免重登）
+      // 3. 跨部門快捷連結
       document.getElementById('lnkFormsClient').href = buildDeptUrl('forms', { tab: 'client' });
       document.getElementById('lnkFormsDeal').href = buildDeptUrl('forms', { tab: 'deal' });
       var bossBtn = document.getElementById('lnkBossRoom');
@@ -937,7 +974,7 @@
       });
       var box = document.getElementById('myActiveList');
       if (list.length === 0) {
-        box.innerHTML = '<div class="card" style="text-align:center;color:#64748b;">目前水位內尚無符合條件之活躍案件，可前往「公海派單」領單或點擊「＋ 新增客戶」。</div>';
+        box.innerHTML = '<div class="card" style="text-align:center;color:#7A6A5B;">目前水位內尚無符合條件之活躍案件，可前往「公海派單」領單或點擊「＋ 新增客戶」。</div>';
         return;
       }
       box.innerHTML = list.map(function(c) {
@@ -950,20 +987,20 @@
         return '<div class="case-card">' +
           '<div class="case-top">' +
             '<div><div class="case-name">' + escHtml(c.clientName) + ' ' + phoneHtml + '</div>' +
-            '<div style="font-size:12px;color:#64748b;margin-top:2px;">' + escHtml(c.caseId) + '｜來源：' + escHtml(c.source) + '</div></div>' +
+            '<div style="font-size:12.5px;color:#7A6A5B;margin-top:3px;">' + escHtml(c.caseId) + '｜來源：' + escHtml(c.source) + '</div></div>' +
             '<span class="badge ' + statusCls + '">' + escHtml(c.currentNode) + '・' + escHtml(c.status) + '</span>' +
           '</div>' +
           '<div class="case-meta">' +
             '💼 類別：<b>' + escHtml(c.loanType) + '</b>' + (c.amountWan ? ('（需求 ' + escHtml(c.amountWan) + ' 萬）') : '') + '<br>' +
             '📣 引流：' + escHtml(c.referralName) + '｜經辦：<b>' + escHtml(c.handlerLabel) + '</b><br>' +
             '📝 摘要：' + escHtml(c.lastSummary || c.note || '等待聯繫') + '<br>' +
-            '<span style="font-size:11.5px;color:#94a3b8;">更新：' + escHtml(c.lastUpdate) + (c.esignNo ? ('｜✅已簽單:' + escHtml(c.esignNo)) : '') + '</span>' +
+            '<span style="font-size:12px;color:#9A8B7C;">更新：' + escHtml(c.lastUpdate) + (c.esignNo ? ('｜✅已簽單:' + escHtml(c.esignNo)) : '') + '</span>' +
           '</div>' +
           '<div class="case-actions">' +
             '<button class="btn btn-gold btn-sm" style="width:100%;" onclick="openReportModal(\'' + escHtml(c.caseId) + '\')">📊 節點回報</button>' +
             '<a class="btn btn-navy btn-sm" style="width:100%;" href="' + escHtml(formClientHref) + '" target="_blank" rel="noopener">📋 客戶資料表</a>' +
             '<a class="btn btn-success btn-sm" style="width:100%;" href="' + escHtml(formDealHref) + '" target="_blank" rel="noopener">💰 業績報件單</a>' +
-            '<button class="btn btn-outline btn-sm" style="width:100%;color:#b91c1c;border-color:#fca5a5;" onclick="openCancelModal(\'' + escHtml(c.caseId) + '\')">⚠️ 撤銷/轉派</button>' +
+            '<button class="btn btn-outline btn-sm" style="width:100%;color:#C53030;border-color:#F3A6A6;" onclick="openCancelModal(\'' + escHtml(c.caseId) + '\')">⚠️ 撤銷/轉派</button>' +
           '</div>' +
         '</div>';
       }).join('');
@@ -972,17 +1009,17 @@
       var list = APP.data.myMaskedCases || [];
       var box = document.getElementById('myMaskedList');
       if (list.length === 0) {
-        box.innerHTML = '<div class="card" style="text-align:center;color:#64748b;font-size:13px;">尚無已撤銷或轉派之遮罩紀錄。</div>';
+        box.innerHTML = '<div class="card" style="text-align:center;color:#7A6A5B;font-size:13.5px;">尚無已撤銷或轉派之遮罩紀錄。</div>';
         return;
       }
       box.innerHTML = list.map(function(c) {
         return '<div class="case-card masked">' +
           '<div class="case-top">' +
             '<div><div class="case-name">' + escHtml(c.clientName) + ' <span class="phone-masked">🔒 ' + escHtml(c.phone) + '</span></div>' +
-            '<div style="font-size:12px;color:#991b1b;margin-top:2px;">' + escHtml(c.maskReason || '個資防飛單保護') + '</div></div>' +
+            '<div style="font-size:12.5px;color:#9B1C1C;margin-top:3px;">' + escHtml(c.maskReason || '個資防飛單保護') + '</div></div>' +
             '<span class="badge badge-mask">' + escHtml(c.status) + '</span>' +
           '</div>' +
-          '<div class="case-meta" style="color:#7f1d1d;">📋 案號：' + escHtml(c.caseId) + '｜最新負責：' + escHtml(c.handlerLabel) + '<br>' + escHtml(c.note) + '</div>' +
+          '<div class="case-meta" style="color:#8E2424;">📋 案號：' + escHtml(c.caseId) + '｜最新負責：' + escHtml(c.handlerLabel) + '<br>' + escHtml(c.note) + '</div>' +
         '</div>';
       }).join('');
     }
@@ -996,7 +1033,7 @@
       sec.classList.remove('hidden');
       document.getElementById('pendingCnt').textContent = list.length;
       document.getElementById('pendingApprovalList').innerHTML = list.map(function(c) {
-        return '<div class="case-card" style="border-color:#f59e0b;background:#fffbeb;">' +
+        return '<div class="case-card" style="border-color:#E3B26B;background:#FFFBF2;">' +
           '<div class="case-top"><div class="case-name">' + escHtml(c.clientName) + ' (' + escHtml(c.phone) + ')</div><span class="badge badge-warn">待主管審批</span></div>' +
           '<div class="case-meta">📋 ' + escHtml(c.caseId) + '｜原經辦：' + escHtml(c.handlerLabel) + '<br><b>申請詳情：</b>' + escHtml(c.lastSummary) + '</div>' +
           '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px;">' +
@@ -1012,7 +1049,7 @@
       document.getElementById('publicCnt').textContent = list.length;
       var box = document.getElementById('publicPoolList');
       if (list.length === 0) {
-        box.innerHTML = '<div class="card" style="text-align:center;color:#64748b;">🎉 目前總水庫公海無積壓未派案件！</div>';
+        box.innerHTML = '<div class="card" style="text-align:center;color:#7A6A5B;">🎉 目前總水庫公海無積壓未派案件！</div>';
         return;
       }
       var isMgr = APP.data.staff.isManager;
@@ -1022,7 +1059,7 @@
           ? '<button class="btn btn-gold btn-sm" style="width:100%;" onclick="openDispatchModal(\'' + escHtml(c.caseId) + '\', \'DISPATCH\')">🎯 主管指定派單</button>'
           : '<button class="btn btn-gold btn-sm" style="width:100%;" ' + (isFull ? 'disabled' : '') + ' onclick="claimCaseToSelf(\'' + escHtml(c.caseId) + '\')">' + (isFull ? '🚫 水位已滿無法領單' : '⚡ 領單納入我的水位') + '</button>';
         return '<div class="case-card">' +
-          '<div class="case-top"><div class="case-name">' + escHtml(c.clientName) + ' <span style="font-size:13px;color:#475569;">' + escHtml(c.phone) + '</span></div><span class="badge badge-warn">待派新單</span></div>' +
+          '<div class="case-top"><div class="case-name">' + escHtml(c.clientName) + ' <span style="font-size:14px;color:#7A6A5B;">' + escHtml(c.phone) + '</span></div><span class="badge badge-warn">待派新單</span></div>' +
           '<div class="case-meta">💼 ' + escHtml(c.loanType) + (c.amountWan ? ('（' + escHtml(c.amountWan) + '萬）') : '') + '<br>' +
           '📣 引流歸屬：<b>' + escHtml(c.referralName) + '</b>｜來源：' + escHtml(c.source) + '<br>' +
           '🕒 進件時間：' + escHtml(c.createdAt) + '</div>' +
@@ -1047,7 +1084,7 @@
         '</b>）；靠分享管家引流完款 <b>' + (perf.referredClosedCount || 0) + ' 件</b>（引流貢獻佣收 <b>' + fmtMoney(perf.referredCommissionTotal || 0) +
         '</b>）。若同一案由您自己分享＋接流＋經辦，系統自動疊加多節點分潤！';
       document.getElementById('btnLineShareMain').href = shareUrl;
-      document.getElementById('shareLineId').textContent = pkg.lineBasicId || '@660rbtey';
+      document.getElementById('shareLineId').textContent = pkg.lineBasicId || '@threeloans';
       document.getElementById('shareMsgPreview').textContent = pkg.fullShareMessage || '';
       document.getElementById('shareQrImg').src = pkg.qrCodeImageUrl || '';
       document.getElementById('shareOwnerTag').textContent = '專屬推薦顧問：' + (pkg.staffName || '') + '（代碼：' + (pkg.staffCode || '') + '）';
@@ -1055,19 +1092,19 @@
       document.getElementById('myRefListCnt').textContent = refs.length;
       var box = document.getElementById('myReferredList');
       if (refs.length === 0) {
-        box.innerHTML = '<div style="text-align:center;color:#64748b;font-size:13.5px;padding:12px;">尚無引流進件客戶，立即點擊上方綠色「一鍵透過 LINE 分享」傳給好友吧！</div>';
+        box.innerHTML = '<div style="text-align:center;color:#7A6A5B;font-size:14px;padding:12px;">尚無引流進件客戶，立即點擊上方綠色「一鍵透過 LINE 分享」傳給好友吧！</div>';
         return;
       }
       box.innerHTML = refs.map(function(c) {
         var dealHtml = c.isDealClosed
-          ? ('<div style="font-size:12px;color:#047857;font-weight:800;margin-top:3px;">✅ 已成交貢獻業績：佣收 ' + fmtMoney(c.dealCommission) +
+          ? ('<div style="font-size:12.5px;color:#145C41;font-weight:800;margin-top:3px;">✅ 已成交貢獻業績：佣收 ' + fmtMoney(c.dealCommission) +
              (c.estimatedReferralBonus > 0 ? ('｜引流分潤約 ' + fmtMoney(c.estimatedReferralBonus)) : '') +
              (c.dealCompletedDate ? ('（' + escHtml(c.dealCompletedDate) + '）') : '') + '</div>')
           : '';
         var badgeCls = c.isDealClosed ? 'badge-done' : (c.status === '撤銷' ? 'badge-mask' : 'badge-node');
         return '<div class="team-row">' +
-          '<div style="flex:1;"><b>' + escHtml(c.clientName) + '</b> <span style="font-size:12px;color:#64748b;">(' + escHtml(c.phone) + ')</span><br>' +
-          '<span style="font-size:12px;color:#475569;">經辦：' + escHtml(c.handlerLabel) + '｜' + escHtml(c.loanType) + '</span>' +
+          '<div style="flex:1;"><b style="color:#3E3024;">' + escHtml(c.clientName) + '</b> <span style="font-size:12.5px;color:#7A6A5B;">(' + escHtml(c.phone) + ')</span><br>' +
+          '<span style="font-size:12.5px;color:#5C4735;">經辦：' + escHtml(c.handlerLabel) + '｜' + escHtml(c.loanType) + '</span>' +
           dealHtml + '</div>' +
           '<span class="badge ' + badgeCls + '">' + escHtml(c.currentNode) + '・' + escHtml(c.status) + '</span>' +
         '</div>';
@@ -1079,9 +1116,9 @@
         var limitStr = t.role === '劉總' ? '無限' : (t.activeCount + ' / ' + t.waterLimit + ' 員');
         var badgeCls = t.isFull ? 'badge-mask' : 'badge-done';
         return '<div class="team-row">' +
-          '<div style="flex:1;"><b>' + escHtml(t.staffName) + '</b> <span style="font-size:12px;color:#64748b;">(' + escHtml(t.staffCode) + '｜' + escHtml(t.role) + '・' + escHtml(t.rank) + ')</span><br>' +
-          '<span style="font-size:12px;color:#0369a1;">📣 分享引流：' + (t.referralCount || 0) + ' 人（成交 ' + (t.referredClosedCount || 0) + ' 件｜' + fmtMoney(t.referredCommissionTotal || 0) + '）</span><br>' +
-          '<span style="font-size:12px;color:#475569;">💼 經辦實績：結案 ' + (t.handledClosedCount || t.closedCount || 0) + ' 件｜佣收 ' + fmtMoney(t.handledCommissionTotal || 0) + '</span></div>' +
+          '<div style="flex:1;"><b style="color:#3E3024;">' + escHtml(t.staffName) + '</b> <span style="font-size:12.5px;color:#7A6A5B;">(' + escHtml(t.staffCode) + '｜' + escHtml(t.role) + '・' + escHtml(t.rank) + ')</span><br>' +
+          '<span style="font-size:12.5px;color:#9A5B1F;font-weight:700;">📣 分享引流：' + (t.referralCount || 0) + ' 人（成交 ' + (t.referredClosedCount || 0) + ' 件｜' + fmtMoney(t.referredCommissionTotal || 0) + '）</span><br>' +
+          '<span style="font-size:12.5px;color:#5C4735;">💼 經辦實績：結案 ' + (t.handledClosedCount || t.closedCount || 0) + ' 件｜佣收 ' + fmtMoney(t.handledCommissionTotal || 0) + '</span></div>' +
           '<span class="badge ' + badgeCls + '">' + limitStr + (t.isFull ? ' 滿載' : '') + '</span>' +
         '</div>';
       }).join('');
