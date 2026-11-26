@@ -6,249 +6,279 @@
   <title>三貸同堂｜劉總決策戰情室與八大參數控制台</title>
   <style>
     :root {
-      --navy-dark: #0b132b;
-      --navy-mid: #1c2541;
-      --gold: #c5a059;
-      --gold-bright: #f59e0b;
-      --line-green: #06c755;
-      --bg: #f1f5f9;
-      --card: #ffffff;
-      --text-main: #0f172a;
-      --text-sub: #475569;
-      --success: #059669;
-      --danger: #dc2626;
-      --warn: #d97706;
-      --border: #cbd5e1;
+      --espresso: #3E3024;
+      --espresso-mid: #5C4735;
+      --milk-tea: #C8A882;
+      --milk-tea-deep: #A67F53;
+      --caramel: #B87B3E;
+      --cream-soft: #F6EFE6;
+      --line-green: #06C755;
+      --bg: #FAF7F2;
+      --card: #FFFFFF;
+      --text-main: #3E3024;
+      --text-sub: #7A6A5B;
+      --success: #1E7E5A;
+      --danger: #C53030;
+      --warn: #B7791F;
+      --border: #E6D9C8;
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
       margin: 0; padding: 0 0 88px 0;
       font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
-      background: var(--bg); color: var(--text-main); line-height: 1.5;
+      background: var(--bg); color: var(--text-main); line-height: 1.55;
     }
+    /* V7.3 頂部明亮奶茶品牌列 */
     .top-header {
-      background: linear-gradient(135deg, #0b132b 0%, #1e293b 100%);
-      color: #fff; padding: 14px 16px 16px; border-bottom: 3px solid var(--gold);
-      position: sticky; top: 0; z-index: 40; box-shadow: 0 4px 14px rgba(0,0,0,0.28);
+      background: linear-gradient(180deg, #FFFFFF 0%, #FAF3E8 100%);
+      color: var(--espresso); padding: 13px 16px 14px; border-bottom: 2.5px solid var(--milk-tea);
+      position: sticky; top: 0; z-index: 40; box-shadow: 0 4px 14px rgba(62,48,36,0.07);
     }
     .hdr-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-    .hdr-title { font-size: 18px; font-weight: 900; color: #fbbf24; margin: 0; letter-spacing: 0.4px; }
-    .hdr-sub { font-size: 12px; color: #cbd5e1; margin-top: 2px; }
+    .hdr-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .brand-logo {
+      width: 44px; height: 44px; object-fit: contain; border-radius: 11px;
+      background: #FFFFFF; border: 1.5px solid var(--border); padding: 2px;
+      flex-shrink: 0; box-shadow: 0 2px 6px rgba(62,48,36,0.08);
+    }
+    .hdr-title { font-size: 18px; font-weight: 900; color: var(--espresso); margin: 0; letter-spacing: 0.4px; line-height: 1.25; }
+    .hdr-sub { font-size: 12.5px; color: var(--text-sub); margin-top: 2px; font-weight: 600; }
     .hdr-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
     .hdr-share-btn {
       display: inline-flex; align-items: center; gap: 3px; background: var(--line-green);
-      color: #fff; text-decoration: none; padding: 4px 9px; border-radius: 99px;
-      font-size: 11.5px; font-weight: 800; border: 1px solid #34d399; white-space: nowrap;
+      color: #FFFFFF; text-decoration: none; padding: 5px 10px; border-radius: 99px;
+      font-size: 12px; font-weight: 800; border: 1px solid #05A847; white-space: nowrap;
+      box-shadow: 0 2px 6px rgba(6,199,85,0.25);
     }
     .env-badge {
-      padding: 4px 9px; border-radius: 99px; font-size: 11px; font-weight: 800;
-      background: rgba(245,158,11,0.2); border: 1px solid var(--gold); color: #fde68a; white-space: nowrap;
+      padding: 5px 10px; border-radius: 99px; font-size: 11.5px; font-weight: 800;
+      background: var(--cream-soft); border: 1.5px solid var(--milk-tea); color: var(--espresso); white-space: nowrap;
     }
-    .env-badge.prod { background: rgba(16,185,129,0.25); border-color: #34d399; color: #a7f3d0; }
+    .env-badge.prod { background: #E7F7EF; border-color: #68C39F; color: #145C41; }
     .container { max-width: 860px; margin: 0 auto; padding: 14px; }
     .tab-pane { display: none; animation: fadeIn 0.2s ease; }
     .tab-pane.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     .card {
-      background: var(--card); border-radius: 14px; padding: 15px; margin-bottom: 13px;
-      box-shadow: 0 2px 10px rgba(15,23,42,0.06); border: 1px solid #e2e8f0;
+      background: var(--card); border-radius: 16px; padding: 16px; margin-bottom: 13px;
+      box-shadow: 0 4px 16px rgba(62,48,36,0.06); border: 1px solid var(--border);
     }
-    .card-navy { background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid)); color: #fff; border: 1.5px solid var(--gold); }
+    /* 原暗色尊榮卡升級為明亮暖奶茶高管卡 */
+    .card-navy {
+      background: linear-gradient(145deg, #FFFFFF 0%, #F7EDE0 100%);
+      color: var(--espresso); border: 1.5px solid var(--milk-tea);
+      box-shadow: 0 6px 20px rgba(166,127,83,0.14);
+    }
     .section-title {
-      font-size: 16px; font-weight: 800; color: var(--navy-dark); margin: 0 0 11px;
-      padding-left: 10px; border-left: 4px solid var(--gold-bright);
+      font-size: 16.5px; font-weight: 900; color: var(--espresso); margin: 0 0 11px;
+      padding-left: 11px; border-left: 4px solid var(--milk-tea-deep);
       display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;
     }
-    .card-navy .section-title { color: #fbbf24; }
-    /* V7.1 頂部智慧待辦引導條 */
+    .card-navy .section-title { color: var(--espresso); border-left-color: var(--caramel); }
+    /* 頂部智慧待辦引導條 */
     .smart-banner {
       display: flex; justify-content: space-between; align-items: center; gap: 10px;
-      padding: 11px 13px; border-radius: 12px; margin-bottom: 11px; font-size: 13px;
-      border: 1.5px solid #93c5fd; background: #eff6ff; color: #1e3a8a;
+      padding: 12px 14px; border-radius: 12px; margin-bottom: 12px; font-size: 13.5px;
+      border: 1.5px solid #D6B996; background: #FDF7EE; color: var(--espresso);
     }
-    .smart-banner.danger { border-color: #fca5a5; background: #fef2f2; color: #991b1b; }
-    .smart-banner.warn { border-color: #fcd34d; background: #fffbeb; color: #92400e; }
-    .smart-banner.ok { border-color: #6ee7b7; background: #ecfdf5; color: #065f46; }
-    .smart-banner-txt { flex: 1; line-height: 1.45; }
+    .smart-banner.danger { border-color: #F3A6A6; background: #FFF5F5; color: #9B1C1C; }
+    .smart-banner.warn { border-color: #E3B26B; background: #FFF8EB; color: #7C4D16; }
+    .smart-banner.ok { border-color: #7AD0AE; background: #EDF9F3; color: #145C41; }
+    .smart-banner-txt { flex: 1; line-height: 1.5; }
     /* 區間切換列與子頁籤 */
     .period-bar {
       display: flex; align-items: center; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 10px;
     }
     .period-pill {
-      border: 1.5px solid #cbd5e1; background: #fff; color: #334155; padding: 6px 11px;
-      border-radius: 99px; font-size: 12.5px; font-weight: 800; cursor: pointer; white-space: nowrap;
+      border: 1.5px solid #D9C9B6; background: #FFFFFF; color: var(--espresso-mid); padding: 7px 12px;
+      border-radius: 99px; font-size: 13px; font-weight: 800; cursor: pointer; white-space: nowrap;
     }
-    .period-pill.active { background: var(--navy-dark); color: #fbbf24; border-color: var(--gold); }
+    .period-pill.active { background: var(--espresso); color: #FFF8EE; border-color: var(--espresso); }
     .subtab-bar {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px;
-      background: #e2e8f0; padding: 4px; border-radius: 12px;
+      background: #EFE5D8; padding: 5px; border-radius: 13px; border: 1px solid #E3D3BE;
     }
     .subtab-btn {
-      border: none; background: transparent; color: #475569; padding: 8px 4px; border-radius: 9px;
-      font-size: 12px; font-weight: 800; cursor: pointer; transition: 0.15s;
+      border: none; background: transparent; color: var(--text-sub); padding: 9px 4px; border-radius: 9px;
+      font-size: 12.5px; font-weight: 800; cursor: pointer; transition: 0.15s;
     }
-    .subtab-btn.active { background: #fff; color: var(--navy-dark); box-shadow: 0 2px 6px rgba(15,23,42,0.1); }
+    .subtab-btn.active { background: #FFFFFF; color: var(--espresso); box-shadow: 0 2px 6px rgba(62,48,36,0.1); }
     .war-subpane { display: none; }
     .war-subpane.active { display: block; }
     /* KPI 方塊 */
     .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 12px; }
     @media (min-width: 600px) { .kpi-grid { grid-template-columns: repeat(4, 1fr); } }
     .kpi-tile {
-      background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 11px 9px;
-      text-align: center; box-shadow: 0 2px 6px rgba(15,23,42,0.04);
+      background: #FFFFFF; border: 1.5px solid var(--border); border-radius: 14px; padding: 12px 9px;
+      text-align: center; box-shadow: 0 2px 8px rgba(62,48,36,0.04);
     }
-    .kpi-num { font-size: 21px; font-weight: 900; color: var(--navy-dark); }
-    .kpi-lbl { font-size: 11.5px; color: var(--text-sub); font-weight: 700; margin-top: 2px; }
-    .kpi-sub { font-size: 11px; color: #64748b; margin-top: 2px; }
+    .kpi-num { font-size: 22px; font-weight: 900; color: var(--espresso); }
+    .kpi-lbl { font-size: 12px; color: var(--text-sub); font-weight: 800; margin-top: 2px; }
+    .kpi-sub { font-size: 11.5px; color: #8A7A6B; margin-top: 2px; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    /* 高管財務損益方格 */
     .fin-box {
-      background: rgba(255,255,255,0.08); border: 1px solid rgba(197,160,89,0.35);
-      border-radius: 10px; padding: 10px 8px; text-align: center;
+      background: #FFFFFF; border: 1.5px solid #E2CCA9;
+      border-radius: 12px; padding: 11px 8px; text-align: center;
+      box-shadow: 0 2px 8px rgba(166,127,83,0.08);
     }
-    .fin-lbl { font-size: 11.5px; color: #cbd5e1; }
-    .fin-val { font-size: 18px; font-weight: 900; margin-top: 2px; }
+    .fin-lbl { font-size: 12px; color: var(--text-sub); font-weight: 800; }
+    .fin-val { font-size: 19px; font-weight: 900; margin-top: 3px; }
     .metric-card {
-      background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 11px; padding: 11px 12px;
+      background: #FCF9F4; border: 1.5px solid var(--border); border-radius: 12px; padding: 11px 12px;
     }
-    .metric-card.warn { background: #fffbeb; border-color: #fcd34d; }
-    .metric-card.danger { background: #fef2f2; border-color: #fca5a5; }
-    .metric-card.ok { background: #ecfdf5; border-color: #6ee7b7; }
-    .m-lbl { font-size: 12px; color: #475569; font-weight: 700; }
-    .m-val { font-size: 20px; font-weight: 900; color: var(--navy-dark); margin-top: 2px; }
-    .m-sub { font-size: 11.5px; color: #64748b; margin-top: 2px; }
-    .form-group { margin-bottom: 11px; }
-    label { display: block; font-size: 13px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px; }
+    .metric-card.warn { background: #FFF8EB; border-color: #E3B26B; }
+    .metric-card.danger { background: #FFF5F5; border-color: #F3A6A6; }
+    .metric-card.ok { background: #EDF9F3; border-color: #8FD4B6; }
+    .m-lbl { font-size: 12.5px; color: var(--espresso-mid); font-weight: 800; }
+    .m-val { font-size: 21px; font-weight: 900; color: var(--espresso); margin-top: 2px; }
+    .m-sub { font-size: 12px; color: var(--text-sub); margin-top: 2px; }
+    .form-group { margin-bottom: 12px; }
+    label { display: block; font-size: 13.5px; font-weight: 800; color: var(--espresso-mid); margin-bottom: 5px; }
     input, select, textarea {
-      width: 100%; padding: 10px 12px; font-size: 15px; border: 1.5px solid var(--border);
-      border-radius: 9px; background: #fff; color: var(--text-main); outline: none;
+      width: 100%; padding: 11px 12px; font-size: 15.5px; border: 1.5px solid #D9C9B6;
+      border-radius: 10px; background: #FFFDF9; color: var(--text-main); outline: none; transition: 0.18s;
     }
-    input:focus, select:focus, textarea:focus { border-color: var(--gold-bright); }
+    input:focus, select:focus, textarea:focus {
+      background: #FFFFFF; border-color: var(--milk-tea-deep);
+      box-shadow: 0 0 0 3px rgba(200,168,130,0.26);
+    }
     .btn {
       display: inline-flex; justify-content: center; align-items: center; gap: 6px;
-      width: 100%; padding: 12px 15px; border-radius: 11px; font-size: 14.5px; font-weight: 800;
-      border: none; cursor: pointer; text-decoration: none; text-align: center;
+      width: 100%; padding: 13px 15px; border-radius: 12px; font-size: 15px; font-weight: 800;
+      border: none; cursor: pointer; text-decoration: none; text-align: center; transition: 0.16s;
     }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-gold { background: linear-gradient(135deg, #d97706, #f59e0b); color: #fff; }
-    .btn-line { background: linear-gradient(135deg, #06c755, #05a847); color: #fff; }
-    .btn-navy { background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid)); color: #fde68a; border: 1px solid var(--gold); }
-    .btn-success { background: var(--success); color: #fff; }
-    .btn-danger { background: var(--danger); color: #fff; }
-    .btn-outline { background: #fff; color: var(--navy-dark); border: 1.5px solid #94a3b8; }
-    .btn-sm { padding: 7px 11px; font-size: 12.5px; width: auto; border-radius: 8px; }
+    .btn-gold {
+      background: linear-gradient(135deg, #B98B56 0%, #D1AC7E 100%);
+      color: #FFFFFF; box-shadow: 0 4px 12px rgba(166,127,83,0.28);
+    }
+    .btn-line { background: linear-gradient(135deg, #06C755, #05A847); color: #FFFFFF; }
+    .btn-navy {
+      background: linear-gradient(135deg, #4B392B 0%, #654E3B 100%);
+      color: #FFF8EE; border: 1px solid #8A6B4E; box-shadow: 0 3px 10px rgba(62,48,36,0.16);
+    }
+    .btn-success { background: var(--success); color: #FFFFFF; }
+    .btn-danger { background: var(--danger); color: #FFFFFF; }
+    .btn-outline { background: #FFFFFF; color: var(--espresso); border: 1.5px solid #CBB69D; }
+    .btn-sm { padding: 7px 11px; font-size: 13px; width: auto; border-radius: 9px; white-space: nowrap; }
     .btn-pulse { animation: pulseGold 1.4s ease-in-out 3; }
     @keyframes pulseGold {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.55); }
-      50% { box-shadow: 0 0 0 10px rgba(245,158,11,0); }
+      0%, 100% { box-shadow: 0 0 0 0 rgba(185,139,86,0.6); }
+      50% { box-shadow: 0 0 0 10px rgba(185,139,86,0); }
     }
     .list-row {
       display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;
-      padding: 10px 0; border-bottom: 1px solid #e2e8f0; font-size: 13.5px;
+      padding: 11px 0; border-bottom: 1px solid var(--border); font-size: 14px;
     }
     .list-row:last-child { border-bottom: none; }
-    .badge { display: inline-block; padding: 3px 8px; border-radius: 99px; font-size: 11.5px; font-weight: 800; white-space: nowrap; }
-    .badge-ok { background: #dcfce7; color: #166534; }
-    .badge-red { background: #fee2e2; color: #991b1b; }
-    .badge-blue { background: #dbeafe; color: #1e40af; }
-    .badge-gold { background: #fef3c7; color: #92400e; }
-    .badge-gray { background: #e2e8f0; color: #475569; }
-    .bar-mini { width: 100%; height: 8px; background: #e2e8f0; border-radius: 99px; overflow: hidden; margin-top: 5px; }
-    .bar-mini-fill { height: 100%; background: linear-gradient(90deg, #0284c7, #38bdf8); border-radius: 99px; }
-    .bar-mini-fill.gold { background: linear-gradient(90deg, #d97706, #fbbf24); }
-    .bar-mini-fill.green { background: linear-gradient(90deg, #059669, #34d399); }
+    .badge { display: inline-block; padding: 3px 9px; border-radius: 99px; font-size: 12px; font-weight: 800; white-space: nowrap; }
+    .badge-ok { background: #E7F7EF; color: #145C41; border: 1px solid #96D8BC; }
+    .badge-red { background: #FDE8E8; color: #9B1C1C; border: 1px solid #F3A6A6; }
+    .badge-blue { background: #F4E8D7; color: #7C5225; border: 1px solid #DFC4A3; }
+    .badge-gold { background: #FFF3D6; color: #8A5316; border: 1px solid #EBC783; }
+    .badge-gray { background: var(--cream-soft); color: var(--text-sub); border: 1px solid var(--border); }
+    .bar-mini { width: 100%; height: 9px; background: #EFE6DA; border-radius: 99px; overflow: hidden; margin-top: 5px; }
+    .bar-mini-fill { height: 100%; background: linear-gradient(90deg, #A67F53, #C8A882); border-radius: 99px; }
+    .bar-mini-fill.gold { background: linear-gradient(90deg, #B87B3E, #DFAA6B); }
+    .bar-mini-fill.green { background: linear-gradient(90deg, #1E7E5A, #45B084); }
     /* 單案工作流卡片與 7 節點步驟條 */
     .wf-card {
-      border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 12px; margin-bottom: 10px; background: #fff;
+      border: 1.5px solid var(--border); border-radius: 13px; padding: 13px; margin-bottom: 10px; background: #FFFDF9;
     }
-    .wf-card.overdue { border-color: #fca5a5; background: #fef2f2; }
-    .wf-steps { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin: 8px 0; }
+    .wf-card.overdue { border-color: #F3A6A6; background: #FFF5F5; }
+    .wf-steps { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin: 9px 0; }
     .wf-dot {
-      text-align: center; font-size: 10px; font-weight: 800; padding: 3px 1px; border-radius: 5px;
-      background: #e2e8f0; color: #64748b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      text-align: center; font-size: 10.5px; font-weight: 800; padding: 4px 1px; border-radius: 6px;
+      background: #EFE6DA; color: var(--text-sub); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
-    .wf-dot.done { background: #bbf7d0; color: #166534; }
-    .wf-dot.curr { background: #0b132b; color: #fbbf24; border: 1px solid var(--gold); }
+    .wf-dot.done { background: #DFF3E8; color: #145C41; }
+    .wf-dot.curr { background: var(--espresso); color: #FFF8EE; border: 1px solid var(--milk-tea); }
     /* 個人雙欄排行卡 */
     .rank-card {
-      border: 1px solid #e2e8f0; border-radius: 11px; padding: 11px 12px; margin-bottom: 9px; background: #f8fafc;
+      border: 1.5px solid var(--border); border-radius: 13px; padding: 12px; margin-bottom: 10px; background: #FCF9F4;
     }
-    .rank-dual { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 7px; }
-    .rank-col { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 7px 9px; font-size: 12px; }
-    .rank-col.ref { background: #f0f9ff; border-color: #bae6fd; }
+    .rank-dual { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+    .rank-col { background: #FFFFFF; border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; font-size: 12.5px; }
+    .rank-col.ref { background: #FDF7EC; border-color: #E3C9A8; }
     /* 推播開關核取群組 */
     .chk-grid { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 6px; }
     .chk-pill {
-      display: inline-flex; align-items: center; gap: 5px; background: #fff; border: 1.5px solid #cbd5e1;
-      border-radius: 8px; padding: 6px 10px; font-size: 13px; font-weight: 700; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 5px; background: #FFFFFF; border: 1.5px solid #D9C9B6;
+      border-radius: 9px; padding: 6px 10px; font-size: 13px; font-weight: 800; color: var(--espresso); cursor: pointer;
     }
-    .chk-pill input { width: 16px; height: 16px; margin: 0; }
+    .chk-pill input { width: 16px; height: 16px; margin: 0; accent-color: #B4834E; }
     .param-block {
-      background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 13px; margin-bottom: 12px;
+      background: #FCF9F4; border: 1.5px solid var(--border); border-radius: 13px; padding: 14px; margin-bottom: 12px;
     }
-    .param-hdr { font-size: 14.5px; font-weight: 800; color: #1e3a8a; margin-bottom: 8px; }
+    .param-hdr { font-size: 15px; font-weight: 900; color: var(--espresso); margin-bottom: 8px; }
     .bind-banner {
-      background: #ecfdf5; border: 1.5px solid #34d399; border-radius: 10px; padding: 11px 12px;
-      margin-top: 10px; font-size: 13px; color: #065f46;
+      background: #EDF9F3; border: 1.5px solid #7AD0AE; border-radius: 12px; padding: 12px 13px;
+      margin-top: 10px; font-size: 13.5px; color: #145C41;
     }
-    /* V7.1 下一步自動引導彈窗 */
+    /* 全動線下一步自動引導彈窗 */
     .guide-mask {
-      position: fixed; inset: 0; background: rgba(11,19,43,0.72); z-index: 90;
+      position: fixed; inset: 0; background: rgba(62,48,36,0.52); z-index: 90;
       display: none; align-items: center; justify-content: center; padding: 16px;
-      backdrop-filter: blur(2px);
+      backdrop-filter: blur(3px);
     }
     .guide-mask.show { display: flex; animation: fadeIn 0.18s ease; }
     .guide-modal {
-      width: 100%; max-width: 440px; background: #fff; border-radius: 16px;
-      border: 2px solid var(--gold); overflow: hidden; box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+      width: 100%; max-width: 440px; background: #FFFFFF; border-radius: 18px;
+      border: 2px solid var(--milk-tea); overflow: hidden; box-shadow: 0 18px 40px rgba(62,48,36,0.22);
     }
     .guide-hdr {
-      background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid));
-      color: #fbbf24; padding: 14px 16px; font-size: 16px; font-weight: 900;
+      background: linear-gradient(135deg, #FAF1E4 0%, #EFE0CB 100%);
+      color: var(--espresso); padding: 15px 16px; font-size: 16.5px; font-weight: 900;
       display: flex; justify-content: space-between; align-items: center; gap: 8px;
-      border-bottom: 2px solid var(--gold);
+      border-bottom: 2px solid var(--milk-tea);
     }
     .guide-close {
-      background: rgba(255,255,255,0.12); color: #e2e8f0; border: none; border-radius: 8px;
-      width: 28px; height: 28px; font-size: 16px; font-weight: 900; cursor: pointer;
+      background: rgba(62,48,36,0.1); color: var(--espresso); border: none; border-radius: 8px;
+      width: 30px; height: 30px; font-size: 16px; font-weight: 900; cursor: pointer;
     }
-    .guide-body { padding: 15px 16px 16px; font-size: 13.5px; color: #334155; }
-    .guide-desc { margin: 0 0 10px; line-height: 1.55; }
+    .guide-body { padding: 16px; font-size: 14px; color: var(--espresso-mid); }
+    .guide-desc { margin: 0 0 10px; line-height: 1.6; }
     .guide-extra {
-      background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px;
-      padding: 10px 12px; margin-bottom: 12px; font-size: 12.5px; color: #0f172a; line-height: 1.65;
+      background: #FCF9F4; border: 1px solid var(--border); border-radius: 12px;
+      padding: 11px 13px; margin-bottom: 12px; font-size: 13px; color: var(--espresso); line-height: 1.7;
     }
-    .guide-extra.gold { background: #fffbeb; border-color: #fcd34d; }
-    .guide-extra.ok { background: #ecfdf5; border-color: #6ee7b7; }
+    .guide-extra.gold { background: #FDF7EC; border-color: var(--milk-tea); }
+    .guide-extra.ok { background: #EDF9F3; border-color: #7AD0AE; }
     .guide-next-lbl {
-      font-size: 12px; font-weight: 800; color: #b45309; margin-bottom: 8px;
+      font-size: 13px; font-weight: 800; color: #9A5B1F; margin-bottom: 8px;
       letter-spacing: 0.3px; display: flex; align-items: center; gap: 5px;
     }
     .guide-actions { display: flex; flex-direction: column; gap: 8px; }
-    /* 底部 5 分頁導覽 */
+    /* 底部明亮象牙白 5 分頁導覽 */
     .bottom-nav {
-      position: fixed; bottom: 0; left: 0; right: 0; background: var(--navy-dark);
-      border-top: 2px solid var(--gold); display: flex; z-index: 50; padding-bottom: env(safe-area-inset-bottom);
+      position: fixed; bottom: 0; left: 0; right: 0; background: #FFFFFF;
+      border-top: 2px solid var(--milk-tea); display: flex; z-index: 50;
+      box-shadow: 0 -4px 16px rgba(62,48,36,0.08); padding-bottom: env(safe-area-inset-bottom);
     }
     .nav-btn {
-      flex: 1; background: none; border: none; color: #94a3b8; padding: 9px 2px 11px;
-      font-size: 11px; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px;
+      flex: 1; background: none; border: none; color: var(--text-sub); padding: 9px 2px 11px;
+      font-size: 11.5px; font-weight: 800; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px;
+      transition: 0.18s;
     }
     .nav-btn .ico { font-size: 18px; }
-    .nav-btn.active { color: #fbbf24; background: rgba(197,160,89,0.14); }
+    .nav-btn.active { color: var(--espresso); background: var(--cream-soft); box-shadow: inset 0 3px 0 var(--caramel); }
     .loading-mask {
-      position: fixed; inset: 0; background: rgba(11,19,43,0.78); z-index: 99;
-      display: none; flex-direction: column; align-items: center; justify-content: center; color: #fff;
+      position: fixed; inset: 0; background: rgba(62,48,36,0.62); z-index: 99;
+      display: none; flex-direction: column; align-items: center; justify-content: center; color: #FFFDF9;
+      backdrop-filter: blur(2px);
     }
     .spinner {
-      width: 42px; height: 42px; border: 4px solid rgba(255,255,255,0.25);
-      border-top-color: #fbbf24; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 10px;
+      width: 42px; height: 42px; border: 4px solid rgba(255,253,249,0.3);
+      border-top-color: #E8C79B; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 10px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
     .toast {
       position: fixed; top: 76px; left: 50%; transform: translateX(-50%); z-index: 95;
-      background: #0f172a; color: #fde68a; padding: 12px 18px; border-radius: 10px;
-      font-size: 14px; font-weight: 700; border: 1px solid var(--gold); display: none; max-width: 92%; text-align: center;
+      background: var(--espresso); color: #FFF8EE; padding: 12px 18px; border-radius: 12px;
+      font-size: 14.5px; font-weight: 700; border: 1.5px solid var(--milk-tea); display: none;
+      max-width: 92%; text-align: center; box-shadow: 0 8px 22px rgba(62,48,36,0.28);
     }
     .hidden { display: none !important; }
   </style>
@@ -256,9 +286,12 @@
 <body>
   <header class="top-header">
     <div class="hdr-row">
-      <div>
-        <h1 class="hdr-title">👑 三貸同堂｜總裁決策戰情室</h1>
-        <div class="hdr-sub" id="hdrBossInfo">請先驗證最高權限身分</div>
+      <div class="hdr-left">
+        <img src="./logo.jpg" alt="三貸同堂" class="brand-logo" onerror="this.style.display='none'">
+        <div>
+          <h1 class="hdr-title">三貸同堂｜總裁決策戰情室</h1>
+          <div class="hdr-sub" id="hdrBossInfo">請先驗證最高權限身分</div>
+        </div>
       </div>
       <div class="hdr-actions">
         <a id="hdrBossShareBtn" class="hdr-share-btn hidden" href="#" target="_blank" rel="noopener">📤 分享管家</a>
@@ -271,7 +304,7 @@
     <div class="spinner"></div>
     <div id="loadingText" style="font-weight:700;font-size:15px;">雲端戰情數據彙整中...</div>
   </div>
-  <!-- V7.1 全動線下一步自動引導彈窗 -->
+  <!-- 全動線下一步自動引導彈窗 -->
   <div id="guideMask" class="guide-mask" onclick="if(event.target===this) closeNextStepModal();">
     <div class="guide-modal">
       <div class="guide-hdr">
@@ -290,7 +323,7 @@
   <div id="loginWall" class="container hidden">
     <div class="card">
       <div class="section-title">🔐 劉總／部門主管最高權限驗證</div>
-      <p style="font-size:13.5px;color:#475569;margin-top:0;">
+      <p style="font-size:14px;color:#7A6A5B;margin-top:0;">
         輸入實名授權手機門號完成驗證後，本機將自動記憶登入狀態（從 LINE 管家點入將自動帶入 UID 免重登）：
       </p>
       <div class="form-group">
@@ -309,7 +342,6 @@
     <!-- 分頁 1：業績會議數據戰情室（4 大維度 × 12 項指標 ＋ 全案工作流透視） -->
     <!-- ================================================================ -->
     <section id="tab-war" class="tab-pane active">
-      <!-- V7.1 頂部智慧待辦引導條 -->
       <div id="bossSmartBanner" class="smart-banner hidden"></div>
       <div class="period-bar">
         <button class="period-pill active" data-period="ALL" onclick="changePeriod('ALL')">全期累計</button>
@@ -317,7 +349,7 @@
         <button class="period-pill" data-period="LAST_MONTH" onclick="changePeriod('LAST_MONTH')">上月</button>
         <button class="period-pill" data-period="THIS_QUARTER" onclick="changePeriod('THIS_QUARTER')">本季</button>
         <button class="period-pill" data-period="THIS_YEAR" onclick="changePeriod('THIS_YEAR')">本年度</button>
-        <button class="period-pill" style="margin-left:auto;border-color:#c5a059;color:#92400e;" onclick="reloadWarRoom()">🔄 刷新</button>
+        <button class="period-pill" style="margin-left:auto;border-color:#C8A882;color:#7C4D16;background:#FDF7EC;" onclick="reloadWarRoom()">🔄 刷新</button>
       </div>
       <div class="kpi-grid">
         <div class="kpi-tile">
@@ -326,17 +358,17 @@
           <div class="kpi-sub" id="kPeriodTag">全期累計</div>
         </div>
         <div class="kpi-tile">
-          <div class="kpi-num" style="color:#0284c7;" id="kActive">0</div>
+          <div class="kpi-num" style="color:#9A5B1F;" id="kActive">0</div>
           <div class="kpi-lbl">活躍水位進行中</div>
           <div class="kpi-sub" id="kSuppTag">補件中 0 件</div>
         </div>
         <div class="kpi-tile">
-          <div class="kpi-num" style="color:#059669;" id="kClosed">0</div>
+          <div class="kpi-num" style="color:#1E7E5A;" id="kClosed">0</div>
           <div class="kpi-lbl">累計核准結案</div>
           <div class="kpi-sub" id="kConvTag">總轉換率 0%</div>
         </div>
         <div class="kpi-tile" style="cursor:pointer;" onclick="switchWarSub('risk')">
-          <div class="kpi-num" style="color:#dc2626;" id="kOverdue">0</div>
+          <div class="kpi-num" style="color:#C53030;" id="kOverdue">0</div>
           <div class="kpi-lbl">🚨 逾時紅燈督導</div>
           <div class="kpi-sub" id="kZombieTag">殭屍單 0 件</div>
         </div>
@@ -354,25 +386,25 @@
             <span>💰 實績財務損益總覽</span>
             <span class="badge badge-gold" id="finRetainRateBadge">公司毛利率 0%</span>
           </div>
-          <div class="grid-2" style="margin-bottom:8px;">
+          <div class="grid-2" style="margin-bottom:9px;">
             <div class="fin-box">
               <div class="fin-lbl">核准放款總額度</div>
-              <div class="fin-val" style="color:#fbbf24;" id="kAppWan">0 萬</div>
+              <div class="fin-val" style="color:#9A5B1F;" id="kAppWan">0 萬</div>
             </div>
             <div class="fin-box">
               <div class="fin-lbl">實際淨佣收（扣介紹費）</div>
-              <div class="fin-val" style="color:#34d399;" id="kNetComm">$0</div>
+              <div class="fin-val" style="color:#145C41;" id="kNetComm">$0</div>
             </div>
             <div class="fin-box">
               <div class="fin-lbl">六節點＋級距總獎金</div>
-              <div class="fin-val" style="color:#38bdf8;" id="kPayout">$0</div>
+              <div class="fin-val" style="color:#1D5B8C;" id="kPayout">$0</div>
             </div>
             <div class="fin-box">
               <div class="fin-lbl">🏦 公司淨留存毛利</div>
-              <div class="fin-val" style="color:#fde68a;" id="kRetained">$0</div>
+              <div class="fin-val" style="color:#7C4D16;" id="kRetained">$0</div>
             </div>
           </div>
-          <div style="font-size:12px;color:#cbd5e1;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;padding-top:4px;">
+          <div style="font-size:12.5px;color:#5C4735;font-weight:700;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;padding-top:6px;border-top:1px dashed rgba(166,127,83,0.4);">
             <span id="finGrossMeta">毛佣總額：$0｜完款單數：0 筆</span>
             <span id="finPaidMeta">獎金已核發：$0｜待核發：$0</span>
           </div>
@@ -385,12 +417,12 @@
           <div class="grid-2" style="margin-bottom:10px;">
             <div class="metric-card ok">
               <div class="m-lbl">在途預計實收佣金</div>
-              <div class="m-val" style="color:#047857;" id="finInTransitComm">$0</div>
+              <div class="m-val" style="color:#145C41;" id="finInTransitComm">$0</div>
               <div class="m-sub" id="finInTransitWan">核准額度共 0 萬</div>
             </div>
             <div class="metric-card warn">
               <div class="m-lbl">平均實收服務費率</div>
-              <div class="m-val" style="color:#b45309;" id="finAvgFeePct">0%</div>
+              <div class="m-val" style="color:#9A5B1F;" id="finAvgFeePct">0%</div>
               <div class="m-sub" id="finRedlineSub">紅線特批 0 筆（佔 0%）</div>
             </div>
           </div>
@@ -399,7 +431,7 @@
               <span class="m-lbl">🤝 外部介紹人回佣支出佔比</span>
               <span class="badge badge-gold" id="finIntroRatio">佔毛佣 0%</span>
             </div>
-            <div style="font-size:13px;color:#334155;margin-top:4px;" id="finIntroDetail">
+            <div style="font-size:13.5px;color:#5C4735;margin-top:4px;" id="finIntroDetail">
               累計介紹費支出 $0（共 0 筆含介紹人）
             </div>
           </div>
@@ -416,7 +448,7 @@
           <div class="section-title">
             <span>🏅 個人戰力雙欄排行（經辦實績 vs. 分享引流）</span>
           </div>
-          <p style="font-size:12px;color:#64748b;margin:-4px 0 10px;">
+          <p style="font-size:12.5px;color:#7A6A5B;margin:-4px 0 10px;">
             📌 防灌水透明口徑：並列顯示「自己經辦成交」與「分享管家引流成交」兩組實績，公司總盤嚴格不重複計算。
           </p>
           <div id="warStaffRankings"></div>
@@ -490,25 +522,25 @@
             </div>
             <div class="metric-card ok">
               <div class="m-lbl">🔁 舊客二次增貸貢獻</div>
-              <div class="m-val" style="color:#047857;" id="rkWakeComm">$0</div>
+              <div class="m-val" style="color:#145C41;" id="rkWakeComm">$0</div>
               <div class="m-sub" id="rkWakeSub">喚醒 0 件｜成交 0 件</div>
             </div>
             <div class="metric-card danger">
               <div class="m-lbl">🛡️ 防弊風控攔截計數</div>
-              <div class="m-val" style="color:#b91c1c;" id="rkAuditHits">0 次</div>
+              <div class="m-val" style="color:#9B1C1C;" id="rkAuditHits">0 次</div>
               <div class="m-sub" id="rkAuditSub">舊客識破 0｜防搶單 0｜轉派 0</div>
             </div>
             <div class="metric-card warn">
               <div class="m-lbl">📅 60 天內到期可喚醒舊客</div>
-              <div class="m-val" style="color:#b45309;" id="rkUpcomingCnt">0 筆</div>
+              <div class="m-val" style="color:#9A5B1F;" id="rkUpcomingCnt">0 筆</div>
               <div class="m-sub">依報件單再追蹤年月預告</div>
             </div>
           </div>
           <div id="rkUpcomingList"></div>
           <div id="rkHighCancelBox" style="margin-top:8px;"></div>
         </div>
-        <div class="card" id="riskOverdueCard" style="border-color:#fca5a5;">
-          <div class="section-title" style="border-left-color:#dc2626;color:#991b1b;">🚨 節點逾時／補件卡關紅燈督導清單</div>
+        <div class="card" id="riskOverdueCard" style="border-color:#F3A6A6;">
+          <div class="section-title" style="border-left-color:#C53030;color:#9B1C1C;">🚨 節點逾時／補件卡關紅燈督導清單</div>
           <div id="warOverdueList"></div>
         </div>
         <div class="card">
@@ -521,8 +553,8 @@
     <!-- 分頁 2：價值鏈六節點分潤算獎與紅線特批                            -->
     <!-- ================================================================ -->
     <section id="tab-comm" class="tab-pane">
-      <div id="commRedlineCard" class="card hidden" style="border:2px solid #dc2626;background:#fef2f2;">
-        <div class="section-title" style="border-left-color:#dc2626;color:#991b1b;">🚨 服務費率低於紅線・待劉總特批</div>
+      <div id="commRedlineCard" class="card hidden" style="border:2px solid #C53030;background:#FFF5F5;">
+        <div class="section-title" style="border-left-color:#C53030;color:#9B1C1C;">🚨 服務費率低於紅線・待劉總特批</div>
         <div id="commRedlineList"></div>
       </div>
       <div class="card">
@@ -543,20 +575,20 @@
     <section id="tab-params" class="tab-pane">
       <div class="card">
         <div class="section-title">⚙️ 劉總專屬：八大動態營運參數控制台</div>
-        <div class="param-block" style="background:#eff6ff;border-color:#93c5fd;">
-          <div class="param-hdr" style="color:#1e40af;">🔔 劉總關鍵節點 LINE 即時推播開關（防洗版控管）</div>
-          <p style="font-size:12px;color:#334155;margin:0 0 8px;">
+        <div class="param-block" style="background:#FDF7EE;border-color:#C8A882;">
+          <div class="param-hdr" style="color:#7C4D16;">🔔 劉總關鍵節點 LINE 即時推播開關（防洗版控管）</div>
+          <p style="font-size:13px;color:#5C4735;margin:0 0 8px;">
             單位／部門主管維持全節點推播；劉總可自由勾選需要「即時同步通知自己」的關鍵關卡，免受日常瑣碎回報洗版：
           </p>
           <div class="chk-grid" style="margin-bottom:8px;">
             <label class="chk-pill"><input type="checkbox" id="bnEnabled" class="boss-only"> 啟用劉總即時通報</label>
             <label class="chk-pill"><input type="checkbox" id="bnAllNodes" class="boss-only"> 全部節點皆通知（含常規）</label>
           </div>
-          <div style="font-size:12.5px;font-weight:800;color:#1e3a8a;margin-top:6px;">📍 勾選需通報劉總之作業節點：</div>
+          <div style="font-size:13px;font-weight:800;color:#5C4735;margin-top:6px;">📍 勾選需通報劉總之作業節點：</div>
           <div class="chk-grid" id="bnNodesWrap"></div>
-          <div style="font-size:12.5px;font-weight:800;color:#1e3a8a;margin-top:8px;">📌 勾選需通報劉總之案件狀態：</div>
+          <div style="font-size:13px;font-weight:800;color:#5C4735;margin-top:8px;">📌 勾選需通報劉總之案件狀態：</div>
           <div class="chk-grid" id="bnStatusesWrap"></div>
-          <div style="font-size:12.5px;font-weight:800;color:#1e3a8a;margin-top:8px;">🚨 特殊管制事件即時通報：</div>
+          <div style="font-size:13px;font-weight:800;color:#5C4735;margin-top:8px;">🚨 特殊管制事件即時通報：</div>
           <div class="chk-grid">
             <label class="chk-pill"><input type="checkbox" id="bnCancelReq" class="boss-only"> 撤銷申請/核准</label>
             <label class="chk-pill"><input type="checkbox" id="bnTransferReq" class="boss-only"> 轉派申請/核准</label>
@@ -621,7 +653,7 @@
           <span>➕ 手機一鍵新增員工／調整職級與水位</span>
           <button class="btn btn-outline btn-sm boss-only" onclick="prepareNewStaffForm()">✨ 新增新人(自動產碼)</button>
         </div>
-        <p style="font-size:12.5px;color:#475569;margin:-4px 0 10px;">
+        <p style="font-size:13px;color:#7A6A5B;margin:-4px 0 10px;">
           完全不用開試算表！建檔後把「員工綁定指令」傳給新人，新人在官方 LINE 貼上傳送即刻開通對應職級權限與專屬分享連結。
         </p>
         <div class="grid-3">
@@ -647,13 +679,13 @@
         <div id="newStaffBindBanner" class="bind-banner hidden">
           <b>✅ 新人已開通！請複製以下綁定指令傳給對方於官方 LINE 送出：</b>
           <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px;">
-            <code id="newStaffBindCmd" style="font-size:15px;font-weight:900;color:#0b132b;"></code>
+            <code id="newStaffBindCmd" style="font-size:15.5px;font-weight:900;color:#3E3024;"></code>
             <button class="btn btn-success btn-sm" onclick="copyBindCmd()">📋 複製指令</button>
           </div>
         </div>
       </div>
-      <div class="card" style="border:2px solid #dc2626;background:#fef2f2;">
-        <div class="section-title" style="border-left-color:#dc2626;color:#991b1b;">🚨 員工離職：一鍵撤銷權限 ＋ 名下客戶批次移交</div>
+      <div class="card" style="border:2px solid #C53030;background:#FFF5F5;">
+        <div class="section-title" style="border-left-color:#C53030;color:#9B1C1C;">🚨 員工離職：一鍵撤銷權限 ＋ 名下客戶批次移交</div>
         <div class="grid-2">
           <div class="form-group"><label>選擇離職停權人員 *</label><select id="hrResignSel"></select></div>
           <div class="form-group"><label>指定接手全部活躍案件之同仁 *</label><select id="hrSuccessorSel"></select></div>
@@ -671,15 +703,15 @@
     <section id="tab-ops" class="tab-pane">
       <div class="card card-navy">
         <div class="section-title">🚀 劉總電腦 30 秒無縫切換正式機 (@threeloans)</div>
-        <p style="font-size:13px;color:#cbd5e1;margin-top:0;">
-          目前環境：<b id="opsCurrEnv" style="color:#fbbf24;">-</b>。當您於劉總電腦登入 <code>developers.line.biz</code> 取得正式帳號 <b>@threeloans (2008560286)</b> 的 Channel Access Token 後，貼入下方一鍵即可切換正式環境並自動部署六宮格！
+        <p style="font-size:13.5px;color:#5C4735;margin-top:0;line-height:1.65;">
+          目前環境：<b id="opsCurrEnv" style="color:#9A5B1F;">-</b>。當您於劉總電腦登入 <code>developers.line.biz</code> 取得正式帳號 <b>@threeloans (2008560286)</b> 的 Channel Access Token 後，貼入下方一鍵即可切換正式環境並自動部署六宮格！
         </p>
         <div class="form-group">
-          <label style="color:#fde68a;">三貸同堂正式機 Channel Access Token (Long-lived)</label>
+          <label style="color:#5C4735;">三貸同堂正式機 Channel Access Token (Long-lived)</label>
           <textarea id="opsProdToken" rows="2" placeholder="貼入 @threeloans 的正式 Channel access token..."></textarea>
         </div>
-        <label style="display:flex;align-items:center;gap:8px;color:#e2e8f0;font-size:13px;margin-bottom:12px;">
-          <input type="checkbox" id="opsClearUids" checked style="width:18px;height:18px;">
+        <label style="display:flex;align-items:center;gap:8px;color:#5C4735;font-size:13.5px;margin-bottom:12px;">
+          <input type="checkbox" id="opsClearUids" checked style="width:18px;height:18px;accent-color:#B4834E;">
           <span>同步清空展示中心測試期間綁定的測試員工 UID（讓全員於 @threeloans 重新手機驗證綁定）</span>
         </label>
         <div class="grid-2">
@@ -689,7 +721,7 @@
       </div>
       <div class="card">
         <div class="section-title">📥 舊系統客戶清單 (CSV) 批次匯入水庫</div>
-        <p style="font-size:13px;color:#475569;margin-top:0;">
+        <p style="font-size:13.5px;color:#7A6A5B;margin-top:0;">
           支援將舊系統匯出之 CSV 電子檔批次匯入新水庫，自動正規化台灣手機號碼並過濾重複門號。<br>
           欄位順序：<code>姓名,手機,身分證ID,客戶來源,申辦類別,需求萬,經辦代碼,再追蹤年月,備註</code>
         </p>
@@ -697,12 +729,12 @@
           <button class="btn btn-outline btn-sm" style="width:100%;" onclick="downloadCsvTemplate()">📄 下載標準 CSV 匯入範本</button>
           <input type="file" id="csvFileInput" accept=".csv,.txt" onchange="parseCsvFile(this)">
         </div>
-        <div id="csvPreviewInfo" style="font-size:13px;font-weight:700;color:#047857;margin-bottom:10px;"></div>
+        <div id="csvPreviewInfo" style="font-size:13.5px;font-weight:700;color:#145C41;margin-bottom:10px;"></div>
         <button class="btn btn-navy boss-only" id="btnRunImport" disabled onclick="execBatchImport()">📤 確認批次匯入總水庫</button>
       </div>
       <div class="card" id="opsCronCard">
         <div class="section-title">⏰ 每日自動化巡檢（逾時紅燈督導 ＋ 舊客到期喚醒）</div>
-        <p style="font-size:13px;color:#475569;margin-top:0;">
+        <p style="font-size:13.5px;color:#7A6A5B;margin-top:0;">
           系統每日 09:00 自動巡檢全水庫逾時未回報案件並推播主管，同時針對「再追蹤年月」到期舊客自動重新入水庫喚醒二次增貸開發。
         </p>
         <div class="grid-2">
@@ -710,7 +742,7 @@
           <button class="btn btn-gold boss-only" onclick="runCronNow()">⚡ 立即手動執行一次巡檢</button>
         </div>
       </div>
-      <button class="btn btn-outline" style="color:#64748b;margin-top:4px;" onclick="logoutBossSession()">🔄 切換登入帳號／清除本機記憶</button>
+      <button class="btn btn-outline" style="color:#7A6A5B;margin-top:4px;" onclick="logoutBossSession()">🔄 切換登入帳號／清除本機記憶</button>
     </section>
   </main>
   <nav class="bottom-nav">
@@ -721,7 +753,7 @@
     <button class="nav-btn" id="nav-ops" onclick="switchTab('ops')"><span class="ico">🚀</span><span>匯入切換</span></button>
   </nav>
   <script>
-    // ==================== V7.1 GitHub Pages ➔ GAS JSON API 橋接中樞 ====================
+    // ==================== V7.3 GitHub Pages ➔ GAS JSON API 橋接中樞 ====================
     var GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzofnwdYqJprOQIu_4vXmtqoWT_uyfnxg27otb9u_CxHX8m_0D2qYTTX8NBqTMxlQNzZg/exec';
     var STAFF_STORAGE_KEY = 'THREELOANS_STAFF_SESSION_V7';
     function parseUrlParams() {
@@ -810,7 +842,7 @@
         document.getElementById('loginWall').classList.remove('hidden');
       }
     });
-    // ==================== V7.1 全動線自動引導引擎 ====================
+    // ==================== 全動線自動引導引擎 ====================
     var GUIDE_HANDLERS = [];
     function openSiblingPage(fileName, extraQuery) {
       var qs = [];
@@ -862,7 +894,7 @@
         GUIDE_HANDLERS.push(act);
         var cls = act.btnClass || (idx === 0 ? 'btn-gold' : 'btn-outline');
         return '<button class="btn ' + cls + '" onclick="runGuideAction(' + idx + ')">' + esc(act.label) + '</button>';
-      }).join('') + '<button class="btn btn-outline" style="color:#64748b;border-color:#cbd5e1;" onclick="closeNextStepModal()">留在目前畫面</button>';
+      }).join('') + '<button class="btn btn-outline" style="color:#7A6A5B;border-color:#D9C9B6;" onclick="closeNextStepModal()">留在目前畫面</button>';
       document.getElementById('guideMask').classList.add('show');
     }
     function runGuideAction(idx) {
@@ -1065,24 +1097,24 @@
       document.getElementById('finIntroDetail').textContent = '累計外部介紹費支出 ' + fmtMoney(fin.totalIntroducerFee) + '（共 ' + (fin.introducerDealCount || 0) + ' 筆案件有介紹人）';
       var itList = fin.inTransitList || [];
       document.getElementById('finInTransitList').innerHTML = itList.length === 0
-        ? '<div style="text-align:center;color:#64748b;font-size:13px;">目前無已核准尚未完款之在途案件。</div>'
+        ? '<div style="text-align:center;color:#7A6A5B;font-size:13.5px;">目前無已核准尚未完款之在途案件。</div>'
         : itList.map(function(it) {
-            return '<div class="list-row"><div><b>' + esc(it.clientName) + '</b>｜' + esc(it.product) + '<br>' +
-              '<span style="font-size:12px;color:#64748b;">對保：' + esc(it.signDate) + '｜一撥：' + esc(it.firstDisbDate) + '｜經辦：' + esc(it.handler) + '</span></div>' +
+            return '<div class="list-row"><div><b style="color:#3E3024;">' + esc(it.clientName) + '</b>｜' + esc(it.product) + '<br>' +
+              '<span style="font-size:12.5px;color:#7A6A5B;">對保：' + esc(it.signDate) + '｜一撥：' + esc(it.firstDisbDate) + '｜經辦：' + esc(it.handler) + '</span></div>' +
               '<div style="text-align:right;"><span class="badge badge-ok">' + fmtMoney(it.estNetComm) + '</span><br>' +
-              '<span style="font-size:11px;color:#64748b;">核准 ' + esc(it.approvedWan) + '萬</span></div></div>';
+              '<span style="font-size:11.5px;color:#7A6A5B;">核准 ' + esc(it.approvedWan) + '萬</span></div></div>';
           }).join('');
       // ===== 2. 子頁籤：小組與個人雙欄排行 =====
       var units = perf.unitRankings || [];
       document.getElementById('warUnitRankings').innerHTML = units.length === 0
-        ? '<div style="color:#64748b;font-size:13px;text-align:center;">尚無小組業績數據</div>'
+        ? '<div style="color:#7A6A5B;font-size:13.5px;text-align:center;">尚無小組業績數據</div>'
         : units.map(function(un, idx) {
             return '<div class="rank-card">' +
               '<div style="display:flex;justify-content:space-between;align-items:center;">' +
-                '<div><b>#' + (idx + 1) + ' ' + esc(un.unitName) + '</b> <span class="badge badge-gray">' + un.headcount + ' 人</span></div>' +
+                '<div><b style="color:#3E3024;">#' + (idx + 1) + ' ' + esc(un.unitName) + '</b> <span class="badge badge-gray">' + un.headcount + ' 人</span></div>' +
                 '<span class="badge badge-ok">經辦佣收 ' + fmtMoney(un.handledCommission) + '</span>' +
               '</div>' +
-              '<div style="font-size:12px;color:#475569;margin-top:5px;">' +
+              '<div style="font-size:12.5px;color:#5C4735;margin-top:6px;">' +
                 '進件 ' + un.totalLeads + '｜結案 ' + un.handledClosed + '（轉換率 <b>' + un.convRate + '%</b>）｜均單佣金 ' + fmtMoney(un.avgDealCommission) + '<br>' +
                 '🌊 團隊水位：' + un.activeWater + ' / ' + (un.waterCapacity || '∞') + '（負載 ' + un.waterUsagePct + '%）｜📣 引流貢獻：' + un.referredClosed + ' 件（' + fmtMoney(un.referredCommission) + '）' +
               '</div>' +
@@ -1090,36 +1122,36 @@
           }).join('');
       var sRanks = perf.staffRankings || [];
       document.getElementById('warStaffRankings').innerHTML = sRanks.length === 0
-        ? '<div style="color:#64748b;font-size:13px;text-align:center;">尚無個人戰力數據</div>'
+        ? '<div style="color:#7A6A5B;font-size:13.5px;text-align:center;">尚無個人戰力數據</div>'
         : sRanks.map(function(sr, idx) {
             return '<div class="rank-card">' +
               '<div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">' +
-                '<div><b>#' + (idx + 1) + ' ' + esc(sr.staffName) + ' (' + esc(sr.staffCode) + ')</b> ' +
-                '<span style="font-size:11.5px;color:#64748b;">' + esc(sr.unitName) + '・' + esc(sr.rank) + '</span></div>' +
+                '<div><b style="color:#3E3024;">#' + (idx + 1) + ' ' + esc(sr.staffName) + ' (' + esc(sr.staffCode) + ')</b> ' +
+                '<span style="font-size:12px;color:#7A6A5B;">' + esc(sr.unitName) + '・' + esc(sr.rank) + '</span></div>' +
                 '<span class="badge badge-gold">總分潤 ' + fmtMoney(sr.totalBonus) + '</span>' +
               '</div>' +
               '<div class="rank-dual">' +
                 '<div class="rank-col">' +
-                  '<div style="font-weight:800;color:#0f172a;">💼 經辦實績</div>' +
+                  '<div style="font-weight:900;color:#3E3024;">💼 經辦實績</div>' +
                   '結案 <b>' + sr.handledClosed + '</b> / ' + sr.handledLeads + '（' + sr.handledConvRate + '%）<br>' +
-                  '佣收 <b style="color:#047857;">' + fmtMoney(sr.handledCommission) + '</b><br>' +
-                  '<span style="color:#64748b;">水位 ' + sr.activeWater + '/' + (sr.role === '劉總' ? '∞' : sr.waterLimit) + '｜週轉 ' + sr.waterTurnoverPct + '%</span>' +
+                  '佣收 <b style="color:#145C41;">' + fmtMoney(sr.handledCommission) + '</b><br>' +
+                  '<span style="color:#7A6A5B;">水位 ' + sr.activeWater + '/' + (sr.role === '劉總' ? '∞' : sr.waterLimit) + '｜週轉 ' + sr.waterTurnoverPct + '%</span>' +
                 '</div>' +
                 '<div class="rank-col ref">' +
-                  '<div style="font-weight:800;color:#0369a1;">📣 分享引流實績</div>' +
+                  '<div style="font-weight:900;color:#8A5316;">📣 分享引流實績</div>' +
                   '成交 <b>' + sr.referredClosed + '</b> / ' + sr.referredLeads + ' 人（' + sr.referredConvRate + '%）<br>' +
-                  '貢獻 <b style="color:#0284c7;">' + fmtMoney(sr.referredCommission) + '</b><br>' +
-                  '<span style="color:#64748b;">撤銷率 ' + sr.cancelRatePct + '%</span>' +
+                  '貢獻 <b style="color:#9A5B1F;">' + fmtMoney(sr.referredCommission) + '</b><br>' +
+                  '<span style="color:#7A6A5B;">撤銷率 ' + sr.cancelRatePct + '%</span>' +
                 '</div>' +
               '</div>' +
             '</div>';
           }).join('');
       var refs = res.warRoom.refLeaderboard || [];
       document.getElementById('warRefLeaderboard').innerHTML = refs.length === 0
-        ? '<div style="color:#64748b;font-size:13px;text-align:center;">尚無官方 LINE 引流紀錄</div>'
+        ? '<div style="color:#7A6A5B;font-size:13.5px;text-align:center;">尚無官方 LINE 引流紀錄</div>'
         : refs.map(function(r, idx) {
-            return '<div class="list-row"><div><b>#' + (idx + 1) + ' ' + esc(r.staffName) + ' (' + esc(r.staffCode) + ')</b><br>' +
-              '<span style="font-size:12px;color:#64748b;">引流進件 ' + r.totalLeads + ' 人｜成交 ' + r.closedDeals + ' 件｜貢獻佣金 <b>' + fmtMoney(r.netCommission) + '</b></span></div>' +
+            return '<div class="list-row"><div><b style="color:#3E3024;">#' + (idx + 1) + ' ' + esc(r.staffName) + ' (' + esc(r.staffCode) + ')</b><br>' +
+              '<span style="font-size:12.5px;color:#7A6A5B;">引流進件 ' + r.totalLeads + ' 人｜成交 ' + r.closedDeals + ' 件｜貢獻佣金 <b style="color:#9A5B1F;">' + fmtMoney(r.netCommission) + '</b></span></div>' +
               '<span class="badge badge-ok">轉換率 ' + r.convRate + '%</span></div>';
           }).join('');
       // ===== 3. 子頁籤：7 節點轉換漏斗與全案工作流透視 =====
@@ -1127,13 +1159,13 @@
       document.getElementById('wfCycleBadge').textContent = '平均成案 ' + (cyc.avgCycleDays || 0) + ' 天（最快 ' + (cyc.minCycleDays || 0) + ' / 最慢 ' + (cyc.maxCycleDays || 0) + ' 天）';
       var funnel = wf.stageFunnel || [];
       document.getElementById('wfStageFunnel').innerHTML = funnel.length === 0
-        ? '<div style="color:#64748b;font-size:13px;text-align:center;">尚無漏斗資料</div>'
+        ? '<div style="color:#7A6A5B;font-size:13.5px;text-align:center;">尚無漏斗資料</div>'
         : funnel.map(function(f, idx) {
             var fillCls = (idx === funnel.length - 1) ? 'green' : (idx >= 5 ? 'gold' : '');
-            return '<div style="margin-bottom:9px;">' +
-              '<div style="display:flex;justify-content:space-between;font-size:12.5px;gap:6px;">' +
+            return '<div style="margin-bottom:10px;">' +
+              '<div style="display:flex;justify-content:space-between;font-size:13px;gap:6px;color:#3E3024;">' +
                 '<b>' + (idx + 1) + '. ' + esc(f.stage) + '</b>' +
-                '<span>到達 <b>' + f.reachedCount + '</b> 件（' + f.reachRatePct + '%）｜關卡轉換 ' + f.stepConvPct + '%' +
+                '<span style="color:#5C4735;">到達 <b>' + f.reachedCount + '</b> 件（' + f.reachRatePct + '%）｜關卡轉換 ' + f.stepConvPct + '%' +
                 (f.stage !== '結案完款' ? ('｜現停 ' + f.currentCount + ' 件・均停 ' + f.avgStayDays + ' 天') : '') + '</span>' +
               '</div>' +
               '<div class="bar-mini"><div class="bar-mini-fill ' + fillCls + '" style="width:' + Math.max(3, f.reachRatePct) + '%"></div></div>' +
@@ -1154,30 +1186,30 @@
       // ===== 4. 子頁籤：窗口勝率、產品線、來源矩陣、風控 =====
       var wins = perf.windowRankings || [];
       document.getElementById('warWindowRankings').innerHTML = wins.length === 0
-        ? '<div style="color:#64748b;font-size:13px;text-align:center;">尚無報件送件窗口數據</div>'
+        ? '<div style="color:#7A6A5B;font-size:13.5px;text-align:center;">尚無報件送件窗口數據</div>'
         : wins.map(function(w, idx) {
-            return '<div class="list-row"><div style="flex:1;"><b>#' + (idx + 1) + ' ' + esc(w.windowName) + '</b><br>' +
-              '<span style="font-size:12px;color:#64748b;">送件 ' + w.submitted + '｜完款 ' + w.completed + '｜核准 ' + w.approvedWan + ' 萬（均 ' + w.avgApprovedWan + ' 萬）｜佣收 <b>' + fmtMoney(w.netCommission) + '</b></span></div>' +
+            return '<div class="list-row"><div style="flex:1;"><b style="color:#3E3024;">#' + (idx + 1) + ' ' + esc(w.windowName) + '</b><br>' +
+              '<span style="font-size:12.5px;color:#7A6A5B;">送件 ' + w.submitted + '｜完款 ' + w.completed + '｜核准 ' + w.approvedWan + ' 萬（均 ' + w.avgApprovedWan + ' 萬）｜佣收 <b style="color:#9A5B1F;">' + fmtMoney(w.netCommission) + '</b></span></div>' +
               '<span class="badge badge-blue">勝率 ' + w.winRatePct + '%</span></div>';
           }).join('');
       var prods = perf.productRankings || [];
       document.getElementById('warProductRankings').innerHTML = prods.length === 0
-        ? '<div style="color:#64748b;font-size:13px;text-align:center;">尚無產品線數據</div>'
+        ? '<div style="color:#7A6A5B;font-size:13.5px;text-align:center;">尚無產品線數據</div>'
         : prods.map(function(pr) {
             return '<div style="margin-bottom:10px;">' +
-              '<div style="display:flex;justify-content:space-between;font-size:13px;">' +
+              '<div style="display:flex;justify-content:space-between;font-size:13.5px;color:#3E3024;">' +
                 '<b>' + esc(pr.product) + '</b>' +
                 '<span>' + fmtMoney(pr.netCommission) + '（佔 <b>' + pr.sharePct + '%</b>）</span>' +
               '</div>' +
-              '<div style="font-size:11.5px;color:#64748b;">進件 ' + pr.total + '｜結案 ' + pr.closed + '（轉換 ' + pr.convRatePct + '%）｜撤銷率 ' + pr.cancelRatePct + '%｜均佣 ' + fmtMoney(pr.avgCommission) + '</div>' +
+              '<div style="font-size:12px;color:#7A6A5B;">進件 ' + pr.total + '｜結案 ' + pr.closed + '（轉換 ' + pr.convRatePct + '%）｜撤銷率 ' + pr.cancelRatePct + '%｜均佣 ' + fmtMoney(pr.avgCommission) + '</div>' +
               '<div class="bar-mini"><div class="bar-mini-fill gold" style="width:' + Math.max(4, pr.sharePct) + '%"></div></div>' +
             '</div>';
           }).join('');
       var srcs = (rk.sourceMatrix || res.warRoom.sourceStats || []);
       document.getElementById('warSourceStats').innerHTML = srcs.length === 0
-        ? '<div style="color:#64748b;font-size:13px;text-align:center;">尚無進件來源數據</div>'
+        ? '<div style="color:#7A6A5B;font-size:13.5px;text-align:center;">尚無進件來源數據</div>'
         : srcs.map(function(s) {
-            return '<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:13px;">' +
+            return '<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:13.5px;color:#3E3024;">' +
               '<b>' + esc(s.source) + '</b><span>' + s.total + ' 件｜結案 ' + s.closed + '（<b>' + s.convRate + '%</b>）｜' + fmtMoney(s.netCommission) + '</span></div>' +
               '<div class="bar-mini"><div class="bar-mini-fill" style="width:' + Math.max(4, s.convRate) + '%"></div></div></div>';
           }).join('');
@@ -1193,35 +1225,35 @@
       document.getElementById('rkUpcomingCnt').textContent = (rt.upcomingCount || 0) + ' 筆';
       var upList = rt.upcomingList || [];
       document.getElementById('rkUpcomingList').innerHTML = upList.length === 0 ? '' : (
-        '<div style="font-size:12.5px;font-weight:800;color:#92400e;margin-bottom:4px;">📅 即將到期二次開發舊客預告：</div>' +
+        '<div style="font-size:13px;font-weight:800;color:#8A5316;margin-bottom:4px;">📅 即將到期二次開發舊客預告：</div>' +
         upList.slice(0, 8).map(function(uItem) {
-          return '<div class="list-row" style="padding:6px 0;"><div><b>' + esc(uItem.clientName) + '</b>｜' + esc(uItem.product) +
-            ' <span style="font-size:11.5px;color:#64748b;">(原核准 ' + esc(uItem.approvedWan) + '萬｜經辦:' + esc(uItem.handler) + ')</span></div>' +
+          return '<div class="list-row" style="padding:7px 0;"><div><b style="color:#3E3024;">' + esc(uItem.clientName) + '</b>｜' + esc(uItem.product) +
+            ' <span style="font-size:12px;color:#7A6A5B;">(原核准 ' + esc(uItem.approvedWan) + '萬｜經辦:' + esc(uItem.handler) + ')</span></div>' +
             '<span class="badge badge-gold">' + esc(uItem.retrackYm) + '</span></div>';
         }).join('')
       );
       var hcList = ra.highCancelStaffs || [];
       document.getElementById('rkHighCancelBox').innerHTML = hcList.length === 0 ? '' : (
-        '<div class="metric-card danger"><div style="font-weight:800;color:#991b1b;font-size:13px;">⚠️ 高撤銷率預警人員（撤銷率 ≥ 35%）</div>' +
+        '<div class="metric-card danger"><div style="font-weight:800;color:#9B1C1C;font-size:13.5px;">⚠️ 高撤銷率預警人員（撤銷率 ≥ 35%）</div>' +
         hcList.map(function(h) {
-          return '<div style="font-size:12px;color:#7f1d1d;margin-top:4px;">• <b>' + esc(h.staffName) + ' (' + esc(h.staffCode) + ')</b>：撤銷 ' + h.handledCancelled + '/' + h.handledLeads + ' 件（<b>' + h.cancelRatePct + '%</b>）</div>';
+          return '<div style="font-size:12.5px;color:#8E2424;margin-top:4px;">• <b>' + esc(h.staffName) + ' (' + esc(h.staffCode) + ')</b>：撤銷 ' + h.handledCancelled + '/' + h.handledLeads + ' 件（<b>' + h.cancelRatePct + '%</b>）</div>';
         }).join('') + '</div>'
       );
       var ov = res.warRoom.overdueCases || [];
       document.getElementById('warOverdueList').innerHTML = ov.length === 0
-        ? '<div style="color:#059669;font-size:13.5px;text-align:center;font-weight:700;">✅ 全體水位進度正常，目前無逾時卡關案件！</div>'
+        ? '<div style="color:#145C41;font-size:14px;text-align:center;font-weight:700;">✅ 全體水位進度正常，目前無逾時卡關案件！</div>'
         : ov.map(function(o) {
-            return '<div class="list-row"><div><b style="color:#991b1b;">' + esc(o.clientName) + ' (' + esc(o.handlerName || o.handler) + ')</b><br>' +
-              '<span style="font-size:12px;color:#7f1d1d;">' + esc(o.alertReason) + '</span></div>' +
+            return '<div class="list-row"><div><b style="color:#9B1C1C;">' + esc(o.clientName) + ' (' + esc(o.handlerName || o.handler) + ')</b><br>' +
+              '<span style="font-size:12.5px;color:#8E2424;">' + esc(o.alertReason) + '</span></div>' +
               '<span class="badge badge-red">' + esc(o.node) + '</span></div>';
           }).join('');
       var cans = res.warRoom.cancelReasons || [];
       document.getElementById('warCancelList').innerHTML = cans.length === 0
-        ? '<div style="color:#64748b;font-size:13px;text-align:center;">尚無撤銷案件紀錄</div>'
+        ? '<div style="color:#7A6A5B;font-size:13.5px;text-align:center;">尚無撤銷案件紀錄</div>'
         : cans.map(function(c) {
-            return '<div class="list-row"><div><b>' + esc(c.clientName) + '</b> (' + esc(c.handlerName || c.handler) + ')<br>' +
-              '<span style="font-size:12px;color:#64748b;">' + esc(c.summary) + '</span></div>' +
-              '<span style="font-size:11px;color:#94a3b8;">' + esc(String(c.time).substring(5, 16)) + '</span></div>';
+            return '<div class="list-row"><div><b style="color:#3E3024;">' + esc(c.clientName) + '</b> (' + esc(c.handlerName || c.handler) + ')<br>' +
+              '<span style="font-size:12.5px;color:#7A6A5B;">' + esc(c.summary) + '</span></div>' +
+              '<span style="font-size:11.5px;color:#9A8B7C;">' + esc(String(c.time).substring(5, 16)) + '</span></div>';
           }).join('');
       // ===== 5. 分潤算獎與紅線特批 =====
       var redList = res.commissions.pendingRedlineDeals || [];
@@ -1229,28 +1261,28 @@
       if (u.isBoss && redList.length > 0) {
         redCard.classList.remove('hidden');
         document.getElementById('commRedlineList').innerHTML = redList.map(function(d) {
-          return '<div class="list-row"><div><b>' + esc(d.clientName) + '｜' + esc(d.product) + '</b><br>' +
-            '<span style="font-size:12px;color:#991b1b;">費率 ' + esc(d.servicePct) + '%｜實收佣金 ' + fmtMoney(d.netComm) + '</span></div>' +
+          return '<div class="list-row"><div><b style="color:#3E3024;">' + esc(d.clientName) + '｜' + esc(d.product) + '</b><br>' +
+            '<span style="font-size:12.5px;color:#9B1C1C;">費率 ' + esc(d.servicePct) + '%｜實收佣金 ' + fmtMoney(d.netComm) + '</span></div>' +
             '<button class="btn btn-success btn-sm" onclick="approveRedline(\'' + esc(d.dealNo) + '\')">特批放行</button></div>';
         }).join('');
       } else { redCard.classList.add('hidden'); }
       var br = res.commissions.bonusRank || [];
       document.getElementById('commBonusRank').innerHTML = br.length === 0
-        ? '<div style="color:#64748b;font-size:13px;text-align:center;">尚無完款分潤紀錄</div>'
+        ? '<div style="color:#7A6A5B;font-size:13.5px;text-align:center;">尚無完款分潤紀錄</div>'
         : br.map(function(b) {
-            return '<div class="list-row"><div><b>' + esc(b.staffName) + ' (' + esc(b.staffCode) + ')</b><br>' +
-              '<span style="font-size:12px;color:#64748b;">參與 ' + b.dealCount + ' 筆完款單｜累計疊加 ' + b.nodeHits + ' 個節點</span></div>' +
+            return '<div class="list-row"><div><b style="color:#3E3024;">' + esc(b.staffName) + ' (' + esc(b.staffCode) + ')</b><br>' +
+              '<span style="font-size:12.5px;color:#7A6A5B;">參與 ' + b.dealCount + ' 筆完款單｜累計疊加 ' + b.nodeHits + ' 個節點</span></div>' +
               '<span class="badge badge-gold" style="font-size:14px;">' + fmtMoney(b.totalBonus) + '</span></div>';
           }).join('');
       var cms = res.commissions.recentRecords || [];
       document.getElementById('commRecentList').innerHTML = cms.length === 0
-        ? '<div style="color:#64748b;font-size:13px;text-align:center;">尚無分潤核銷明細</div>'
+        ? '<div style="color:#7A6A5B;font-size:13.5px;text-align:center;">尚無分潤核銷明細</div>'
         : cms.map(function(cm) {
             var isPaid = String(cm['核銷發放狀態'] || '').indexOf('已核發') !== -1;
-            return '<div style="border:1px solid #cbd5e1;border-radius:10px;padding:10px;margin-bottom:8px;font-size:12.5px;">' +
-              '<div style="display:flex;justify-content:space-between;"><b>' + esc(cm['客戶姓名']) + '｜母數 ' + fmtMoney(cm['實際總佣收母數']) + '</b>' +
+            return '<div style="border:1.5px solid #E6D9C8;background:#FFFDF9;border-radius:12px;padding:11px;margin-bottom:9px;font-size:13px;">' +
+              '<div style="display:flex;justify-content:space-between;"><b style="color:#3E3024;">' + esc(cm['客戶姓名']) + '｜母數 ' + fmtMoney(cm['實際總佣收母數']) + '</b>' +
               '<span class="badge ' + (isPaid ? 'badge-ok' : 'badge-gold') + '">' + esc(cm['核銷發放狀態']) + '</span></div>' +
-              '<div style="color:#475569;margin-top:4px;line-height:1.6;">' +
+              '<div style="color:#5C4735;margin-top:5px;line-height:1.65;">' +
                 '引流：' + esc(cm['引流_得獎人與金額']) + '<br>接流：' + esc(cm['接流_得獎人與金額']) + '<br>' +
                 '經辦：' + esc(cm['經辦_得獎人與金額']) + '<br>專案：' + esc(cm['專案_得獎人與金額']) + '<br>' +
                 '主管：' + esc(cm['主管_得獎人與金額']) + '｜加碼：' + esc(cm['動態級距加碼比例']) +
@@ -1319,10 +1351,10 @@
       document.getElementById('hrStaffList').innerHTML = (res.staffList || []).map(function(s) {
         var isAct = s['在職狀態'] === '在職';
         var hasUid = Boolean(String(s['綁定LINE_UID'] || '').trim());
-        return '<div class="list-row"><div><b>' + esc(s['員工姓名']) + ' (' + esc(s['員工代碼']) + ')</b> ' +
+        return '<div class="list-row"><div><b style="color:#3E3024;">' + esc(s['員工姓名']) + ' (' + esc(s['員工代碼']) + ')</b> ' +
           '<span class="badge ' + (isAct ? 'badge-ok' : 'badge-red') + '">' + esc(s['在職狀態']) + '</span> ' +
           '<span class="badge ' + (hasUid ? 'badge-blue' : 'badge-gray') + '">' + (hasUid ? 'LINE已綁定' : '待綁定LINE') + '</span><br>' +
-          '<span style="font-size:12px;color:#64748b;">' + esc(s['系統權限角色']) + '・' + esc(s['業務職級']) + '｜' + esc(s['所屬單位名稱'] || '') + '｜' + esc(s['手機號碼']) + '｜水位 ' + (s['目前持有活躍數'] || 0) + '/' + (s['系統權限角色'] === '劉總' ? '∞' : (s['個人水位上限'] || 30)) + '</span></div>' +
+          '<span style="font-size:12.5px;color:#7A6A5B;">' + esc(s['系統權限角色']) + '・' + esc(s['業務職級']) + '｜' + esc(s['所屬單位名稱'] || '') + '｜' + esc(s['手機號碼']) + '｜水位 ' + (s['目前持有活躍數'] || 0) + '/' + (s['系統權限角色'] === '劉總' ? '∞' : (s['個人水位上限'] || 30)) + '</span></div>' +
           '<button class="btn btn-outline btn-sm" onclick="editStaffToForm(\'' + esc(s['員工代碼']) + '\')">編輯</button></div>';
       }).join('');
     }
@@ -1348,7 +1380,7 @@
       document.getElementById('wfFilteredCnt').textContent = filtered.length + ' 件';
       var box = document.getElementById('wfCaseList');
       if (filtered.length === 0) {
-        box.innerHTML = '<div style="text-align:center;color:#64748b;font-size:13px;padding:12px;">無符合篩選條件之工作流案件。</div>';
+        box.innerHTML = '<div style="text-align:center;color:#7A6A5B;font-size:13.5px;padding:12px;">無符合篩選條件之工作流案件。</div>';
         return;
       }
       box.innerHTML = filtered.slice(0, 60).map(function(c) {
@@ -1360,17 +1392,17 @@
         var stBadge = c.status === '結案' ? 'badge-ok' : (c.status === '撤銷' ? 'badge-red' : (c.status === '補件' ? 'badge-gold' : 'badge-blue'));
         return '<div class="wf-card ' + (c.isOverdue ? 'overdue' : '') + '">' +
           '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px;">' +
-            '<div><b>' + esc(c.clientName) + '</b> <span style="font-size:12px;color:#475569;">(' + esc(c.phone || '無電話') + ')</span>' +
+            '<div><b style="color:#3E3024;">' + esc(c.clientName) + '</b> <span style="font-size:12.5px;color:#7A6A5B;">(' + esc(c.phone || '無電話') + ')</span>' +
             (c.isOverdue ? ' <span class="badge badge-red">逾時</span>' : '') +
             (c.isZombie ? ' <span class="badge badge-red">殭屍 ' + c.stagnantDays + '天</span>' : '') +
-            '<div style="font-size:11.5px;color:#64748b;">' + esc(c.caseId) + '｜' + esc(c.unitName) + '｜' + esc(c.source) + '</div></div>' +
+            '<div style="font-size:12px;color:#7A6A5B;">' + esc(c.caseId) + '｜' + esc(c.unitName) + '｜' + esc(c.source) + '</div></div>' +
             '<span class="badge ' + stBadge + '">' + esc(c.node) + '・' + esc(c.status) + '</span>' +
           '</div>' +
           '<div class="wf-steps">' + stepHtml + '</div>' +
-          '<div style="font-size:12px;color:#334155;line-height:1.6;">' +
+          '<div style="font-size:12.5px;color:#5C4735;line-height:1.65;">' +
             '👨‍💼 經辦：<b>' + esc(c.handlerName) + '</b>｜📣 引流：<b>' + esc(c.refName) + '</b>｜停滯 <b>' + c.stagnantDays + '</b> 天' +
-            (c.dealCommission > 0 ? ('｜💰 已完款 <b style="color:#047857;">' + fmtMoney(c.dealCommission) + '</b>') : '') + '<br>' +
-            '📝 ' + esc(c.lastSummary || '尚無回報摘要') + ' <span style="color:#94a3b8;">(' + esc(String(c.lastUpdate).substring(5, 16)) + ')</span>' +
+            (c.dealCommission > 0 ? ('｜💰 已完款 <b style="color:#145C41;">' + fmtMoney(c.dealCommission) + '</b>') : '') + '<br>' +
+            '📝 ' + esc(c.lastSummary || '尚無回報摘要') + ' <span style="color:#9A8B7C;">(' + esc(String(c.lastUpdate).substring(5, 16)) + ')</span>' +
           '</div>' +
         '</div>';
       }).join('');
@@ -1578,7 +1610,7 @@
                 title: '👤 員工建檔與權限開通完成',
                 desc: (r.message || '員工資料已寫入組織名冊！') + ' 請把下方綁定指令傳給該同仁，請對方在三貸同堂官方 LINE 對話框貼上傳送即可開通免重登工作台：',
                 extraTone: 'ok',
-                extraHtml: '<div style="text-align:center;font-size:16px;font-weight:900;color:#0b132b;letter-spacing:0.5px;">' + esc(bindCmd) + '</div>',
+                extraHtml: '<div style="text-align:center;font-size:16px;font-weight:900;color:#3E3024;letter-spacing:0.5px;">' + esc(bindCmd) + '</div>',
                 actions: [
                   { label: '📋 一鍵複製綁定指令傳給同仁', btnClass: 'btn-success', keepOpen: true, onClick: function() { copyTextToClipboard(bindCmd, '綁定指令'); } },
                   { label: '✨ 繼續新增下一位員工', btnClass: 'btn-gold', onClick: function() { prepareNewStaffForm(); } },
@@ -1731,7 +1763,7 @@
                 extraHtml: '1️⃣ 回試算表<b>表 8</b> 核對 <code>LINE_CHANNEL_SECRET</code> 為最新正式值，必要時於 GAS 執行 <code>DB_clearSysParamsCache_</code> 清快取。<br>' +
                            '2️⃣ 至 <b>LINE Developers Console</b> 貼入 GAS <code>/exec</code> Webhook 網址、開啟 Use webhook 並按 <b>Verify</b>。<br>' +
                            '3️⃣ 至 <b>LINE OA 後台</b> 關閉「自動回應訊息」與「歡迎訊息」。<br>' +
-                           '4️⃣ 手機重開 LINE 驗收黑金六宮格，並輸入 <code>員工綁定 09xxxxxxxx</code> 完成正式機綁定。',
+                           '4️⃣ 手機重開 LINE 驗收新版六宮格，並輸入 <code>員工綁定 09xxxxxxxx</code> 完成正式機綁定。',
                 actions: [
                   { label: '⏰ 下一步：確認每日 09:00 自動排程', btnClass: 'btn-success', onClick: function() { scrollToElementById('opsCronCard'); } },
                   { label: '👥 前往「人事移交」查看全員綁定狀態', btnClass: 'btn-navy', onClick: function() { switchTab('hr'); scrollToElementById('hrStaffCard'); } }
