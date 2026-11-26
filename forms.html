@@ -6,188 +6,224 @@
   <title>三貸同堂｜數位化客戶資料表與業績報件單系統</title>
   <style>
     :root {
-      --navy-dark: #0b132b;
-      --navy-mid: #1c2541;
-      --gold: #c5a059;
-      --gold-bright: #f59e0b;
-      --bg: #f1f5f9;
-      --card: #ffffff;
-      --text-main: #0f172a;
-      --text-sub: #475569;
-      --success: #059669;
-      --danger: #dc2626;
-      --border: #cbd5e1;
+      --espresso: #3E3024;
+      --espresso-mid: #5C4735;
+      --milk-tea: #C8A882;
+      --milk-tea-deep: #A67F53;
+      --caramel: #B87B3E;
+      --cream-soft: #F6EFE6;
+      --bg: #FAF7F2;
+      --card: #FFFFFF;
+      --text-main: #3E3024;
+      --text-sub: #7A6A5B;
+      --success: #1E7E5A;
+      --danger: #C53030;
+      --border: #E6D9C8;
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
       margin: 0; padding: 0 0 88px 0;
       font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
-      background: var(--bg); color: var(--text-main); line-height: 1.5;
+      background: var(--bg); color: var(--text-main); line-height: 1.55;
     }
+    /* V7.3 頂部明亮奶茶品牌列 */
     .top-header {
-      background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-mid) 100%);
-      color: #fff; padding: 14px 16px 16px; border-bottom: 3px solid var(--gold);
-      position: sticky; top: 0; z-index: 40; box-shadow: 0 4px 12px rgba(11,19,43,0.22);
+      background: linear-gradient(180deg, #FFFFFF 0%, #FAF3E8 100%);
+      color: var(--espresso); padding: 13px 16px 14px; border-bottom: 2.5px solid var(--milk-tea);
+      position: sticky; top: 0; z-index: 40; box-shadow: 0 4px 14px rgba(62,48,36,0.07);
     }
     .hdr-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-    .hdr-title { font-size: 18px; font-weight: 800; color: #fbbf24; margin: 0; }
-    .hdr-sub { font-size: 12px; color: #cbd5e1; margin-top: 2px; }
+    .hdr-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .brand-logo {
+      width: 44px; height: 44px; object-fit: contain; border-radius: 11px;
+      background: #FFFFFF; border: 1.5px solid var(--border); padding: 2px;
+      flex-shrink: 0; box-shadow: 0 2px 6px rgba(62,48,36,0.08);
+    }
+    .hdr-title { font-size: 18px; font-weight: 900; color: var(--espresso); margin: 0; line-height: 1.25; }
+    .hdr-sub { font-size: 12.5px; color: var(--text-sub); margin-top: 2px; font-weight: 600; }
+    .hdr-btn {
+      background: var(--cream-soft); color: var(--espresso); border: 1.5px solid var(--milk-tea);
+      padding: 7px 11px; font-size: 13px; font-weight: 800; border-radius: 9px; cursor: pointer; white-space: nowrap;
+    }
     .case-picker-bar {
-      margin-top: 10px; background: rgba(255,255,255,0.1); padding: 8px 10px;
-      border-radius: 10px; border: 1px solid rgba(197,160,89,0.45);
+      margin-top: 10px; background: #FFFFFF; padding: 9px 11px;
+      border-radius: 12px; border: 1.5px solid var(--milk-tea); box-shadow: 0 2px 6px rgba(62,48,36,0.04);
     }
     .case-picker-bar select {
-      width: 100%; padding: 9px 10px; font-size: 14.5px; border-radius: 8px;
-      border: 1px solid var(--gold); background: #fff; color: #0f172a; font-weight: 700;
+      width: 100%; padding: 9px 10px; font-size: 15px; border-radius: 9px;
+      border: 1.5px solid #D9C9B6; background: #FFFDF9; color: var(--espresso); font-weight: 800;
     }
     .container { max-width: 780px; margin: 0 auto; padding: 14px; }
     .tab-pane { display: none; animation: fadeIn 0.2s ease; }
     .tab-pane.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-    /* V7.1 頂部智慧引導條 */
+    /* 頂部智慧引導條 */
     .smart-banner {
       display: flex; justify-content: space-between; align-items: center; gap: 10px;
-      padding: 11px 13px; border-radius: 12px; margin-bottom: 12px; font-size: 13px;
-      border: 1.5px solid #93c5fd; background: #eff6ff; color: #1e3a8a;
+      padding: 12px 14px; border-radius: 12px; margin-bottom: 12px; font-size: 13.5px;
+      border: 1.5px solid #D6B996; background: #FDF7EE; color: var(--espresso);
     }
-    .smart-banner.danger { border-color: #fca5a5; background: #fef2f2; color: #991b1b; }
-    .smart-banner.warn { border-color: #fcd34d; background: #fffbeb; color: #92400e; }
-    .smart-banner.ok { border-color: #6ee7b7; background: #ecfdf5; color: #065f46; }
-    .smart-banner-txt { flex: 1; line-height: 1.45; }
+    .smart-banner.danger { border-color: #F3A6A6; background: #FFF5F5; color: #9B1C1C; }
+    .smart-banner.warn { border-color: #E3B26B; background: #FFF8EB; color: #7C4D16; }
+    .smart-banner.ok { border-color: #7AD0AE; background: #EDF9F3; color: #145C41; }
+    .smart-banner-txt { flex: 1; line-height: 1.5; }
     .card {
-      background: var(--card); border-radius: 14px; padding: 16px; margin-bottom: 14px;
-      box-shadow: 0 2px 8px rgba(15,23,42,0.06); border: 1px solid #e2e8f0;
+      background: var(--card); border-radius: 16px; padding: 17px; margin-bottom: 14px;
+      box-shadow: 0 4px 16px rgba(62,48,36,0.06); border: 1px solid var(--border);
     }
     .section-title {
-      font-size: 16.5px; font-weight: 800; color: var(--navy-dark); margin: 0 0 12px;
-      padding-left: 10px; border-left: 4px solid var(--gold-bright);
-      display: flex; justify-content: space-between; align-items: center;
+      font-size: 17.5px; font-weight: 900; color: var(--espresso); margin: 0 0 12px;
+      padding-left: 11px; border-left: 4px solid var(--milk-tea-deep);
+      display: flex; justify-content: space-between; align-items: center; gap: 8px;
     }
+    /* 長表單暖奶茶區段分隔條 */
     .sub-block-title {
-      font-size: 14.5px; font-weight: 800; color: #1e3a8a; background: #eff6ff;
-      padding: 8px 12px; border-radius: 8px; margin: 14px 0 10px; border-left: 4px solid #1e3a8a;
+      font-size: 15px; font-weight: 900; color: var(--espresso); background: var(--cream-soft);
+      padding: 9px 13px; border-radius: 10px; margin: 16px 0 11px;
+      border-left: 4px solid var(--caramel); border-top: 1px solid #EDE1D1;
+      border-right: 1px solid #EDE1D1; border-bottom: 1px solid #EDE1D1;
     }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
     @media (max-width: 480px) { .grid-3 { grid-template-columns: 1fr 1fr; } }
-    .form-group { margin-bottom: 11px; }
-    label { display: block; font-size: 13px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px; }
+    .form-group { margin-bottom: 12px; }
+    label { display: block; font-size: 14px; font-weight: 800; color: var(--espresso-mid); margin-bottom: 5px; }
     input[type="text"], input[type="tel"], input[type="number"], input[type="date"], input[type="month"], select, textarea {
-      width: 100%; padding: 11px 11px; font-size: 15.5px; border: 1.5px solid var(--border);
-      border-radius: 9px; background: #fff; color: var(--text-main); outline: none;
+      width: 100%; padding: 11px 12px; font-size: 16px; border: 1.5px solid #D9C9B6;
+      border-radius: 10px; background: #FFFDF9; color: var(--text-main); outline: none; transition: 0.18s;
     }
-    input:focus, select:focus, textarea:focus { border-color: var(--gold-bright); }
-    input[readonly], select.locked-field { background: #ecfdf5 !important; border-color: #10b981 !important; color: #065f46; font-weight: 700; }
+    input:focus, select:focus, textarea:focus {
+      background: #FFFFFF; border-color: var(--milk-tea-deep);
+      box-shadow: 0 0 0 3px rgba(200,168,130,0.26);
+    }
+    input[readonly], select.locked-field {
+      background: #EDF9F3 !important; border-color: #68C39F !important; color: #145C41; font-weight: 800;
+    }
     /* 動態明細卡列 */
     .dyn-item {
-      background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px;
-      padding: 10px; margin-bottom: 10px;
+      background: #FCF9F4; border: 1.5px solid var(--border); border-radius: 12px;
+      padding: 11px; margin-bottom: 10px;
     }
-    .dyn-item-hdr { font-size: 12.5px; font-weight: 800; color: #475569; margin-bottom: 6px; }
-    /* 佣金計算與紅線警報箱 */
+    .dyn-item-hdr { font-size: 13.5px; font-weight: 900; color: var(--espresso-mid); margin-bottom: 7px; }
+    /* 佣金計算與紅線警報箱（明亮暖金卡片） */
     .comm-summary-box {
-      background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid));
-      color: #fff; border-radius: 12px; padding: 14px; border: 1.5px solid var(--gold); margin: 12px 0;
+      background: linear-gradient(145deg, #FFFDF9 0%, #F4E6D3 100%);
+      color: var(--espresso); border-radius: 14px; padding: 16px;
+      border: 2px solid var(--milk-tea); margin: 14px 0;
+      box-shadow: 0 6px 18px rgba(166,127,83,0.14);
     }
-    .comm-big { font-size: 28px; font-weight: 900; color: #fbbf24; }
+    .comm-big { font-size: 30px; font-weight: 900; color: #9A5B1F; margin-top: 2px; }
     .redline-alert {
-      background: #fef2f2; border: 2px solid #dc2626; color: #991b1b;
-      padding: 12px; border-radius: 10px; font-size: 13.5px; font-weight: 800; margin: 10px 0; display: none;
+      background: #FFF5F5; border: 2px solid var(--danger); color: #9B1C1C;
+      padding: 12px; border-radius: 11px; font-size: 14px; font-weight: 800; margin: 10px 0; display: none;
     }
     .split-preview-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; font-size: 12px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 11px; font-size: 13px;
     }
-    .split-chip { background: rgba(255,255,255,0.1); padding: 6px 8px; border-radius: 7px; color: #e2e8f0; }
+    .split-chip {
+      background: #FFFFFF; padding: 7px 10px; border-radius: 9px;
+      color: var(--espresso); border: 1px solid #DFC9AE;
+    }
     /* 存封拍照上傳預覽區 */
     .upload-box {
-      border: 2px dashed var(--gold); border-radius: 12px; padding: 14px; text-align: center;
-      background: #fffdf7; margin-bottom: 12px;
+      border: 2px dashed var(--milk-tea-deep); border-radius: 13px; padding: 15px; text-align: center;
+      background: #FFFDF9; margin-bottom: 12px;
     }
-    .upload-preview { max-width: 100%; max-height: 220px; border-radius: 8px; margin-top: 10px; display: none; border: 1px solid #cbd5e1; }
+    .upload-preview { max-width: 100%; max-height: 220px; border-radius: 10px; margin-top: 10px; display: none; border: 1.5px solid var(--border); }
     /* 按鈕 */
     .btn {
       display: inline-flex; justify-content: center; align-items: center; gap: 6px;
-      width: 100%; padding: 14px 16px; border-radius: 11px; font-size: 16px; font-weight: 800;
-      border: none; cursor: pointer; text-decoration: none; text-align: center;
+      width: 100%; padding: 14px 16px; border-radius: 12px; font-size: 16px; font-weight: 800;
+      border: none; cursor: pointer; text-decoration: none; text-align: center; transition: 0.16s;
     }
-    .btn-gold { background: linear-gradient(135deg, #d97706, #f59e0b); color: #fff; box-shadow: 0 4px 12px rgba(217,119,6,0.28); }
-    .btn-navy { background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid)); color: #fde68a; border: 1px solid var(--gold); }
-    .btn-success { background: var(--success); color: #fff; }
-    .btn-danger { background: var(--danger); color: #fff; }
-    .btn-outline { background: #fff; color: var(--navy-dark); border: 1.5px solid #94a3b8; }
-    .btn-sm { padding: 8px 12px; font-size: 13px; width: auto; border-radius: 8px; white-space: nowrap; }
+    .btn-gold {
+      background: linear-gradient(135deg, #B98B56 0%, #D1AC7E 100%);
+      color: #FFFFFF; box-shadow: 0 5px 14px rgba(166,127,83,0.3);
+    }
+    .btn-navy {
+      background: linear-gradient(135deg, #4B392B 0%, #654E3B 100%);
+      color: #FFF8EE; border: 1px solid #8A6B4E; box-shadow: 0 3px 10px rgba(62,48,36,0.16);
+    }
+    .btn-success { background: var(--success); color: #FFFFFF; }
+    .btn-danger { background: var(--danger); color: #FFFFFF; }
+    .btn-outline { background: #FFFFFF; color: var(--espresso); border: 1.5px solid #CBB69D; }
+    .btn-sm { padding: 8px 12px; font-size: 13.5px; width: auto; border-radius: 9px; white-space: nowrap; }
     .btn-pulse { animation: pulseGold 1.4s ease-in-out 3; }
     @keyframes pulseGold {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.55); }
-      50% { box-shadow: 0 0 0 10px rgba(245,158,11,0); }
+      0%, 100% { box-shadow: 0 0 0 0 rgba(185,139,86,0.6); }
+      50% { box-shadow: 0 0 0 10px rgba(185,139,86,0); }
     }
     .record-item {
-      border: 1px solid #cbd5e1; border-radius: 11px; padding: 12px; margin-bottom: 10px; background: #fff;
+      border: 1.5px solid var(--border); border-radius: 12px; padding: 13px; margin-bottom: 10px; background: #FFFDF9;
     }
-    .badge { display: inline-block; padding: 3px 9px; border-radius: 99px; font-size: 11.5px; font-weight: 800; }
-    .badge-ok { background: #dcfce7; color: #166534; }
-    .badge-red { background: #fee2e2; color: #991b1b; }
-    .badge-blue { background: #dbeafe; color: #1e40af; }
-    /* V7.1 下一步自動引導彈窗 */
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: 12px; font-weight: 800; white-space: nowrap; }
+    .badge-ok { background: #E7F7EF; color: #145C41; border: 1px solid #96D8BC; }
+    .badge-red { background: #FDE8E8; color: #9B1C1C; border: 1px solid #F3A6A6; }
+    .badge-blue { background: #F4E8D7; color: #7C5225; border: 1px solid #DFC4A3; }
+    /* 全動線下一步自動引導彈窗 */
     .guide-mask {
-      position: fixed; inset: 0; background: rgba(11,19,43,0.72); z-index: 90;
+      position: fixed; inset: 0; background: rgba(62,48,36,0.52); z-index: 90;
       display: none; align-items: center; justify-content: center; padding: 16px;
-      backdrop-filter: blur(2px);
+      backdrop-filter: blur(3px);
     }
     .guide-mask.show { display: flex; animation: fadeIn 0.18s ease; }
     .guide-modal {
-      width: 100%; max-width: 440px; background: #fff; border-radius: 16px;
-      border: 2px solid var(--gold); overflow: hidden; box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+      width: 100%; max-width: 440px; background: #FFFFFF; border-radius: 18px;
+      border: 2px solid var(--milk-tea); overflow: hidden; box-shadow: 0 18px 40px rgba(62,48,36,0.22);
     }
     .guide-hdr {
-      background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid));
-      color: #fbbf24; padding: 14px 16px; font-size: 16px; font-weight: 900;
+      background: linear-gradient(135deg, #FAF1E4 0%, #EFE0CB 100%);
+      color: var(--espresso); padding: 15px 16px; font-size: 16.5px; font-weight: 900;
       display: flex; justify-content: space-between; align-items: center; gap: 8px;
-      border-bottom: 2px solid var(--gold);
+      border-bottom: 2px solid var(--milk-tea);
     }
     .guide-close {
-      background: rgba(255,255,255,0.12); color: #e2e8f0; border: none; border-radius: 8px;
-      width: 28px; height: 28px; font-size: 16px; font-weight: 900; cursor: pointer;
+      background: rgba(62,48,36,0.1); color: var(--espresso); border: none; border-radius: 8px;
+      width: 30px; height: 30px; font-size: 16px; font-weight: 900; cursor: pointer;
     }
-    .guide-body { padding: 15px 16px 16px; font-size: 13.5px; color: #334155; }
-    .guide-desc { margin: 0 0 10px; line-height: 1.55; }
+    .guide-body { padding: 16px; font-size: 14px; color: var(--espresso-mid); }
+    .guide-desc { margin: 0 0 10px; line-height: 1.6; }
     .guide-extra {
-      background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px;
-      padding: 10px 12px; margin-bottom: 12px; font-size: 12.5px; color: #0f172a; line-height: 1.65;
+      background: #FCF9F4; border: 1px solid var(--border); border-radius: 12px;
+      padding: 11px 13px; margin-bottom: 12px; font-size: 13px; color: var(--espresso); line-height: 1.7;
     }
-    .guide-extra.gold { background: #fffbeb; border-color: #fcd34d; }
-    .guide-extra.ok { background: #ecfdf5; border-color: #6ee7b7; }
-    .guide-extra.danger { background: #fef2f2; border-color: #fca5a5; color: #991b1b; }
+    .guide-extra.gold { background: #FDF7EC; border-color: var(--milk-tea); }
+    .guide-extra.ok { background: #EDF9F3; border-color: #7AD0AE; }
+    .guide-extra.danger { background: #FFF5F5; border-color: #F3A6A6; color: #9B1C1C; }
     .guide-next-lbl {
-      font-size: 12px; font-weight: 800; color: #b45309; margin-bottom: 8px;
+      font-size: 13px; font-weight: 800; color: #9A5B1F; margin-bottom: 8px;
       letter-spacing: 0.3px; display: flex; align-items: center; gap: 5px;
     }
     .guide-actions { display: flex; flex-direction: column; gap: 8px; }
-    .guide-actions .btn { padding: 12px 14px; font-size: 14.5px; }
-    /* 底部固定導覽 */
+    .guide-actions .btn { padding: 12px 14px; font-size: 15px; }
+    /* 底部明亮象牙白三頁導覽 */
     .bottom-nav {
-      position: fixed; bottom: 0; left: 0; right: 0; background: var(--navy-dark);
-      border-top: 2px solid var(--gold); display: flex; z-index: 50; padding-bottom: env(safe-area-inset-bottom);
+      position: fixed; bottom: 0; left: 0; right: 0; background: #FFFFFF;
+      border-top: 2px solid var(--milk-tea); display: flex; z-index: 50;
+      box-shadow: 0 -4px 16px rgba(62,48,36,0.08); padding-bottom: env(safe-area-inset-bottom);
     }
     .nav-btn {
-      flex: 1; background: none; border: none; color: #94a3b8; padding: 10px 4px 12px;
-      font-size: 12px; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px;
+      flex: 1; background: none; border: none; color: var(--text-sub); padding: 10px 4px 12px;
+      font-size: 12.5px; font-weight: 800; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px;
+      transition: 0.18s;
     }
     .nav-btn .ico { font-size: 19px; }
-    .nav-btn.active { color: #fbbf24; background: rgba(197,160,89,0.12); }
+    .nav-btn.active { color: var(--espresso); background: var(--cream-soft); box-shadow: inset 0 3px 0 var(--caramel); }
     .loading-mask {
-      position: fixed; inset: 0; background: rgba(11,19,43,0.78); z-index: 99;
-      display: none; flex-direction: column; align-items: center; justify-content: center; color: #fff;
+      position: fixed; inset: 0; background: rgba(62,48,36,0.62); z-index: 99;
+      display: none; flex-direction: column; align-items: center; justify-content: center; color: #FFFDF9;
+      backdrop-filter: blur(2px);
     }
     .spinner {
-      width: 42px; height: 42px; border: 4px solid rgba(255,255,255,0.25);
-      border-top-color: #fbbf24; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 10px;
+      width: 42px; height: 42px; border: 4px solid rgba(255,253,249,0.3);
+      border-top-color: #E8C79B; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 10px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
     .toast {
       position: fixed; top: 76px; left: 50%; transform: translateX(-50%); z-index: 95;
-      background: #0f172a; color: #fde68a; padding: 12px 18px; border-radius: 10px;
-      font-size: 14px; font-weight: 700; border: 1px solid var(--gold); display: none; max-width: 92%; text-align: center;
+      background: var(--espresso); color: #FFF8EE; padding: 12px 18px; border-radius: 12px;
+      font-size: 14.5px; font-weight: 700; border: 1.5px solid var(--milk-tea); display: none;
+      max-width: 92%; text-align: center; box-shadow: 0 8px 22px rgba(62,48,36,0.28);
     }
     .hidden { display: none !important; }
   </style>
@@ -195,17 +231,20 @@
 <body>
   <header class="top-header">
     <div class="hdr-row">
-      <div>
-        <h1 class="hdr-title">📋 三貸同堂｜兩大核心數位表單系統</h1>
-        <div class="hdr-sub" id="hdrStaffTxt">請先驗證內部人員身分</div>
+      <div class="hdr-left">
+        <img src="./logo.jpg" alt="三貸同堂" class="brand-logo" onerror="this.style.display='none'">
+        <div>
+          <h1 class="hdr-title">三貸同堂｜兩大核心數位表單系統</h1>
+          <div class="hdr-sub" id="hdrStaffTxt">請先驗證內部人員身分</div>
+        </div>
       </div>
-      <div style="display:flex;gap:6px;align-items:center;">
-        <button class="btn btn-outline btn-sm" style="background:rgba(255,255,255,0.12);color:#fde68a;border-color:#c5a059;" onclick="openSiblingPage('staff.html','tab=my')">🌊 工作台</button>
-        <button class="btn btn-outline btn-sm" style="background:rgba(255,255,255,0.12);color:#fde68a;border-color:#c5a059;" onclick="initWorkspace()">🔄 刷新</button>
+      <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">
+        <button class="hdr-btn" onclick="openSiblingPage('staff.html','tab=my')">🌊 工作台</button>
+        <button class="hdr-btn" onclick="initWorkspace()">🔄 刷新</button>
       </div>
     </div>
     <div id="casePickerWrap" class="case-picker-bar hidden">
-      <div style="font-size:11.5px;color:#fde68a;font-weight:700;margin-bottom:4px;">🔗 關聯水庫案件（選擇後自動帶入客戶資料、角色與鎖定引流人）：</div>
+      <div style="font-size:12.5px;color:#8A5316;font-weight:800;margin-bottom:5px;">🔗 關聯水庫案件（選擇後自動帶入客戶資料、角色與鎖定引流人）：</div>
       <select id="globalCaseSelect" onchange="onGlobalCaseChange()"></select>
     </div>
   </header>
@@ -214,7 +253,7 @@
     <div class="spinner"></div>
     <div id="loadingText" style="font-weight:700;font-size:15px;">雲端加密處理中...</div>
   </div>
-  <!-- V7.1 全動線下一步自動引導彈窗 -->
+  <!-- 全動線下一步自動引導彈窗 -->
   <div id="guideMask" class="guide-mask" onclick="if(event.target===this) closeNextStepModal();">
     <div class="guide-modal">
       <div class="guide-hdr">
@@ -233,7 +272,7 @@
   <div id="loginWall" class="container hidden">
     <div class="card">
       <div class="section-title">🔐 數位表單系統・內部人員驗證</div>
-      <p style="font-size:13.5px;color:#475569;margin-top:0;">
+      <p style="font-size:14px;color:#7A6A5B;margin-top:0;">
         輸入實名手機號碼完成驗證後，系統將與行動工作台共用本機登入狀態，下次秒開免重打：
       </p>
       <div class="form-group">
@@ -249,7 +288,6 @@
   </div>
   <!-- 主系統區塊 -->
   <main id="mainApp" class="container hidden">
-    <!-- V7.1 頂部智慧狀態引導條 -->
     <div id="formsSmartBanner" class="smart-banner hidden"></div>
     <!-- ================================================================ -->
     <!-- 分頁 1：《數位化客戶資料表》（初審收件與三大負債資產盤點）          -->
@@ -419,9 +457,9 @@
           <div class="form-group"><label>介紹人回佣金額 (元)</label><input type="number" id="dfIntroFee" value="0" oninput="recalcDealSummary()"></div>
         </div>
         <div class="upload-box">
-          <div style="font-size:14px;font-weight:800;color:#0b132b;margin-bottom:6px;">📸 介紹人存封／匯款憑證手機拍照上傳</div>
+          <div style="font-size:14.5px;font-weight:900;color:#3E3024;margin-bottom:7px;">📸 介紹人存封／匯款憑證手機拍照上傳</div>
           <input type="file" id="dfReceiptFile" accept="image/*" capture="environment" onchange="handleReceiptPhotoSelect(this)">
-          <div id="receiptUploadStatus" style="font-size:12.5px;color:#475569;margin-top:6px;">支援直接開啟手機相機拍照，系統自動壓縮並存檔至劉總雲端硬碟</div>
+          <div id="receiptUploadStatus" style="font-size:13px;color:#7A6A5B;margin-top:7px;">支援直接開啟手機相機拍照，系統自動壓縮並存檔至劉總雲端硬碟</div>
           <img id="receiptPreviewImg" class="upload-preview" alt="存封預覽圖">
           <div id="existingReceiptLinkWrap" style="margin-top:8px;"></div>
         </div>
@@ -435,7 +473,7 @@
           <div class="form-group"><label>📣 引流人員（官方LINE分享鎖定）</label><select id="dfBindRef" onchange="recalcDealSummary()"></select></div>
         </div>
         <div class="comm-summary-box">
-          <div style="font-size:13px;color:#cbd5e1;">實際總佣收母數（前佣＋後佣－介紹人回佣）</div>
+          <div style="font-size:13.5px;color:#7A6A5B;font-weight:800;">實際總佣收母數（前佣＋後佣－介紹人回佣）</div>
           <div class="comm-big" id="dfNetCommDisplay">NT$ 0</div>
           <div id="dfSplitPreview" class="split-preview-grid"></div>
         </div>
@@ -446,8 +484,8 @@
     <!-- 分頁 3：已建檔表單紀錄與劉總紅線特批區                              -->
     <!-- ================================================================ -->
     <section id="tab-list" class="tab-pane">
-      <div id="bossRedlineSection" class="card hidden" style="border:2px solid #dc2626;background:#fef2f2;">
-        <div class="section-title" style="border-left-color:#dc2626;color:#991b1b;">🚨 劉總專屬：低於紅線待特批報件單</div>
+      <div id="bossRedlineSection" class="card hidden" style="border:2px solid #C53030;background:#FFF5F5;">
+        <div class="section-title" style="border-left-color:#C53030;color:#9B1C1C;">🚨 劉總專屬：低於紅線待特批報件單</div>
         <div id="bossRedlineList"></div>
       </div>
       <div class="card">
@@ -458,7 +496,7 @@
         <div class="section-title">📋 近期《數位化客戶資料表》紀錄</div>
         <div id="clientRecordsList"></div>
       </div>
-      <button class="btn btn-outline" style="color:#64748b;margin-top:4px;" onclick="logoutFormsSession()">🔄 切換登入帳號／清除本機記憶</button>
+      <button class="btn btn-outline" style="color:#7A6A5B;margin-top:4px;" onclick="logoutFormsSession()">🔄 切換登入帳號／清除本機記憶</button>
     </section>
   </main>
   <nav class="bottom-nav">
@@ -467,7 +505,7 @@
     <button class="nav-btn" id="nav-list" onclick="switchTab('list')"><span class="ico">🗂️</span><span>歷史/特批</span></button>
   </nav>
   <script>
-    // ==================== V7.1 GitHub Pages ➔ GAS JSON API 橋接中樞 ====================
+    // ==================== V7.3 GitHub Pages ➔ GAS JSON API 橋接中樞 ====================
     var GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzofnwdYqJprOQIu_4vXmtqoWT_uyfnxg27otb9u_CxHX8m_0D2qYTTX8NBqTMxlQNzZg/exec';
     var STAFF_STORAGE_KEY = 'THREELOANS_STAFF_SESSION_V7';
     function parseUrlParams() {
@@ -556,7 +594,7 @@
         document.getElementById('loginWall').classList.remove('hidden');
       }
     });
-    // ==================== V7.1 全動線自動引導引擎 ====================
+    // ==================== 全動線自動引導引擎 ====================
     var GUIDE_HANDLERS = [];
     function openSiblingPage(fileName, extraQuery) {
       var qs = [];
@@ -593,7 +631,7 @@
         GUIDE_HANDLERS.push(act);
         var cls = act.btnClass || (idx === 0 ? 'btn-gold' : 'btn-outline');
         return '<button class="btn ' + cls + '" onclick="runGuideAction(' + idx + ')">' + esc(act.label) + '</button>';
-      }).join('') + '<button class="btn btn-outline" style="color:#64748b;border-color:#cbd5e1;" onclick="closeNextStepModal()">留在目前畫面</button>';
+      }).join('') + '<button class="btn btn-outline" style="color:#7A6A5B;border-color:#D9C9B6;" onclick="closeNextStepModal()">留在目前畫面</button>';
       document.getElementById('guideMask').classList.add('show');
     }
     function runGuideAction(idx) {
@@ -1083,7 +1121,7 @@
       ];
       document.getElementById('dfSplitPreview').innerHTML = nodes.map(function(n) {
         var amt = n.code ? Math.round(net * (Number(n.r || 0) / 100)) : 0;
-        return '<div class="split-chip">' + n.label + ' (' + n.r + '%)：<b>$' + amt.toLocaleString() + '</b></div>';
+        return '<div class="split-chip">' + n.label + ' (' + n.r + '%)：<b style="color:#9A5B1F;">$' + amt.toLocaleString() + '</b></div>';
       }).join('');
     }
     function submitClientForm() {
@@ -1296,9 +1334,9 @@
       if (res.staff.isBoss && pending.length > 0) {
         redSec.classList.remove('hidden');
         document.getElementById('bossRedlineList').innerHTML = pending.map(function(d) {
-          return '<div class="record-item" style="border-color:#dc2626;">' +
-            '<b>' + esc(d['客戶姓名']) + '</b>（' + esc(d['產品專案名稱']) + '）<br>' +
-            '<span style="font-size:12.5px;color:#991b1b;">費率：<b>' + esc(d['服務費率百分比']) + '%</b>｜實收佣金：$' + Number(d['實際總佣收母數'] || 0).toLocaleString() + '｜報件號：' + esc(d['報件單號']) + '</span>' +
+          return '<div class="record-item" style="border-color:#C53030;background:#FFFFFF;">' +
+            '<b style="color:#3E3024;">' + esc(d['客戶姓名']) + '</b>（' + esc(d['產品專案名稱']) + '）<br>' +
+            '<span style="font-size:13px;color:#9B1C1C;">費率：<b>' + esc(d['服務費率百分比']) + '%</b>｜實收佣金：$' + Number(d['實際總佣收母數'] || 0).toLocaleString() + '｜報件號：' + esc(d['報件單號']) + '</span>' +
             '<div class="grid-2" style="margin-top:8px;">' +
             '<button class="btn btn-success btn-sm" style="width:100%;" onclick="bossApproveRedline(\'' + esc(d['報件單號']) + '\',\'APPROVE\')">✅ 劉總特批放行</button>' +
             '<button class="btn btn-danger btn-sm" style="width:100%;" onclick="bossApproveRedline(\'' + esc(d['報件單號']) + '\',\'REJECT\')">❌ 駁回調整</button>' +
@@ -1309,23 +1347,23 @@
       }
       var deals = res.dealForms || [];
       document.getElementById('dealRecordsList').innerHTML = deals.length === 0
-        ? '<div style="color:#64748b;font-size:13px;text-align:center;">尚無業績報件紀錄</div>'
+        ? '<div style="color:#7A6A5B;font-size:13.5px;text-align:center;">尚無業績報件紀錄</div>'
         : deals.map(function(d) {
             var isRed = String(d['紅線特批狀態']) === '待劉總特批';
             return '<div class="record-item">' +
-              '<div style="display:flex;justify-content:space-between;"><b>' + esc(d['客戶姓名']) + '｜' + esc(d['產品專案名稱']) + '</b><span class="badge ' + (isRed ? 'badge-red' : 'badge-ok') + '">' + esc(d['紅線特批狀態']) + '</span></div>' +
-              '<div style="font-size:12.5px;color:#475569;margin-top:4px;">核准 ' + esc(d['核准額度萬'] || '-') + ' 萬｜費率 ' + esc(d['服務費率百分比']) + '%｜實收佣金 <b>$' + Number(d['實際總佣收母數'] || 0).toLocaleString() + '</b><br>' +
-              '算獎狀態：' + esc(d['算獎拋轉狀態']) + (d['存封拍照雲端連結'] ? ('｜<a href="' + esc(d['存封拍照雲端連結']) + '" target="_blank" rel="noopener">📸 存封</a>') : '') + '</div>' +
+              '<div style="display:flex;justify-content:space-between;gap:8px;"><b style="color:#3E3024;">' + esc(d['客戶姓名']) + '｜' + esc(d['產品專案名稱']) + '</b><span class="badge ' + (isRed ? 'badge-red' : 'badge-ok') + '">' + esc(d['紅線特批狀態']) + '</span></div>' +
+              '<div style="font-size:13px;color:#5C4735;margin-top:4px;">核准 ' + esc(d['核准額度萬'] || '-') + ' 萬｜費率 ' + esc(d['服務費率百分比']) + '%｜實收佣金 <b style="color:#9A5B1F;">$' + Number(d['實際總佣收母數'] || 0).toLocaleString() + '</b><br>' +
+              '算獎狀態：' + esc(d['算獎拋轉狀態']) + (d['存封拍照雲端連結'] ? ('｜<a style="color:#1E7E5A;font-weight:800;" href="' + esc(d['存封拍照雲端連結']) + '" target="_blank" rel="noopener">📸 存封</a>') : '') + '</div>' +
               (d['案件編號'] ? '<button class="btn btn-outline btn-sm" style="margin-top:8px;" onclick="loadCaseToTab(\'' + esc(d['案件編號']) + '\',\'deal\')">✏️ 載入編輯</button>' : '') +
             '</div>';
           }).join('');
       var cfs = res.clientForms || [];
       document.getElementById('clientRecordsList').innerHTML = cfs.length === 0
-        ? '<div style="color:#64748b;font-size:13px;text-align:center;">尚無客戶資料表紀錄</div>'
+        ? '<div style="color:#7A6A5B;font-size:13.5px;text-align:center;">尚無客戶資料表紀錄</div>'
         : cfs.map(function(f) {
             return '<div class="record-item">' +
-              '<div style="display:flex;justify-content:space-between;"><b>' + esc(f['客戶姓名']) + ' (' + esc(f['手機號碼']) + ')</b><span class="badge badge-blue">' + esc(f['客戶資料表單號']) + '</span></div>' +
-              '<div style="font-size:12.5px;color:#475569;margin-top:4px;">類別：' + esc(f['申辦業務類別']) + '｜經辦：' + esc(f['綁定_經辦人員'] || '-') + '｜引流：' + esc(f['綁定_引流人員'] || '-') + '</div>' +
+              '<div style="display:flex;justify-content:space-between;gap:8px;"><b style="color:#3E3024;">' + esc(f['客戶姓名']) + ' (' + esc(f['手機號碼']) + ')</b><span class="badge badge-blue">' + esc(f['客戶資料表單號']) + '</span></div>' +
+              '<div style="font-size:13px;color:#5C4735;margin-top:4px;">類別：' + esc(f['申辦業務類別']) + '｜經辦：' + esc(f['綁定_經辦人員'] || '-') + '｜引流：' + esc(f['綁定_引流人員'] || '-') + '</div>' +
               (f['案件編號'] ? '<button class="btn btn-outline btn-sm" style="margin-top:8px;" onclick="loadCaseToTab(\'' + esc(f['案件編號']) + '\',\'client\')">✏️ 載入編輯</button>' : '') +
             '</div>';
           }).join('');
