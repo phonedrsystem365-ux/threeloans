@@ -4,127 +4,163 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>三貸同堂｜客戶服務、雲端官網與五重防偽簽單中心</title>
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="三貸同堂｜免費額度初評與雲端服務中心">
+  <meta property="og:description" content="專業有價・信任無價｜初步評估不拉聯徵、核准對保前 0 元收費、全程保密。">
+  <meta property="og:image" content="https://phonedrsystem365-ux.github.io/threeloans/logo.jpg">
   <style>
     :root {
-      --navy-dark: #0b132b;
-      --navy-mid: #1c2541;
-      --gold: #c5a059;
-      --gold-bright: #f59e0b;
-      --gold-light: #fef3c7;
-      --bg: #f1f5f9;
-      --card: #ffffff;
-      --text-main: #0f172a;
-      --text-sub: #475569;
-      --success: #059669;
-      --danger: #dc2626;
-      --border: #e2e8f0;
+      --espresso: #3E3024;
+      --espresso-mid: #5C4735;
+      --milk-tea: #C8A882;
+      --milk-tea-deep: #A67F53;
+      --caramel: #B87B3E;
+      --cream-soft: #F6EFE6;
+      --cream-warm: #EFE3D2;
+      --bg: #FAF7F2;
+      --card: #FFFFFF;
+      --text-main: #3E3024;
+      --text-sub: #7A6A5B;
+      --success: #1E7E5A;
+      --danger: #C53030;
+      --border: #E6D9C8;
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
-      margin: 0; padding: 0 0 84px 0;
+      margin: 0; padding: 0 0 88px 0;
       font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
-      background: var(--bg); color: var(--text-main); line-height: 1.6;
+      background: var(--bg); color: var(--text-main); line-height: 1.65;
     }
-    /* 頂部黑金商務導覽列 */
+    /* V7.3 頂部明亮奶茶品牌導覽列 */
     .top-header {
-      background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-mid) 100%);
-      color: #fff; padding: 18px 16px 20px; border-bottom: 3px solid var(--gold);
-      position: sticky; top: 0; z-index: 40; box-shadow: 0 4px 12px rgba(11,19,43,0.22);
+      background: linear-gradient(180deg, #FFFFFF 0%, #FAF3E8 100%);
+      color: var(--espresso); padding: 14px 16px 15px; border-bottom: 2.5px solid var(--milk-tea);
+      position: sticky; top: 0; z-index: 40; box-shadow: 0 4px 14px rgba(62,48,36,0.07);
     }
-    .brand-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-    .brand-title { font-size: 20px; font-weight: 800; color: #fbbf24; letter-spacing: 1px; margin: 0; }
-    .brand-sub { font-size: 12px; color: #cbd5e1; margin-top: 2px; }
+    .brand-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .brand-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .brand-logo {
+      width: 46px; height: 46px; object-fit: contain; border-radius: 12px;
+      background: #FFFFFF; border: 1.5px solid var(--border); padding: 2px;
+      flex-shrink: 0; box-shadow: 0 2px 6px rgba(62,48,36,0.08);
+    }
+    .brand-title { font-size: 20px; font-weight: 900; color: var(--espresso); letter-spacing: 0.8px; margin: 0; line-height: 1.25; }
+    .brand-sub { font-size: 12.5px; color: var(--text-sub); margin-top: 2px; font-weight: 600; }
     .phone-chip {
-      background: rgba(197,160,89,0.2); border: 1px solid var(--gold); color: #fde68a;
-      padding: 5px 10px; border-radius: 99px; font-size: 12px; font-weight: 700; text-decoration: none; white-space: nowrap;
+      background: var(--cream-soft); border: 1.5px solid var(--milk-tea); color: var(--espresso);
+      padding: 7px 12px; border-radius: 99px; font-size: 13px; font-weight: 800; text-decoration: none; white-space: nowrap;
+      box-shadow: 0 2px 6px rgba(166,127,83,0.14);
     }
     .ref-banner {
-      margin-top: 10px; background: rgba(16,185,129,0.18); border: 1px solid #34d399;
-      color: #a7f3d0; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; display: none;
+      margin-top: 10px; background: #EAF7F1; border: 1.5px solid #68C39F;
+      color: #145C41; padding: 7px 12px; border-radius: 10px; font-size: 13.5px; font-weight: 700; display: none;
     }
     /* 主內容區 */
     .container { max-width: 680px; margin: 0 auto; padding: 14px; }
     .tab-pane { display: none; animation: fadeIn 0.25s ease; }
     .tab-pane.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-    /* V7.1 智慧狀態與步驟引導條 */
+    /* V7.3 智慧狀態與步驟引導條 */
     .smart-banner {
       display: flex; justify-content: space-between; align-items: center; gap: 10px;
-      padding: 11px 13px; border-radius: 12px; margin-bottom: 12px; font-size: 13px;
-      border: 1.5px solid #93c5fd; background: #eff6ff; color: #1e3a8a;
+      padding: 12px 14px; border-radius: 12px; margin-bottom: 12px; font-size: 14px;
+      border: 1.5px solid #D6B996; background: #FDF7EE; color: var(--espresso);
     }
-    .smart-banner.warn { border-color: #fcd34d; background: #fffbeb; color: #92400e; }
-    .smart-banner.ok { border-color: #6ee7b7; background: #ecfdf5; color: #065f46; }
-    .smart-banner.danger { border-color: #fca5a5; background: #fef2f2; color: #991b1b; }
-    .smart-banner-txt { flex: 1; line-height: 1.45; }
+    .smart-banner.warn { border-color: #E3B26B; background: #FFF8EB; color: #7C4D16; }
+    .smart-banner.ok { border-color: #7AD0AE; background: #EDF9F3; color: #145C41; }
+    .smart-banner.danger { border-color: #F3A6A6; background: #FEF2F2; color: #9B1C1C; }
+    .smart-banner-txt { flex: 1; line-height: 1.5; }
     .card {
-      background: var(--card); border-radius: 14px; padding: 18px; margin-bottom: 14px;
-      box-shadow: 0 2px 10px rgba(15,23,42,0.06); border: 1px solid var(--border);
+      background: var(--card); border-radius: 16px; padding: 18px; margin-bottom: 14px;
+      box-shadow: 0 4px 16px rgba(62,48,36,0.06); border: 1px solid var(--border);
     }
+    /* 原暗色卡片全面升級為明亮暖奶茶尊榮卡片 */
     .card-navy {
-      background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid));
-      color: #fff; border: 1px solid var(--gold);
+      background: linear-gradient(145deg, #FFFFFF 0%, #F7EDE0 100%);
+      color: var(--espresso); border: 1.5px solid var(--milk-tea);
+      box-shadow: 0 6px 20px rgba(166,127,83,0.14);
+    }
+    .hero-emblem-row {
+      display: flex; align-items: center; gap: 14px; margin-bottom: 12px;
+      padding-bottom: 12px; border-bottom: 1px dashed rgba(166,127,83,0.35);
+    }
+    .hero-logo {
+      width: 72px; height: 72px; object-fit: contain; border-radius: 14px;
+      background: #FFFFFF; border: 1.5px solid var(--border); padding: 4px; flex-shrink: 0;
     }
     .section-title {
-      font-size: 18px; font-weight: 800; color: var(--navy-dark); margin: 0 0 12px 0;
-      padding-left: 10px; border-left: 4px solid var(--gold-bright);
+      font-size: 18px; font-weight: 900; color: var(--espresso); margin: 0 0 12px 0;
+      padding-left: 11px; border-left: 4px solid var(--milk-tea-deep);
     }
-    .card-navy .section-title { color: #fbbf24; border-left-color: #fbbf24; }
-    /* 表單元素 (大字體防 iOS 縮放) */
-    .form-group { margin-bottom: 14px; }
-    label { display: block; font-size: 14px; font-weight: 700; color: var(--navy-mid); margin-bottom: 6px; }
+    .card-navy .section-title { color: var(--espresso); border-left-color: var(--caramel); }
+    /* 表單元素 (大字體防 iOS 縮放，長輩易讀) */
+    .form-group { margin-bottom: 15px; }
+    label { display: block; font-size: 15px; font-weight: 800; color: var(--espresso-mid); margin-bottom: 6px; }
     input[type="text"], input[type="tel"], input[type="number"], select, textarea {
-      width: 100%; padding: 13px 14px; font-size: 16px; border: 1.5px solid #cbd5e1;
-      border-radius: 10px; background: #fff; color: var(--text-main); outline: none; transition: 0.2s;
+      width: 100%; padding: 13px 14px; font-size: 16px; border: 1.5px solid #D9C9B6;
+      border-radius: 12px; background: #FFFDF9; color: var(--text-main); outline: none; transition: 0.2s;
     }
-    input:focus, select:focus, textarea:focus { border-color: var(--gold-bright); box-shadow: 0 0 0 3px rgba(245,158,11,0.18); }
+    input:focus, select:focus, textarea:focus {
+      background: #FFFFFF; border-color: var(--milk-tea-deep);
+      box-shadow: 0 0 0 3px rgba(200,168,130,0.28);
+    }
     /* 按鈕樣式 */
     .btn {
       display: inline-flex; justify-content: center; align-items: center; gap: 6px;
       width: 100%; padding: 14px 18px; border-radius: 12px; font-size: 16px; font-weight: 800;
       border: none; cursor: pointer; transition: 0.18s; text-decoration: none; text-align: center;
     }
-    .btn-gold { background: linear-gradient(135deg, #d97706, #f59e0b); color: #fff; box-shadow: 0 4px 12px rgba(217,119,6,0.3); }
-    .btn-navy { background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid)); color: #fde68a; border: 1px solid var(--gold); }
-    .btn-success { background: var(--success); color: #fff; }
-    .btn-outline { background: #fff; color: var(--navy-dark); border: 1.5px solid var(--navy-mid); }
-    .btn-sm { padding: 9px 14px; font-size: 13.5px; width: auto; white-space: nowrap; }
+    .btn-gold {
+      background: linear-gradient(135deg, #B98B56 0%, #D1AC7E 100%);
+      color: #FFFFFF; box-shadow: 0 5px 14px rgba(166,127,83,0.32);
+    }
+    .btn-navy {
+      background: linear-gradient(135deg, #4B392B 0%, #654E3B 100%);
+      color: #FFF8EE; border: 1px solid #8A6B4E; box-shadow: 0 4px 12px rgba(62,48,36,0.18);
+    }
+    .btn-success { background: var(--success); color: #FFFFFF; box-shadow: 0 4px 10px rgba(30,126,90,0.22); }
+    .btn-outline { background: #FFFFFF; color: var(--espresso); border: 1.5px solid var(--milk-tea-deep); }
+    .btn-sm { padding: 9px 14px; font-size: 14px; width: auto; white-space: nowrap; }
     .btn:disabled { opacity: 0.55; cursor: not-allowed; }
     .btn-pulse { animation: pulseGold 1.4s ease-in-out 3; }
     @keyframes pulseGold {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.6); }
-      50% { box-shadow: 0 0 0 11px rgba(245,158,11,0); }
+      0%, 100% { box-shadow: 0 0 0 0 rgba(185,139,86,0.65); }
+      50% { box-shadow: 0 0 0 11px rgba(185,139,86,0); }
     }
     /* 官網產品分類藥丸切換 */
     .pill-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 12px; }
     .pill-btn {
-      flex: 0 0 auto; padding: 8px 14px; border-radius: 99px; font-size: 14px; font-weight: 700;
-      border: 1.5px solid var(--navy-mid); background: #fff; color: var(--navy-mid); cursor: pointer;
+      flex: 0 0 auto; padding: 9px 15px; border-radius: 99px; font-size: 14.5px; font-weight: 800;
+      border: 1.5px solid #D4BFA6; background: #FFFDF9; color: var(--espresso-mid); cursor: pointer;
     }
-    .pill-btn.active { background: var(--navy-dark); color: #fde047; border-color: var(--gold); }
+    .pill-btn.active { background: var(--espresso); color: #FFF8EE; border-color: var(--espresso); }
     .promise-box {
-      background: #fffbeb; border: 1.5px solid #f59e0b; border-radius: 10px; padding: 12px;
-      color: #92400e; font-size: 13.5px; font-weight: 700; margin: 12px 0;
+      background: #FDF7EC; border: 1.5px solid var(--milk-tea); border-radius: 12px; padding: 13px;
+      color: #6E4B23; font-size: 14px; font-weight: 700; margin: 12px 0; line-height: 1.75;
     }
     .antifraud-box {
-      background: #fef2f2; border: 1.5px solid #ef4444; border-radius: 10px; padding: 12px;
-      color: #991b1b; font-size: 13px; margin-top: 10px;
+      background: #FFF5F5; border: 1.5px solid #E89A9A; border-radius: 12px; padding: 13px;
+      color: #8E2424; font-size: 13.5px; margin-top: 10px; line-height: 1.75;
     }
-    /* 試算器大數字顯示面板 */
+    /* 試算器大數字顯示面板（明亮暖金卡片） */
     .calc-result-box {
-      background: linear-gradient(135deg, var(--navy-dark), #1e3a8a); color: #fff;
-      border-radius: 14px; padding: 18px; text-align: center; margin: 14px 0; border: 1.5px solid var(--gold);
+      background: linear-gradient(145deg, #FFFDF9 0%, #F4E6D3 100%); color: var(--espresso);
+      border-radius: 16px; padding: 18px; text-align: center; margin: 14px 0;
+      border: 2px solid var(--milk-tea); box-shadow: 0 6px 18px rgba(166,127,83,0.14);
     }
-    .calc-monthly { font-size: 34px; font-weight: 900; color: #fbbf24; margin: 4px 0; }
-    .calc-meta { display: flex; justify-content: space-around; margin-top: 10px; font-size: 13px; color: #cbd5e1; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 10px; }
-    input[type="range"] { width: 100%; accent-color: #d97706; height: 8px; margin-top: 6px; }
-    .range-header { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; }
-    .range-val { color: #b45309; font-size: 16px; }
+    .calc-monthly { font-size: 36px; font-weight: 900; color: #9A5B1F; margin: 4px 0; letter-spacing: 0.5px; }
+    .calc-meta {
+      display: flex; justify-content: space-around; margin-top: 10px; font-size: 14px;
+      color: var(--espresso-mid); border-top: 1px dashed rgba(166,127,83,0.45); padding-top: 10px;
+    }
+    input[type="range"] { width: 100%; accent-color: #B4834E; height: 8px; margin-top: 6px; }
+    .range-header { display: flex; justify-content: space-between; font-size: 15px; font-weight: 800; color: var(--espresso); }
+    .range-val { color: #9A5B1F; font-size: 17px; font-weight: 900; }
     /* 服務履歷 7 節點視覺進度條 */
     .stepper { display: flex; justify-content: space-between; position: relative; margin: 18px 0 12px; padding: 0 2px; }
     .stepper::before {
       content: ''; position: absolute; top: 13px; left: 10px; right: 10px; height: 4px;
-      background: #e2e8f0; z-index: 1; border-radius: 2px;
+      background: #EAE0D3; z-index: 1; border-radius: 2px;
     }
     .stepper-fill {
       position: absolute; top: 13px; left: 10px; height: 4px; background: var(--success);
@@ -132,117 +168,122 @@
     }
     .step-item { position: relative; z-index: 3; text-align: center; flex: 1; }
     .step-dot {
-      width: 28px; height: 28px; border-radius: 50%; background: #e2e8f0; color: #64748b;
+      width: 28px; height: 28px; border-radius: 50%; background: #EAE0D3; color: var(--text-sub);
       display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800;
-      border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      border: 2px solid #FFFFFF; box-shadow: 0 2px 4px rgba(62,48,36,0.1);
     }
-    .step-item.done .step-dot { background: var(--success); color: #fff; }
-    .step-item.current .step-dot { background: var(--gold-bright); color: #fff; transform: scale(1.15); }
-    .step-label { font-size: 11px; margin-top: 4px; color: #64748b; font-weight: 700; line-height: 1.2; }
-    .step-item.current .step-label { color: #b45309; }
+    .step-item.done .step-dot { background: var(--success); color: #FFFFFF; }
+    .step-item.current .step-dot { background: var(--caramel); color: #FFFFFF; transform: scale(1.15); }
+    .step-label { font-size: 11.5px; margin-top: 4px; color: var(--text-sub); font-weight: 700; line-height: 1.2; }
+    .step-item.current .step-label { color: #9A5B1F; font-weight: 900; }
     .status-badge {
-      display: inline-block; padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: 800;
-      background: #dbeafe; color: #1e40af;
+      display: inline-block; padding: 4px 11px; border-radius: 99px; font-size: 12.5px; font-weight: 800;
+      background: #F4E8D7; color: #7C5225; border: 1px solid #DFC4A3;
     }
     /* 五重防偽電子簽名畫布 */
     .contract-scroll {
-      max-height: 210px; overflow-y: auto; background: #f8fafc; border: 1.5px solid #cbd5e1;
-      border-radius: 10px; padding: 14px; font-size: 13.5px; white-space: pre-wrap; color: #1e293b;
-      margin-bottom: 12px;
+      max-height: 220px; overflow-y: auto; background: #FCF9F4; border: 1.5px solid var(--border);
+      border-radius: 12px; padding: 14px; font-size: 14px; white-space: pre-wrap; color: var(--espresso);
+      margin-bottom: 12px; line-height: 1.7;
     }
     .canvas-wrap {
-      border: 2px dashed var(--gold); border-radius: 12px; background: #fffdf7;
+      border: 2px dashed var(--milk-tea-deep); border-radius: 14px; background: #FFFDF9;
       position: relative; overflow: hidden; touch-action: none;
     }
     #sigCanvas { width: 100%; height: 210px; display: block; touch-action: none; cursor: crosshair; }
     .canvas-placeholder {
       position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      color: #cbd5e1; font-size: 18px; font-weight: 800; pointer-events: none; text-align: center;
+      color: #C8B7A6; font-size: 18px; font-weight: 800; pointer-events: none; text-align: center;
     }
     .gps-box {
-      background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 10px; padding: 12px;
-      margin: 12px 0; font-size: 13.5px; color: #166534;
+      background: #EDF9F3; border: 1.5px solid #7AD0AE; border-radius: 12px; padding: 12px;
+      margin: 12px 0; font-size: 14px; color: #145C41;
     }
-    .gps-box.pending { background: #fff7ed; border-color: #fdba74; color: #9a3412; }
+    .gps-box.pending { background: #FFF8EB; border-color: #E3B26B; color: #8A5316; }
     .five-checks {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 10px 0 12px; font-size: 12.5px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0 12px; font-size: 13px;
     }
-    .check-pill { background: #f1f5f9; padding: 6px 8px; border-radius: 8px; color: #475569; font-weight: 700; }
-    .check-pill.ok { background: #dcfce7; color: #166534; }
-    /* V7.1 下一步自動引導彈窗 */
+    .check-pill { background: var(--cream-soft); padding: 7px 9px; border-radius: 9px; color: var(--text-sub); font-weight: 700; border: 1px solid var(--border); }
+    .check-pill.ok { background: #E7F7EF; color: #145C41; border-color: #8FD4B6; }
+    /* V7.3 下一步自動引導彈窗（明亮暖奶茶版） */
     .guide-mask {
-      position: fixed; inset: 0; background: rgba(11,19,43,0.72); z-index: 92;
+      position: fixed; inset: 0; background: rgba(62,48,36,0.52); z-index: 92;
       display: none; align-items: center; justify-content: center; padding: 16px;
-      backdrop-filter: blur(2px);
+      backdrop-filter: blur(3px);
     }
     .guide-mask.show { display: flex; animation: fadeIn 0.18s ease; }
     .guide-modal {
-      width: 100%; max-width: 440px; background: #fff; border-radius: 16px;
-      border: 2px solid var(--gold); overflow: hidden; box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+      width: 100%; max-width: 440px; background: #FFFFFF; border-radius: 18px;
+      border: 2px solid var(--milk-tea); overflow: hidden; box-shadow: 0 18px 40px rgba(62,48,36,0.22);
     }
     .guide-hdr {
-      background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid));
-      color: #fbbf24; padding: 14px 16px; font-size: 16px; font-weight: 900;
+      background: linear-gradient(135deg, #FAF1E4 0%, #EFE0CB 100%);
+      color: var(--espresso); padding: 15px 16px; font-size: 16.5px; font-weight: 900;
       display: flex; justify-content: space-between; align-items: center; gap: 8px;
-      border-bottom: 2px solid var(--gold);
+      border-bottom: 2px solid var(--milk-tea);
     }
     .guide-close {
-      background: rgba(255,255,255,0.12); color: #e2e8f0; border: none; border-radius: 8px;
-      width: 28px; height: 28px; font-size: 16px; font-weight: 900; cursor: pointer;
+      background: rgba(62,48,36,0.1); color: var(--espresso); border: none; border-radius: 8px;
+      width: 30px; height: 30px; font-size: 16px; font-weight: 900; cursor: pointer;
     }
-    .guide-body { padding: 15px 16px 16px; font-size: 13.5px; color: #334155; }
-    .guide-desc { margin: 0 0 10px; line-height: 1.55; }
+    .guide-body { padding: 16px; font-size: 14px; color: var(--espresso-mid); }
+    .guide-desc { margin: 0 0 10px; line-height: 1.6; }
     .guide-extra {
-      background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px;
-      padding: 10px 12px; margin-bottom: 12px; font-size: 12.5px; color: #0f172a; line-height: 1.7;
+      background: #FCF9F4; border: 1px solid var(--border); border-radius: 12px;
+      padding: 11px 13px; margin-bottom: 12px; font-size: 13px; color: var(--espresso); line-height: 1.75;
       word-break: break-all;
     }
-    .guide-extra.gold { background: #fffbeb; border-color: #fcd34d; }
-    .guide-extra.ok { background: #ecfdf5; border-color: #6ee7b7; }
+    .guide-extra.gold { background: #FDF7EC; border-color: var(--milk-tea); }
+    .guide-extra.ok { background: #EDF9F3; border-color: #7AD0AE; }
     .guide-next-lbl {
-      font-size: 12px; font-weight: 800; color: #b45309; margin-bottom: 8px;
+      font-size: 13px; font-weight: 800; color: #9A5B1F; margin-bottom: 8px;
       letter-spacing: 0.3px; display: flex; align-items: center; gap: 5px;
     }
     .guide-actions { display: flex; flex-direction: column; gap: 8px; }
-    .guide-actions .btn { padding: 12px 14px; font-size: 14.5px; }
-    /* 底部固定四分頁導覽列 */
+    .guide-actions .btn { padding: 12px 14px; font-size: 15px; }
+    /* V7.3 底部明亮象牙白四分頁導覽列 */
     .bottom-nav {
-      position: fixed; bottom: 0; left: 0; right: 0; background: var(--navy-dark);
-      border-top: 2px solid var(--gold); display: flex; z-index: 50;
-      box-shadow: 0 -4px 14px rgba(0,0,0,0.2); padding-bottom: env(safe-area-inset-bottom);
+      position: fixed; bottom: 0; left: 0; right: 0; background: #FFFFFF;
+      border-top: 2px solid var(--milk-tea); display: flex; z-index: 50;
+      box-shadow: 0 -4px 16px rgba(62,48,36,0.08); padding-bottom: env(safe-area-inset-bottom);
     }
     .nav-btn {
-      flex: 1; background: none; border: none; color: #94a3b8; padding: 10px 4px 12px;
-      font-size: 12px; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px;
+      flex: 1; background: none; border: none; color: var(--text-sub); padding: 10px 4px 12px;
+      font-size: 12.5px; font-weight: 800; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px;
+      transition: 0.18s;
     }
     .nav-btn .ico { font-size: 20px; }
-    .nav-btn.active { color: #fbbf24; background: rgba(197,160,89,0.12); }
+    .nav-btn.active { color: var(--espresso); background: var(--cream-soft); box-shadow: inset 0 3px 0 var(--caramel); }
     /* 全螢幕 Loading 遮罩與彈窗提示 */
     .loading-mask {
-      position: fixed; inset: 0; background: rgba(11,19,43,0.75); z-index: 99;
-      display: none; flex-direction: column; align-items: center; justify-content: center; color: #fff;
+      position: fixed; inset: 0; background: rgba(62,48,36,0.62); z-index: 99;
+      display: none; flex-direction: column; align-items: center; justify-content: center; color: #FFFDF9;
+      backdrop-filter: blur(2px);
     }
     .spinner {
-      width: 44px; height: 44px; border: 4px solid rgba(255,255,255,0.25);
-      border-top-color: #fbbf24; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 12px;
+      width: 44px; height: 44px; border: 4px solid rgba(255,253,249,0.3);
+      border-top-color: #E8C79B; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 12px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
     .toast {
       position: fixed; top: 82px; left: 50%; transform: translateX(-50%); z-index: 95;
-      background: #0f172a; color: #fde68a; padding: 12px 20px; border-radius: 10px;
-      font-size: 14px; font-weight: 700; box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-      border: 1px solid var(--gold); display: none; max-width: 90%; text-align: center;
+      background: var(--espresso); color: #FFF8EE; padding: 12px 20px; border-radius: 12px;
+      font-size: 14.5px; font-weight: 700; box-shadow: 0 8px 22px rgba(62,48,36,0.28);
+      border: 1.5px solid var(--milk-tea); display: none; max-width: 90%; text-align: center;
     }
     .hidden { display: none !important; }
   </style>
 </head>
 <body>
-  <!-- 頂部品牌列 -->
+  <!-- 頂部明亮奶茶品牌列 -->
   <header class="top-header">
     <div class="brand-row">
-      <div>
-        <h1 class="brand-title" id="hdrBrandTitle">三貸同堂財務顧問</h1>
-        <div class="brand-sub">專業有價・信任無價｜25年貸款規劃實務經驗</div>
+      <div class="brand-left">
+        <img src="./logo.jpg" alt="三貸同堂" class="brand-logo" onerror="this.style.display='none'">
+        <div>
+          <h1 class="brand-title" id="hdrBrandTitle">三貸同堂財務顧問</h1>
+          <div class="brand-sub">專業有價・信任無價｜25年貸款規劃實務經驗</div>
+        </div>
       </div>
       <a class="phone-chip" href="tel:0800222969">📞 0800-222-969</a>
     </div>
@@ -274,11 +315,18 @@
     <!-- ================================================================ -->
     <section id="tab-home" class="tab-pane active">
       <div class="card card-navy">
-        <div class="section-title">🏛️ 關於三貸同堂｜創辦人麥克哥 25 年實務經驗</div>
-        <p style="font-size:14.5px;color:#e2e8f0;margin:0 0 12px;">
+        <div class="hero-emblem-row">
+          <img src="./logo.jpg" alt="三貸同堂金幣標誌" class="hero-logo" onerror="this.style.display='none'">
+          <div>
+            <div style="font-size:12px;font-weight:800;color:#A67F53;letter-spacing:1.2px;">THREE LOANS FINANCIAL</div>
+            <div style="font-size:19px;font-weight:900;color:#3E3024;margin-top:2px;">創辦人麥克哥 25 年實務領軍</div>
+            <div style="font-size:13px;color:#7A6A5B;font-weight:600;">銀行徵審・不動產代書・多元融資整合</div>
+          </div>
+        </div>
+        <p style="font-size:15px;color:#5C4735;margin:0 0 12px;line-height:1.7;">
           三貸同堂財務顧問有限公司由創辦人「麥克哥」領軍，深耕銀行徵審、代書不動產與多元融資管道超過 25 年。我們堅持先全面盤點客戶的收入、信用、負債結構與資金用途，量身打造最安全、低壓力的還款規劃。
         </p>
-        <div style="font-size:13px;color:#fde68a;line-height:1.8;">
+        <div style="font-size:13.5px;color:#6E4B23;font-weight:700;background:#FFFFFF;border:1px solid #E6D9C8;border-radius:10px;padding:10px 12px;line-height:1.8;">
           📍 高雄市苓雅區光華一路206號18樓之8<br>
           📞 免付費專線：0800-222-969
         </div>
@@ -292,7 +340,7 @@
           <button class="pill-btn" onclick="showProductInfo('car', this)">🚗 汽機車融資</button>
           <button class="pill-btn" onclick="showProductInfo('debt', this)">📉 負債整合/急件</button>
         </div>
-        <div id="productDetailBox" style="font-size:14px;color:#334155;"></div>
+        <div id="productDetailBox" style="font-size:14.5px;color:#5C4735;line-height:1.75;"></div>
       </div>
       <div class="card">
         <div class="section-title">🛡️ 公開收費標準與防詐騙四不嚴正聲明</div>
@@ -339,13 +387,13 @@
           <input type="range" id="rngRate" min="2.0" max="16.0" step="0.1" value="4.5" oninput="recalcLoan()">
         </div>
         <div class="calc-result-box">
-          <div style="font-size:13px;color:#cbd5e1;">預估每月應繳月付金（本息平均攤還）</div>
+          <div style="font-size:14px;color:#7A6A5B;font-weight:700;">預估每月應繳月付金（本息平均攤還）</div>
           <div class="calc-monthly" id="resMonthly">NT$ 9,322</div>
           <div class="calc-meta">
             <div>申辦額度：<b id="resTotalLoan">50 萬元</b></div>
             <div>預估總利息：<b id="resTotalInt">59,320 元</b></div>
           </div>
-          <button type="button" class="btn btn-gold" style="margin-top:12px;padding:11px 14px;font-size:14.5px;" onclick="scrollToLeadForm()">👇 滿意試算結果？前往下方 60 秒免費初評</button>
+          <button type="button" class="btn btn-gold" style="margin-top:14px;padding:12px 14px;font-size:15px;" onclick="scrollToLeadForm()">👇 滿意試算結果？前往下方 60 秒免費初評</button>
         </div>
       </div>
       <div class="card" id="leadFormCard">
@@ -382,7 +430,7 @@
           <textarea id="leadNote" rows="2" placeholder="簡述您的工作或資金需求，專員將提前為您配對最佳管道..."></textarea>
         </div>
         <button class="btn btn-gold" id="btnSubmitLead" onclick="submitLeadForm()">🚀 送出免費初評（不拉聯徵）</button>
-        <div id="leadSuccessBox" class="card hidden" style="margin-top:14px;background:#ecfdf5;border-color:#10b981;"></div>
+        <div id="leadSuccessBox" class="card hidden" style="margin-top:14px;background:#EDF9F3;border-color:#7AD0AE;"></div>
       </div>
     </section>
     <!-- ================================================================ -->
@@ -391,7 +439,7 @@
     <section id="tab-resume" class="tab-pane">
       <div id="resumeLoginCard" class="card">
         <div class="section-title">🔐 客戶服務履歷・實名驗證登入</div>
-        <p style="font-size:13.5px;color:#475569;margin-top:0;">
+        <p style="font-size:14.5px;color:#7A6A5B;margin-top:0;">
           本系統採「手機號碼 ＋ LINE 專屬 UID」雙重實名驗證保護個資。登入後可查詢即時申辦進度條、下載電子合約 PDF 及自主更新個人資料。
         </p>
         <div class="form-group">
@@ -402,10 +450,10 @@
       </div>
       <div id="resumeDashboard" class="hidden">
         <div class="card card-navy" style="padding:14px 18px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
             <div>
-              <div style="font-size:13px;color:#cbd5e1;">實名驗證通過</div>
-              <div style="font-size:19px;font-weight:800;color:#fbbf24;" id="resClientName">-</div>
+              <div style="font-size:13px;color:#7A6A5B;font-weight:700;">✅ 實名驗證通過</div>
+              <div style="font-size:19px;font-weight:900;color:#3E3024;" id="resClientName">-</div>
             </div>
             <button class="btn btn-outline btn-sm" onclick="logoutResume()">切換門號</button>
           </div>
@@ -415,7 +463,7 @@
         <div id="casesListContainer"></div>
         <div class="card" id="profileUpdateCard">
           <div class="section-title">✏️ 自主更新聯絡電話與職收資料</div>
-          <p style="font-size:12.5px;color:#b45309;background:#fffbeb;padding:8px 10px;border-radius:8px;margin-top:0;">
+          <p style="font-size:13px;color:#7C4D16;background:#FDF7EC;border:1px solid #E6D2B5;padding:9px 11px;border-radius:10px;margin-top:0;">
             🔒 為確保申辦安全與法規遵循，更新時系統將自動將您修改前之舊資料連同時間永久封存於歷史軌跡庫（只增不改）。
           </p>
           <div class="form-group">
@@ -480,7 +528,7 @@
           <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
             <div>
               <b>📍 步驟 1：手機 GPS 防偽經緯度定位</b>
-              <div id="gpsCoordText" style="font-size:12.5px;margin-top:2px;">尚未取得定位，請點擊右側按鈕授權定位</div>
+              <div id="gpsCoordText" style="font-size:13px;margin-top:2px;">尚未取得定位，請點擊右側按鈕授權定位</div>
             </div>
             <button type="button" class="btn btn-success btn-sm" onclick="acquireGPSLocation(false)">取得定位</button>
           </div>
@@ -489,11 +537,11 @@
         <div class="form-group" id="sigSectionBox">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
             <label style="margin:0;">✍️ 步驟 2：請於下方框內以手指親筆簽名 *</label>
-            <button type="button" class="btn btn-outline btn-sm" style="padding:4px 10px;font-size:12px;" onclick="clearSignatureCanvas()">清除重簽</button>
+            <button type="button" class="btn btn-outline btn-sm" style="padding:5px 11px;font-size:12.5px;" onclick="clearSignatureCanvas()">清除重簽</button>
           </div>
           <div class="canvas-wrap">
             <canvas id="sigCanvas"></canvas>
-            <div id="canvasHint" class="canvas-placeholder">請在此處親筆簽名<br><span style="font-size:12px;">(支援手機觸控筆跡)</span></div>
+            <div id="canvasHint" class="canvas-placeholder">請在此處親筆簽名<br><span style="font-size:13px;">(支援手機觸控筆跡)</span></div>
           </div>
         </div>
         <!-- 五重防偽即時狀態燈 -->
@@ -504,16 +552,16 @@
           <div class="check-pill ok">✅ ④ 伺服器標準時間</div>
           <div class="check-pill" id="chkGps" style="grid-column:1 / span 2;">⬜ ⑤ 手機 GPS 經緯度尚未定位</div>
         </div>
-        <label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;font-weight:600;margin-bottom:14px;cursor:pointer;">
-          <input type="checkbox" id="chkAgreeTerms" style="width:20px;height:20px;margin-top:2px;">
+        <label style="display:flex;align-items:flex-start;gap:8px;font-size:13.5px;font-weight:700;margin-bottom:14px;cursor:pointer;color:#5C4735;">
+          <input type="checkbox" id="chkAgreeTerms" style="width:21px;height:21px;margin-top:2px;accent-color:#B4834E;">
           <span>本人已詳閱上方契約條款，同意依中華民國《電子簽章法》以手機觸控簽名、實名手機、標準時間與 GPS 座標完成具法律效力之數位存證。</span>
         </label>
         <button class="btn btn-gold" id="btnSubmitSign" onclick="submitESignature()">🛡️ 確認簽署並立即產出防偽 PDF 憑據</button>
-        <div id="esignSuccessCard" class="card hidden" style="margin-top:14px;background:#ecfdf5;border:2px solid #059669;"></div>
+        <div id="esignSuccessCard" class="card hidden" style="margin-top:14px;background:#EDF9F3;border:2px solid #1E7E5A;"></div>
       </div>
     </section>
   </main>
-  <!-- 底部固定四分頁導覽列 -->
+  <!-- 底部明亮四分頁導覽列 -->
   <nav class="bottom-nav">
     <button class="nav-btn active" id="nav-home" onclick="switchTab('home')"><span class="ico">🏛️</span><span>品牌官網</span></button>
     <button class="nav-btn" id="nav-calc" onclick="switchTab('calc')"><span class="ico">🧮</span><span>額度試算</span></button>
@@ -521,7 +569,7 @@
     <button class="nav-btn" id="nav-esign" onclick="switchTab('esign')"><span class="ico">✍️</span><span>電子簽單</span></button>
   </nav>
   <script>
-    // ==================== V7.1 GitHub Pages ➔ GAS JSON API 橋接中樞 ====================
+    // ==================== V7.3 GitHub Pages ➔ GAS JSON API 橋接中樞 ====================
     var GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzofnwdYqJprOQIu_4vXmtqoWT_uyfnxg27otb9u_CxHX8m_0D2qYTTX8NBqTMxlQNzZg/exec';
     function parseUrlParams() {
       var obj = {};
@@ -619,16 +667,14 @@
       showProductInfo('credit');
       recalcLoan();
       updateCheckPills();
-      // 依據網址 ?tab= 或 ?dept= 自動切換分頁（0.3 秒無延遲即時切換）
       var initialTab = String(RAW_PARAMS.tab || RAW_PARAMS.dept || RAW_PARAMS.page || 'home').toLowerCase();
       if (initialTab === 'calc') switchTab('calc');
       else if (initialTab === 'resume') switchTab('resume');
       else if (initialTab === 'esign') switchTab('esign');
       else switchTab('home');
-      // 背景同步雲端合約範本、引流顧問與自動帶入資訊
       loadInitData();
     });
-    // ==================== V7.1 全動線自動引導引擎 ====================
+    // ==================== 全動線自動引導引擎 ====================
     var GUIDE_HANDLERS = [];
     function showNextStepModal(cfg) {
       document.getElementById('guideTitle').textContent = cfg.title || '✅ 操作已完成';
@@ -648,7 +694,7 @@
         GUIDE_HANDLERS.push(act);
         var cls = act.btnClass || (idx === 0 ? 'btn-gold' : 'btn-outline');
         return '<button class="btn ' + cls + '" onclick="runGuideAction(' + idx + ')">' + escHtml(act.label) + '</button>';
-      }).join('') + '<button class="btn btn-outline" style="color:#64748b;border-color:#cbd5e1;" onclick="closeNextStepModal()">留在目前畫面</button>';
+      }).join('') + '<button class="btn btn-outline" style="color:#7A6A5B;border-color:#D9C9B6;" onclick="closeNextStepModal()">留在目前畫面</button>';
       document.getElementById('guideMask').classList.add('show');
     }
     function runGuideAction(idx) {
@@ -743,7 +789,6 @@
         btnEl.classList.add('active');
       }
     }
-    // 載入後端初始資料（合約範本、引流推薦人、重複用戶自動帶入）
     function loadInitData() {
       google.script.run
         .withSuccessHandler(function(res) {
@@ -762,7 +807,7 @@
             var refInput = document.getElementById('leadRefCode');
             refInput.value = res.referrer.code;
             refInput.readOnly = true;
-            refInput.style.background = '#ecfdf5';
+            refInput.style.background = '#EDF9F3';
           }
           if (res.topicParam) {
             document.getElementById('leadTopic').value = res.topicParam;
@@ -846,8 +891,8 @@
           updateCheckPills();
           var box = document.getElementById('leadSuccessBox');
           box.classList.remove('hidden');
-          box.innerHTML = '<b style="color:#047857;font-size:16px;">🎉 免費額度初評留單成功！</b><br>' +
-            '<div style="font-size:13.5px;margin-top:6px;line-height:1.8;">' +
+          box.innerHTML = '<b style="color:#145C41;font-size:16px;">🎉 免費額度初評留單成功！</b><br>' +
+            '<div style="font-size:14px;margin-top:6px;line-height:1.8;color:#3E3024;">' +
             '📋 案件編號：<b>' + escHtml(res.caseId) + '</b><br>' +
             '🏅 歸屬顧問：<b>' + escHtml(res.refName) + '</b><br>' +
             '🛡️ 我們已安排資深專員依您指定的時段保密通話！</div>' +
@@ -942,23 +987,23 @@
         stepperHtml += '</div>';
         var docsHtml = '';
         if (c.signedDocs && c.signedDocs.length > 0) {
-          docsHtml = '<div style="margin-top:12px;border-top:1px solid #e2e8f0;padding-top:10px;"><b style="font-size:13.5px;color:#0f766e;">📄 已封存防偽電子憑據（點擊下載 PDF）：</b>';
+          docsHtml = '<div style="margin-top:12px;border-top:1px solid #E6D9C8;padding-top:10px;"><b style="font-size:14px;color:#145C41;">📄 已封存防偽電子憑據（點擊下載 PDF）：</b>';
           c.signedDocs.forEach(function(doc) {
-            docsHtml += '<div style="margin-top:6px;background:#f0fdf4;padding:8px 10px;border-radius:8px;font-size:12.5px;display:flex;justify-content:space-between;align-items:center;">' +
-              '<div><b>' + escHtml(doc.contractTitle) + '</b><br><span style="color:#64748b;">' + escHtml(doc.signedTime) + '</span></div>' +
-              '<a class="btn btn-success btn-sm" style="padding:6px 10px;font-size:12px;" href="' + escHtml(doc.pdfUrl) + '" target="_blank" rel="noopener">下載PDF</a></div>';
+            docsHtml += '<div style="margin-top:6px;background:#EDF9F3;border:1px solid #B5E4CE;padding:9px 11px;border-radius:10px;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:8px;">' +
+              '<div><b>' + escHtml(doc.contractTitle) + '</b><br><span style="color:#7A6A5B;">' + escHtml(doc.signedTime) + '</span></div>' +
+              '<a class="btn btn-success btn-sm" style="padding:6px 11px;font-size:12.5px;" href="' + escHtml(doc.pdfUrl) + '" target="_blank" rel="noopener">下載PDF</a></div>';
           });
           docsHtml += '</div>';
         }
         html += '<div class="card">' +
-          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
-            '<b style="font-size:15px;color:#0b132b;">📋 ' + escHtml(c.loanType) + '</b>' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:8px;">' +
+            '<b style="font-size:15.5px;color:#3E3024;">📋 ' + escHtml(c.loanType) + '</b>' +
             '<span class="status-badge">' + escHtml(c.currentNode) + '｜' + escHtml(c.status) + '</span>' +
           '</div>' +
-          '<div style="font-size:12.5px;color:#64748b;">案件編號：' + escHtml(c.caseId) + '｜負責專員：<b>' + escHtml(c.handlerName) + '</b></div>' +
+          '<div style="font-size:13px;color:#7A6A5B;">案件編號：' + escHtml(c.caseId) + '｜負責專員：<b style="color:#3E3024;">' + escHtml(c.handlerName) + '</b></div>' +
           stepperHtml +
-          '<div style="background:#f8fafc;padding:10px;border-radius:8px;font-size:13px;color:#334155;">' +
-            '<b>最新進度摘要：</b>' + escHtml(c.lastSummary) + '<br><span style="font-size:11.5px;color:#64748b;">更新時間：' + escHtml(c.lastUpdate) + '</span>' +
+          '<div style="background:#FAF7F2;border:1px solid #E6D9C8;padding:11px;border-radius:10px;font-size:13.5px;color:#5C4735;">' +
+            '<b>最新進度摘要：</b>' + escHtml(c.lastSummary) + '<br><span style="font-size:12px;color:#7A6A5B;">更新時間：' + escHtml(c.lastUpdate) + '</span>' +
           '</div>' +
           docsHtml +
           '<div style="margin-top:12px;">' +
@@ -1055,7 +1100,7 @@
         sigCtx.lineCap = 'round';
         sigCtx.lineJoin = 'round';
         sigCtx.lineWidth = 3.2;
-        sigCtx.strokeStyle = '#0b132b';
+        sigCtx.strokeStyle = '#3E3024';
       }
       if (canvasInitialized) return;
       canvasInitialized = true;
@@ -1148,7 +1193,6 @@
       pUid.textContent = STATE.lineUid ? '✅ ③ LINE UID 綁定' : '✅ ③ 網頁實名存證';
       pGps.className = 'check-pill' + (gpsOk ? ' ok' : '');
       pGps.textContent = gpsOk ? ('✅ ⑤ GPS 已鎖定 (' + STATE.gps.lat + ', ' + STATE.gps.lng + ')') : '⬜ ⑤ 手機 GPS 經緯度尚未定位';
-      // V7.1 即時步驟導航提示
       var hint = document.getElementById('esignStepHint');
       var submitBtn = document.getElementById('btnSubmitSign');
       if (!hint) return;
@@ -1161,7 +1205,7 @@
           '<button type="button" class="btn btn-success btn-sm" onclick="acquireGPSLocation(false)">📍 取得定位</button>';
       } else if (!STATE.hasSigned) {
         hint.className = 'smart-banner warn';
-        hint.innerHTML = '<div class="smart-banner-txt"><b>👉 步驟 3／4：</b>GPS 已就緒！請在下方金色虛線框內<b>以手指親筆簽名</b>。</div>';
+        hint.innerHTML = '<div class="smart-banner-txt"><b>👉 步驟 3／4：</b>GPS 已就緒！請在下方奶茶金虛線框內<b>以手指親筆簽名</b>。</div>';
       } else if (!agreeOk) {
         hint.className = 'smart-banner warn';
         hint.innerHTML = '<div class="smart-banner-txt"><b>👉 最後一步（4／4）：</b>請勾選最下方「同意電子簽章法」核取方塊即可送出！</div>';
@@ -1200,8 +1244,8 @@
           document.getElementById('loginPhone').value = phone;
           var card = document.getElementById('esignSuccessCard');
           card.classList.remove('hidden');
-          card.innerHTML = '<b style="color:#047857;font-size:17px;">🛡️ 電子契約防偽封存完成！</b>' +
-            '<div style="font-size:13px;margin-top:8px;line-height:1.8;color:#0f172a;">' +
+          card.innerHTML = '<b style="color:#145C41;font-size:17px;">🛡️ 電子契約防偽封存完成！</b>' +
+            '<div style="font-size:13.5px;margin-top:8px;line-height:1.8;color:#3E3024;">' +
             '🔖 憑據編號：<b>' + escHtml(res.signId) + '</b><br>' +
             '🕒 Google 標準時間：' + escHtml(res.serverTime) + '<br>' +
             '📍 GPS 經緯度落款：' + escHtml(res.gpsCoord) + '<br>' +
