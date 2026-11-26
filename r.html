@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>三貸同堂｜免費額度初評</title>
-  <meta name="description" content="點擊開啟三貸同堂官方 LINE，立即領取專屬免費額度初評服務（核准對保前 0 元收費、全程保密）。">
+  <title>三貸同堂｜免費額度初評與月付試算</title>
+  <meta name="description" content="不拉銀行聯徵、核准對保前 0 元收費、全程保密，點擊立即啟動三貸同堂專屬免費額度初評。">
+  <!-- LINE / 社群分享預覽卡片設定（請確認 logo.jpg 已上傳至 GitHub threeloans 根目錄） -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="三貸同堂｜免費額度初評">
-  <meta property="og:description" content="點開官方 LINE 後直接按下「傳送」，60 秒免費評估額度、核准對保前 0 元收費。">
+  <meta property="og:title" content="三貸同堂｜60秒免費額度初評">
+  <meta property="og:description" content="不拉聯徵、全程保密、核准對保前 0 元收費，點此立即開啟專屬免費評估。">
   <meta property="og:image" content="https://phonedrsystem365-ux.github.io/threeloans/logo.jpg">
   <style>
     :root {
@@ -19,6 +20,8 @@
       --text-sub: #7A6A5B;
       --line-green: #06C755;
       --line-green-dark: #05A948;
+      --calc-amber: #C58940;
+      --calc-amber-dark: #A86F2B;
     }
     * {
       box-sizing: border-box;
@@ -106,13 +109,16 @@
       box-shadow: 0 6px 16px rgba(6, 199, 85, 0.28);
       transition: background-color 0.2s ease, transform 0.1s ease;
     }
-    .btn-action.calc-mode {
-      background-color: var(--primary-dark);
-      box-shadow: 0 6px 16px rgba(166, 132, 94, 0.28);
-    }
     .btn-action:active {
       background-color: var(--line-green-dark);
       transform: scale(0.98);
+    }
+    .btn-action.btn-calc {
+      background-color: var(--calc-amber);
+      box-shadow: 0 6px 16px rgba(197, 137, 64, 0.28);
+    }
+    .btn-action.btn-calc:active {
+      background-color: var(--calc-amber-dark);
     }
     .tip {
       margin-top: 16px;
@@ -155,15 +161,16 @@
     (function () {
       var params = new URLSearchParams(window.location.search);
 
-      // 相容 ?c=、?ref=、?code= 推薦碼參數
+      // 推薦碼相容 ?c= / ?ref= / ?code=
       var rawCode = (params.get('c') || params.get('ref') || params.get('code') || '').trim();
       var safeCode = rawCode.replace(/[^\w\-一-龥]/g, '').slice(0, 32);
 
-      // 支援 ?t=calc 短網址直達 60 秒免費月付試算頁
-      var targetType = (params.get('t') || '').trim().toLowerCase();
+      // 目標類型：預設 LINE 官方帳號初評；支援 ?t=calc / resume / esign / client
+      var targetType = (params.get('t') || params.get('to') || 'line').trim().toLowerCase();
 
       var targetUrl = '';
       var subEl = document.getElementById('brandSub');
+      var statusEl = document.getElementById('statusText');
       var btnEl = document.getElementById('manualBtn');
       var tipEl = document.getElementById('tipText');
       var badgeEl = document.getElementById('refBadge');
@@ -173,23 +180,28 @@
         badgeEl.style.display = 'inline-block';
       }
 
-      if (targetType === 'calc') {
-        var qs = ['tab=calc'];
-        if (safeCode) qs.push('ref=' + encodeURIComponent(safeCode));
+      if (targetType === 'calc' || targetType === 'resume' || targetType === 'esign' || targetType === 'client') {
+        var qs = [];
+        if (targetType !== 'client') {
+          qs.push('tab=' + encodeURIComponent(targetType));
+        }
+        if (safeCode) {
+          qs.push('ref=' + encodeURIComponent(safeCode));
+        }
         qs.push('openExternalBrowser=1');
         targetUrl = '../index.html?' + qs.join('&');
 
-        if (subEl) subEl.textContent = '正在為您開啟 60 秒線上免費額度試算器';
+        if (subEl) subEl.textContent = '正在為您開啟 60 秒免費月付試算與初評';
         if (btnEl) {
           btnEl.textContent = '立即開啟 60 秒免費試算';
-          btnEl.classList.add('calc-mode');
+          btnEl.classList.add('btn-calc');
           btnEl.href = targetUrl;
         }
         if (tipEl) {
-          tipEl.innerHTML = '若未自動跳轉，請點擊上方按鈕；<br>初評不拉聯徵・核准對保前 0 元收費。';
+          tipEl.innerHTML = '若未自動跳轉，請點擊上方按鈕；<br>填寫初評不拉聯徵，核准對保前 0 元收費。';
         }
       } else {
-        // 預設指向正式藍盾 @threeloans（測試環境可選帶 ?oa=@862rlfji）
+        // 預設指向正式藍盾 @threeloans；測試環境透過 GAS 自動帶 ?oa=@xxxx 切換
         var rawOa = (params.get('oa') || '@threeloans').trim();
         var oaId = rawOa.indexOf('@') === 0 ? rawOa : ('@' + rawOa);
 
@@ -201,19 +213,18 @@
           encodeURIComponent(oaId) + '/?' +
           encodeURIComponent(messageText);
 
-        if (btnEl) btnEl.href = targetUrl;
+        if (btnEl) {
+          btnEl.href = targetUrl;
+        }
       }
 
-      // 毫秒跳轉
+      // 毫秒導向目標連結
       window.location.replace(targetUrl);
 
-      // 防 App 內建瀏覽器阻擋：1.8 秒後顯示手動點擊提示
+      // 若被 App 內建瀏覽器阻擋自動跳轉，1.8 秒後改顯示手動點擊提示
       window.setTimeout(function () {
-        var statusEl = document.getElementById('statusText');
         if (statusEl) {
-          statusEl.textContent = (targetType === 'calc')
-            ? '請點擊下方按鈕開啟試算頁面'
-            : '請點擊下方按鈕開啟官方 LINE';
+          statusEl.textContent = '請點擊下方按鈕立即前往';
         }
       }, 1800);
     })();
